@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Federated Authentication capabilities using [OpenID Connect](https://openid.net/connect/).
+  - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added and modified columns.
+
 ### Changed
 
 - Decoded downlink payloads are now published as part of downlink attempt events.
