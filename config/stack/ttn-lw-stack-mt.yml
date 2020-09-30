@@ -1,5 +1,4 @@
 # Example ttn-lw-stack configuration file for multi-tenant local development instances
-# Keep in sync with `doc/content/guides/getting-started/configuration.md`
 
 # Tenancy configuration
 tenancy:
