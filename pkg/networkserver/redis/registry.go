@@ -79,6 +79,10 @@ func (r *DeviceRegistry) uidKey(uid string) string {
 	return deviceUIDKey(r.Redis, uid)
 }
 
+func (r *DeviceRegistry) legacyAddrKey(addr types.DevAddr) string {
+	return r.Redis.Key("addr", addr.String())
+}
+
 func (r *DeviceRegistry) addrKey(addr types.DevAddr, tenantID string) string {
 	return r.Redis.Key("addr", addr.String(), tenantID)
 }
@@ -482,6 +486,7 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 	ctxTntID := tenant.FromContext(ctx)
 	pld := up.Payload.GetMACPayload()
 	addrKey := r.addrKey(pld.DevAddr, ctxTntID.TenantID)
+	legacyAddrKey := r.legacyAddrKey(pld.DevAddr)
 
 	addrKeys := struct {
 		ShortFCnt string
@@ -492,7 +497,7 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 		ShortFCnt: ttnredis.Key(addrKey, shortFCntKey),
 		LongFCnt:  ttnredis.Key(addrKey, longFCntKey),
 		Pending:   ttnredis.Key(addrKey, pendingKey),
-		Legacy:    addrKey,
+		Legacy:    legacyAddrKey,
 	}
 
 	payloadHash := uplinkPayloadHash(up.RawPayload)
@@ -508,7 +513,7 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 			LongFCntNoRollover: ttnredis.Key(addrKeys.LongFCnt, payloadHash, "no-rollover"),
 			LongFCntRollover:   ttnredis.Key(addrKeys.LongFCnt, payloadHash, "rollover"),
 			Pending:            ttnredis.Key(addrKeys.Pending, payloadHash),
-			Legacy:             ttnredis.Key(addrKeys.Legacy, payloadHash),
+			Legacy:             ttnredis.Key(addrKeys.Legacy, ctxTntID.TenantID, payloadHash),
 		},
 	}
 	matchKeys.Processing = matchKeySet{
@@ -750,7 +755,6 @@ func removeLegacyDevAddrMapping(r redis.Cmdable, addrKey, uid string) {
 }
 
 func removeCurrentDevAddrMapping(r redis.Cmdable, addrKey, uid string, supports32Bit bool) {
-	removeLegacyDevAddrMapping(r, addrKey, uid)
 	if !supports32Bit {
 		r.ZRem(ttnredis.Key(addrKey, shortFCntKey), uid)
 	} else {
@@ -759,7 +763,6 @@ func removeCurrentDevAddrMapping(r redis.Cmdable, addrKey, uid string, supports3
 }
 
 func removePendingDevAddrMapping(r redis.Cmdable, addrKey, uid string) {
-	removeLegacyDevAddrMapping(r, addrKey, uid)
 	r.SRem(ttnredis.Key(addrKey, pendingKey), uid)
 }
 
@@ -837,10 +840,12 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 					p.Del(r.euiKey(*stored.JoinEUI, *stored.DevEUI))
 				}
 				if stored.PendingSession != nil {
+					removeLegacyDevAddrMapping(p, r.legacyAddrKey(stored.PendingSession.DevAddr), uid)
 					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr, ctxTntID.TenantID), uid)
 					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr, cluster.PacketBrokerTenantID.TenantID), uid)
 				}
 				if stored.Session != nil {
+					removeLegacyDevAddrMapping(p, r.legacyAddrKey(stored.Session.DevAddr), uid)
 					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr, ctxTntID.TenantID), uid, deviceSupports32BitFCnt(stored))
 					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr, cluster.PacketBrokerTenantID.TenantID), uid, deviceSupports32BitFCnt(stored))
 				}
@@ -998,6 +1003,7 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 			if stored.GetPendingSession() == nil || updated.GetPendingSession() == nil ||
 				!updated.PendingSession.DevAddr.Equal(stored.PendingSession.DevAddr) {
 				if stored.GetPendingSession() != nil {
+					removeLegacyDevAddrMapping(p, r.legacyAddrKey(stored.PendingSession.DevAddr), uid)
 					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr, ctxTntID.TenantID), uid)
 					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr, cluster.PacketBrokerTenantID.TenantID), uid)
 				}
@@ -1012,6 +1018,7 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 				!updated.Session.DevAddr.Equal(stored.Session.DevAddr) ||
 				storedSupports32BitFCnt != updatedSupports32BitFCnt {
 				if stored.GetSession() != nil {
+					removeLegacyDevAddrMapping(p, r.legacyAddrKey(stored.Session.DevAddr), uid)
 					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr, ctxTntID.TenantID), uid, storedSupports32BitFCnt)
 					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr, cluster.PacketBrokerTenantID.TenantID), uid, storedSupports32BitFCnt)
 				}
