@@ -112,7 +112,6 @@ var gitCommitPrefixes = []string{
 	"cs",
 	"dcs",
 	"dev",
-	"doc",
 	"dtc",
 	"es",
 	"gcs",
