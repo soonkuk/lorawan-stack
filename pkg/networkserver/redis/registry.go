@@ -79,8 +79,8 @@ func (r *DeviceRegistry) uidKey(uid string) string {
 	return deviceUIDKey(r.Redis, uid)
 }
 
-func (r *DeviceRegistry) addrKey(addr types.DevAddr) string {
-	return r.Redis.Key("addr", addr.String())
+func (r *DeviceRegistry) addrKey(addr types.DevAddr, tenantID string) string {
+	return r.Redis.Key("addr", addr.String(), tenantID)
 }
 
 func (r *DeviceRegistry) euiKey(joinEUI, devEUI types.EUI64) string {
@@ -479,8 +479,9 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 		// TODO: Remove once https://github.com/TheThingsNetwork/lorawan-stack/issues/2698 is closed.
 		cacheTTL = time.Millisecond
 	}
+	ctxTntID := tenant.FromContext(ctx)
 	pld := up.Payload.GetMACPayload()
-	addrKey := r.addrKey(pld.DevAddr)
+	addrKey := r.addrKey(pld.DevAddr, ctxTntID.TenantID)
 
 	addrKeys := struct {
 		ShortFCnt string
@@ -611,17 +612,12 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 		if err := msgpack.Unmarshal([]byte(v), res); err != nil {
 			return err
 		}
-
-		tntID, err := unique.ToTenantID(res.UID)
-		if err != nil {
-			return err
-		}
-		switch tenant.FromContext(ctx) {
-		case tntID:
-		case cluster.PacketBrokerTenantID:
+		if ctxTntID == cluster.PacketBrokerTenantID {
+			tntID, err := unique.ToTenantID(res.UID)
+			if err != nil {
+				return err
+			}
 			ctx = tenant.NewContext(ctx, tntID)
-		default:
-			return errNoUplinkMatch.New()
 		}
 
 		ids, err := unique.ToDeviceID(res.UID)
@@ -649,7 +645,6 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 		return errDatabaseCorruption.New()
 	}
 
-	ctxTntID := tenant.FromContext(ctx)
 	args := make([]interface{}, 1, 2)
 	args[0] = cacheTTL.Milliseconds()
 	for len(scanKeys) > 0 {
@@ -690,56 +685,48 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 				Error("Failed to parse UID returned by device match scan script as a string")
 			return errDatabaseCorruption.WithCause(err)
 		}
-
-		tntID, err := unique.ToTenantID(uid)
-		if err != nil {
-			log.FromContext(ctx).WithError(err).WithField("uid", uid).
-				Error("Failed to parse tenant ID from UID")
-			return errDatabaseCorruption.WithCause(err)
-		}
-		var tenantMatch bool
 		ctx := ctx
-		switch ctxTntID {
-		case tntID:
-			tenantMatch = true
-		case cluster.PacketBrokerTenantID:
-			tenantMatch = true
-			ctx = tenant.NewContext(ctx, tntID)
-		}
-		if tenantMatch {
-			ids, err := unique.ToDeviceID(uid)
+		if ctxTntID == cluster.PacketBrokerTenantID {
+			tntID, err := unique.ToTenantID(uid)
 			if err != nil {
 				log.FromContext(ctx).WithError(err).WithField("uid", uid).
-					Error("Failed to parse UID returned by device match scan script as device identifiers")
+					Error("Failed to parse tenant ID from UID")
 				return errDatabaseCorruption.WithCause(err)
 			}
-			ms, err := getUplinkMatch(ctx, r.Redis, matchKeys.Input, matchKeys.Processing, ids.ApplicationIdentifiers, ids.DeviceID, pld.DevAddr, lsb, scanKeys[0], r.uidKey(uid))
+			ctx = tenant.NewContext(ctx, tntID)
+		}
+		ids, err := unique.ToDeviceID(uid)
+		if err != nil {
+			log.FromContext(ctx).WithError(err).WithField("uid", uid).
+				Error("Failed to parse UID returned by device match scan script as device identifiers")
+			return errDatabaseCorruption.WithCause(err)
+		}
+		ms, err := getUplinkMatch(ctx, r.Redis, matchKeys.Input, matchKeys.Processing, ids.ApplicationIdentifiers, ids.DeviceID, pld.DevAddr, lsb, scanKeys[0], r.uidKey(uid))
+		if err != nil {
+			return err
+		}
+		for _, m := range ms {
+			ok, err := f(ctx, m)
 			if err != nil {
-				return err
+				return errNoUplinkMatch.WithCause(err)
 			}
-			for _, m := range ms {
-				ok, err := f(ctx, m)
+			if ok {
+				b, err := msgpack.Marshal(MatchResult{
+					Key: scanKeys[0],
+					UID: uid,
+				})
 				if err != nil {
-					return errNoUplinkMatch.WithCause(err)
+					return err
 				}
-				if ok {
-					b, err := msgpack.Marshal(MatchResult{
-						Key: scanKeys[0],
-						UID: uid,
-					})
-					if err != nil {
-						return err
-					}
-					_, err = r.Redis.Pipelined(func(p redis.Pipeliner) error {
-						p.Set(matchKeys.Match, string(b), cacheTTL)
-						p.Del(scanKeys...)
-						return nil
-					})
-					if err != nil {
-						return ttnredis.ConvertError(err)
-					}
+				_, err = r.Redis.Pipelined(func(p redis.Pipeliner) error {
+					p.Set(matchKeys.Match, string(b), cacheTTL)
+					p.Del(scanKeys...)
 					return nil
+				})
+				if err != nil {
+					return ttnredis.ConvertError(err)
 				}
+				return nil
 			}
 		}
 		if len(args) > 1 {
@@ -787,6 +774,10 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 	}
 	uid := unique.ID(ctx, ids)
 	uk := r.uidKey(uid)
+	ctxTntID := tenant.FromContext(ctx)
+	if ctxTntID.IsZero() || ctxTntID == cluster.PacketBrokerTenantID {
+		return nil, ctx, errInvalidIdentifiers.New()
+	}
 
 	defer trace.StartRegion(ctx, "set end device by id").End()
 
@@ -846,10 +837,12 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 					p.Del(r.euiKey(*stored.JoinEUI, *stored.DevEUI))
 				}
 				if stored.PendingSession != nil {
-					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr), uid)
+					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr, ctxTntID.TenantID), uid)
+					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr, cluster.PacketBrokerTenantID.TenantID), uid)
 				}
 				if stored.Session != nil {
-					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr), uid, deviceSupports32BitFCnt(stored))
+					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr, ctxTntID.TenantID), uid, deviceSupports32BitFCnt(stored))
+					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr, cluster.PacketBrokerTenantID.TenantID), uid, deviceSupports32BitFCnt(stored))
 				}
 				return nil
 			}
@@ -1005,11 +998,13 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 			if stored.GetPendingSession() == nil || updated.GetPendingSession() == nil ||
 				!updated.PendingSession.DevAddr.Equal(stored.PendingSession.DevAddr) {
 				if stored.GetPendingSession() != nil {
-					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr), uid)
+					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr, ctxTntID.TenantID), uid)
+					removePendingDevAddrMapping(p, r.addrKey(stored.PendingSession.DevAddr, cluster.PacketBrokerTenantID.TenantID), uid)
 				}
 
 				if updated.GetPendingSession() != nil {
-					p.SAdd(ttnredis.Key(r.addrKey(updated.PendingSession.DevAddr), pendingKey), uid)
+					p.SAdd(ttnredis.Key(r.addrKey(updated.PendingSession.DevAddr, ctxTntID.TenantID), pendingKey), uid)
+					p.SAdd(ttnredis.Key(r.addrKey(updated.PendingSession.DevAddr, cluster.PacketBrokerTenantID.TenantID), pendingKey), uid)
 				}
 			}
 
@@ -1017,19 +1012,21 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 				!updated.Session.DevAddr.Equal(stored.Session.DevAddr) ||
 				storedSupports32BitFCnt != updatedSupports32BitFCnt {
 				if stored.GetSession() != nil {
-					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr), uid, storedSupports32BitFCnt)
+					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr, ctxTntID.TenantID), uid, storedSupports32BitFCnt)
+					removeCurrentDevAddrMapping(p, r.addrKey(stored.Session.DevAddr, cluster.PacketBrokerTenantID.TenantID), uid, storedSupports32BitFCnt)
 				}
 
 				if updated.GetSession() != nil {
-					addrKey := r.addrKey(updated.Session.DevAddr)
 					z := &redis.Z{
 						Score:  float64(updated.Session.LastFCntUp),
 						Member: uid,
 					}
 					if !updatedSupports32BitFCnt {
-						p.ZAdd(ttnredis.Key(addrKey, shortFCntKey), z)
+						p.ZAdd(ttnredis.Key(r.addrKey(updated.Session.DevAddr, ctxTntID.TenantID), shortFCntKey), z)
+						p.ZAdd(ttnredis.Key(r.addrKey(updated.Session.DevAddr, cluster.PacketBrokerTenantID.TenantID), shortFCntKey), z)
 					} else {
-						p.ZAdd(ttnredis.Key(addrKey, longFCntKey), z)
+						p.ZAdd(ttnredis.Key(r.addrKey(updated.Session.DevAddr, ctxTntID.TenantID), longFCntKey), z)
+						p.ZAdd(ttnredis.Key(r.addrKey(updated.Session.DevAddr, cluster.PacketBrokerTenantID.TenantID), longFCntKey), z)
 					}
 				}
 			}
