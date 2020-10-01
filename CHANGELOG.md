@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support for sending end device uplinks in the Console.
+- PHY version filtering based on LoRaWAN MAC in the Console.
+- Meta information and status events in the event views in the Console.
 
 - Federated Authentication capabilities using [OpenID Connect](https://openid.net/connect/).
   - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added and modified columns.
@@ -22,7 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Join EUI prefixes select on empty prefixes configuration in Join Server.
+
 ### Fixed
+
+- Broken link to setting device location in the device map widget.
+- Error events causing Console becoming unresponsive and crashing.
+- Incorrect entity count in title sections in the Console.
+- Incorrect event detail panel open/close behavior for some events in the Console.
+- Improved error resilience and stability of the event views in the Console.
 
 ### Security
 
@@ -36,7 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cached Tenant information is now used during Identity Server unavailability.
 
 ### Fixed
-
 - Performance issues of event views in the Console (freezing after some time).
 - Gateway Server panic on upstream message handling.
 - Incorrect redirects for restricted routes in the Console.
