@@ -1826,6 +1826,78 @@
       "file": "registry.go"
     }
   },
+  "error:pkg/applicationserver/io/packages/storage/postgres:database": {
+    "translations": {
+      "en": "database error"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage/postgres",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage/postgres:negative_batch_size": {
+    "translations": {
+      "en": "batch size `{size}` is negative"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage/postgres",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage/postgres:no_device_id": {
+    "translations": {
+      "en": "no device or application id set"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage/postgres",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage/postgres:no_tenant_id": {
+    "translations": {
+      "en": "no tenant id set"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage/postgres",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage:invalid_interval": {
+    "translations": {
+      "en": "invalid interval `{interval}`"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage:no_app_id": {
+    "translations": {
+      "en": "no app id"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage:no_provider": {
+    "translations": {
+      "en": "no provider configured for storage"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage:not_implemented": {
+    "translations": {
+      "en": "provider `{provider}` not implemented"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "errors.tti.go"
+    }
+  },
   "error:pkg/applicationserver/io/packages:package_not_implemented": {
     "translations": {
       "en": "package `{name}` is not implemented"
@@ -8529,6 +8601,24 @@
     "description": {
       "package": "pkg/applicationserver",
       "file": "observability.go"
+    }
+  },
+  "event:as.packages.storage.up.drop": {
+    "translations": {
+      "en": "drop upstream data message"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "observability.tti.go"
+    }
+  },
+  "event:as.packages.storage.up.store": {
+    "translations": {
+      "en": "store upstream data message"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "observability.tti.go"
     }
   },
   "event:as.pubsub.delete": {
