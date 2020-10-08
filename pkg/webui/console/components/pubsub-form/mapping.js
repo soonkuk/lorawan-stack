@@ -46,7 +46,7 @@ const mqttBlankValues = {
   _use_credentials: true,
 }
 
-export const mapNatsFormValues = function(nats) {
+export const mapNatsFormValues = nats => {
   try {
     const res = nats.server_url.match(natsUrlRegexp)
     return {
@@ -62,14 +62,16 @@ export const mapNatsFormValues = function(nats) {
   }
 }
 
-export const mapMqttFormValues = function(mqtt) {
-  return merge({ _use_credentials: Boolean(mqtt.username || mqtt.password) }, mqttBlankValues, mqtt)
+export const mapMqttFormValues = mqtt => {
+  return merge({}, mqttBlankValues, mqtt, {
+    _use_credentials: Boolean(mqtt.username || mqtt.password),
+  })
 }
 
 const mapPubsubMessageTypeToFormValue = messageType =>
   (messageType && { enabled: true, value: messageType.topic }) || { enabled: false, value: '' }
 
-export const mapPubsubToFormValues = function(pubsub) {
+export const mapPubsubToFormValues = pubsub => {
   const isNats = 'nats' in pubsub
   const isMqtt = 'mqtt' in pubsub
   const isAWSIoT = 'aws_iot' in pubsub
@@ -105,23 +107,22 @@ export const mapPubsubToFormValues = function(pubsub) {
   return result
 }
 
-const mapNatsConfigFormValueToNatsServerUrl = function({
+const mapNatsConfigFormValueToNatsServerUrl = ({
   username,
   password,
   address,
   port,
   secure,
   _use_credentials,
-}) {
-  return `${secure ? 'tls' : 'nats'}://${
+}) =>
+  `${secure ? 'tls' : 'nats'}://${
     _use_credentials ? `${username}:${password}@` : ''
   }${address}:${port}`
-}
 
 const mapMessageTypeFormValueToPubsubMessageType = formValue =>
   (formValue.enabled && { topic: formValue.value }) || null
 
-export const mapFormValuesToPubsub = function(values, appId) {
+export const mapFormValuesToPubsub = (values, appId) => {
   const result = {
     ids: {
       application_ids: {
