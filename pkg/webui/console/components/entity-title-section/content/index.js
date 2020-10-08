@@ -15,8 +15,10 @@
 import EntityTitleSectionContent from './content'
 import EntityCount from './entity-count'
 import MessagesCount from './messages-count'
+import LastSeen from './last-seen'
 
 EntityTitleSectionContent.EntityCount = EntityCount
 EntityTitleSectionContent.MessagesCount = MessagesCount
+EntityTitleSectionContent.LastSeen = LastSeen
 
 export default EntityTitleSectionContent

@@ -20,7 +20,6 @@ import deviceIcon from '@assets/misc/end-device.svg'
 import Status from '@ttn-lw/components/status'
 import Spinner from '@ttn-lw/components/spinner'
 
-import DateTime from '@ttn-lw/lib/components/date-time'
 import Message from '@ttn-lw/lib/components/message'
 
 import EntityTitleSection from '@console/components/entity-title-section'
@@ -58,7 +57,7 @@ const DeviceTitleSection = props => {
           <>
             {showLastSeen ? (
               <Status status="good" flipped>
-                <Message content={sharedMessages.lastSeen} /> <DateTime.Relative value={lastSeen} />
+                <Content.LastSeen lastSeen={lastSeen} />
               </Status>
             ) : (
               <Status status="mediocre" label={m.lastSeenUnavailable} flipped />
