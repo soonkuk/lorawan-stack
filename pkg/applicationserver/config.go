@@ -24,6 +24,7 @@ import (
 	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io"
 	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io/packages"
 	loraclouddevicemanagementv1 "go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io/packages/loradms/v1"
+	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io/packages/storage"
 	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io/pubsub"
 	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io/web"
 	"go.thethings.network/lorawan-stack/v3/pkg/component"
@@ -180,6 +181,15 @@ func (c ApplicationPackagesConfig) NewApplicationPackages(ctx context.Context, s
 	// Initialize LoRa Cloud Device Management v1 package handler
 	loradmsHandler := loraclouddevicemanagementv1.New(server, c.Registry)
 	handlers[loradmsHandler.Package().Name] = loradmsHandler
+
+	// Initialize Storage Integration package handler
+	if c.Storage.Provider != "" {
+		storageHandler, err := storage.FromConfig(ctx, c.Storage)
+		if err != nil {
+			return nil, err
+		}
+		handlers[storageHandler.Package().Name] = storageHandler
+	}
 
 	return packages.New(ctx, server, c.Registry, handlers)
 }
