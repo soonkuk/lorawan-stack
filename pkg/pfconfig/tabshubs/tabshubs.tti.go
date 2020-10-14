@@ -14,13 +14,6 @@ import (
 	"go.thethings.network/lorawan-stack/v3/pkg/pfconfig/shared"
 )
 
-const (
-	configHardwareSpecPrefix = "sx1301"
-	configProtocol           = 1
-)
-
-var errFrequencyPlan = errors.DefineInvalidArgument("frequency_plan", "invalid frequency plan `{name}`")
-
 // DataRates encodes the available datarates of the channel plan for the Tabs Hubs in the format below:
 // [0] -> SF (Spreading Factor; Range: 7...12 for LoRa, 0 for FSK)
 // [1] -> BW (Bandwidth; 125/250/500 for LoRa, ignored for FSK)
@@ -52,6 +45,28 @@ type RouterConfig struct {
 		Region string `json:"region"`
 	} `json:"config"`
 	Beaconing []int `json:"bcning"`
+}
+
+const (
+	configHardwareSpecPrefix = "sx1301"
+	configProtocol           = 1
+)
+
+var errFrequencyPlan = errors.DefineInvalidArgument("frequency_plan", "invalid frequency plan `{name}`")
+
+// RegionIDToRegion maps the regionid field to the region field.
+var RegionIDToRegion = map[string]int{
+	"EU863": 1,
+	"US902": 2,
+	"EU433": 3,
+	"AU915": 4,
+	"CN470": 5,
+	"CN779": 6,
+	"AS923": 7,
+	"KR920": 8,
+	"IN865": 9,
+	"IL915": 10,
+	"RU864": 11,
 }
 
 // MarshalJSON implements json.Marshaler.
