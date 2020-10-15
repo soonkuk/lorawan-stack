@@ -611,6 +611,15 @@
       "file": "i18n.go"
     }
   },
+  "enum:RIGHT_GATEWAY_READ_SECRETS": {
+    "translations": {
+      "en": "retrieve secrets associated with a gateway"
+    },
+    "description": {
+      "package": "pkg/ttnpb",
+      "file": "i18n.go"
+    }
+  },
   "enum:RIGHT_GATEWAY_SETTINGS_API_KEYS": {
     "translations": {
       "en": "view and edit gateway API keys"
@@ -659,6 +668,15 @@
   "enum:RIGHT_GATEWAY_TRAFFIC_READ": {
     "translations": {
       "en": "read gateway traffic"
+    },
+    "description": {
+      "package": "pkg/ttnpb",
+      "file": "i18n.go"
+    }
+  },
+  "enum:RIGHT_GATEWAY_WRITE_SECRETS": {
+    "translations": {
+      "en": "store secrets for a gateway"
     },
     "description": {
       "package": "pkg/ttnpb",
@@ -2699,6 +2717,15 @@
       "file": "update_info.go"
     }
   },
+  "error:pkg/basicstation/cups:lns_credentials_not_found": {
+    "translations": {
+      "en": "LNS credentials not found for gateway `{gateway_uid}`"
+    },
+    "description": {
+      "package": "pkg/basicstation/cups",
+      "file": "update_info.go"
+    }
+  },
   "error:pkg/basicstation/cups:no_trust": {
     "translations": {
       "en": "no trusted certificate found"
@@ -3716,6 +3743,15 @@
       "file": "attributes.go"
     }
   },
+  "error:pkg/errors:request": {
+    "translations": {
+      "en": "request to `{url}` failed"
+    },
+    "description": {
+      "package": "pkg/errors",
+      "file": "conversion.go"
+    }
+  },
   "error:pkg/errors:validation": {
     "translations": {
       "en": "invalid `{field}`: {reason}"
@@ -3723,6 +3759,15 @@
     "description": {
       "package": "pkg/errors",
       "file": "validation.go"
+    }
+  },
+  "error:pkg/errors:x509_unknown_authority": {
+    "translations": {
+      "en": "unknown certificate authority"
+    },
+    "description": {
+      "package": "pkg/errors",
+      "file": "conversion.go"
     }
   },
   "error:pkg/events/grpc:no_identifiers": {
@@ -5087,6 +5132,15 @@
   "error:pkg/identityserver:gateway_eui_taken": {
     "translations": {
       "en": "a gateway with EUI `{gateway_eui}` is already registered as `{gateway_id}`"
+    },
+    "description": {
+      "package": "pkg/identityserver",
+      "file": "gateway_registry.go"
+    }
+  },
+  "error:pkg/identityserver:gateway_secret_encryption_key_not_found": {
+    "translations": {
+      "en": "a gateway secret encryption key with id `{id}` not found"
     },
     "description": {
       "package": "pkg/identityserver",

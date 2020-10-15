@@ -1706,7 +1706,7 @@
           "fields": [
             {
               "name": "application_ids",
-              "description": "Query upstream messages from all end devices of an application. Cannot be used in conjuction with EndDeviceIdentifiers.",
+              "description": "Query upstream messages from all end devices of an application. Cannot be used in conjunction with EndDeviceIdentifiers.",
               "label": "",
               "type": "ApplicationIdentifiers",
               "longType": "ApplicationIdentifiers",
@@ -1716,7 +1716,7 @@
             },
             {
               "name": "end_device_ids",
-              "description": "Query upstream messages from a single end device. Cannot be used in conjuction with ApplicationIdentifiers.",
+              "description": "Query upstream messages from a single end device. Cannot be used in conjunction with ApplicationIdentifiers.",
               "label": "",
               "type": "EndDeviceIdentifiers",
               "longType": "EndDeviceIdentifiers",
@@ -9681,6 +9681,92 @@
               "fullType": "google.protobuf.Timestamp",
               "ismap": false,
               "defaultValue": ""
+            },
+            {
+              "name": "rejected_data_rate_ranges",
+              "description": "Data rate ranges rejected by the device per frequency.",
+              "label": "repeated",
+              "type": "RejectedDataRateRangesEntry",
+              "longType": "MACState.RejectedDataRateRangesEntry",
+              "fullType": "ttn.lorawan.v3.MACState.RejectedDataRateRangesEntry",
+              "ismap": true,
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "DataRateRange",
+          "longName": "MACState.DataRateRange",
+          "fullName": "ttn.lorawan.v3.MACState.DataRateRange",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "min_data_rate_index",
+              "description": "",
+              "label": "",
+              "type": "DataRateIndex",
+              "longType": "DataRateIndex",
+              "fullType": "ttn.lorawan.v3.DataRateIndex",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "enum.defined_only",
+                    "value": true
+                  }
+                ]
+              }
+            },
+            {
+              "name": "max_data_rate_index",
+              "description": "",
+              "label": "",
+              "type": "DataRateIndex",
+              "longType": "DataRateIndex",
+              "fullType": "ttn.lorawan.v3.DataRateIndex",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "enum.defined_only",
+                    "value": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DataRateRanges",
+          "longName": "MACState.DataRateRanges",
+          "fullName": "ttn.lorawan.v3.MACState.DataRateRanges",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "ranges",
+              "description": "",
+              "label": "repeated",
+              "type": "DataRateRange",
+              "longType": "MACState.DataRateRange",
+              "fullType": "ttn.lorawan.v3.MACState.DataRateRange",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "repeated.min_items",
+                    "value": 1
+                  }
+                ]
+              }
             }
           ]
         },
@@ -9768,6 +9854,37 @@
                   }
                 ]
               }
+            }
+          ]
+        },
+        {
+          "name": "RejectedDataRateRangesEntry",
+          "longName": "MACState.RejectedDataRateRangesEntry",
+          "fullName": "ttn.lorawan.v3.MACState.RejectedDataRateRangesEntry",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "key",
+              "description": "",
+              "label": "",
+              "type": "uint64",
+              "longType": "uint64",
+              "fullType": "uint64",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "",
+              "label": "",
+              "type": "DataRateRanges",
+              "longType": "MACState.DataRateRanges",
+              "fullType": "ttn.lorawan.v3.MACState.DataRateRanges",
+              "ismap": false,
+              "defaultValue": ""
             }
           ]
         },
@@ -11133,6 +11250,16 @@
               "type": "bool",
               "longType": "bool",
               "fullType": "bool",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "lbs_lns_secret",
+              "description": "The LoRa Basics Station LNS secret.\nThis is either an auth token (such as an API Key) or a TLS private certificate.\nRequires the RIGHT_GATEWAY_READ_SECRETS for reading and RIGHT_GATEWAY_WRITE_SECRETS for updating this value.\n\nnext: 23",
+              "label": "",
+              "type": "Secret",
+              "longType": "Secret",
+              "fullType": "ttn.lorawan.v3.Secret",
               "ismap": false,
               "defaultValue": ""
             }
@@ -25194,6 +25321,16 @@
               "description": "The right to view view gateway location."
             },
             {
+              "name": "RIGHT_GATEWAY_WRITE_SECRETS",
+              "number": "57",
+              "description": "The right to store secrets associated with this gateway."
+            },
+            {
+              "name": "RIGHT_GATEWAY_READ_SECRETS",
+              "number": "58",
+              "description": "The right to retrieve secrets associated with this gateway."
+            },
+            {
               "name": "RIGHT_GATEWAY_ALL",
               "number": "40",
               "description": "The pseudo-right for all (current and future) gateway rights."
@@ -25991,6 +26128,59 @@
           ]
         }
       ]
+    },
+    {
+      "name": "lorawan-stack/api/secrets.proto",
+      "description": "",
+      "package": "ttn.lorawan.v3",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": false,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "Secret",
+          "longName": "Secret",
+          "fullName": "ttn.lorawan.v3.Secret",
+          "description": "Secret contains a secret value. It also contains the ID of the Encryption key used to encrypt it.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "key_id",
+              "description": "ID of the Key used to encrypt the secret.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "bytes.max_len",
+                    "value": 2048
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "services": []
     },
     {
       "name": "lorawan-stack/api/user.proto",
