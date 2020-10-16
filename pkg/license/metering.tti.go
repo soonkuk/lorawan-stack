@@ -4,12 +4,13 @@ package license
 
 import (
 	"context"
-	"errors"
+	stderrors "errors"
 	"fmt"
 	"sync"
 	"time"
 
 	pbtypes "github.com/gogo/protobuf/types"
+	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 	"go.thethings.network/lorawan-stack/v3/pkg/license/awsmetrics"
 	"go.thethings.network/lorawan-stack/v3/pkg/license/prometheusmetrics"
 	"go.thethings.network/lorawan-stack/v3/pkg/log"
@@ -55,7 +56,7 @@ func (s *meteringSetup) Apply(license ttipb.License) ttipb.License {
 // CollectAndReport collects metrics from the cluster and reports them to the MeteringReporter.
 func (s *meteringSetup) CollectAndReport(ctx context.Context) (err error) {
 	if s.reporter == nil {
-		return errors.New("metering service reporter is not properly set up")
+		return stderrors.New("metering service reporter is not properly set up")
 	}
 
 	defer func() {
@@ -180,14 +181,22 @@ var globalMetering *meteringSetup
 // SetupMetering sets up metering on cluster.
 func SetupMetering(ctx context.Context, config *ttipb.MeteringConfiguration, cluster Cluster) error {
 	if globalMetering != nil {
-		return errors.New("only one metering configuration can be set up")
+		return stderrors.New("only one metering configuration can be set up")
 	}
 	var err error
 	globalMetering, err = newMeteringSetup(ctx, config, cluster)
 	if err != nil {
 		return err
 	}
-	if err := globalMetering.CollectAndReport(ctx); err != nil {
+	for i := 0; i < 10; i++ {
+		err = globalMetering.CollectAndReport(ctx)
+		if errors.IsUnavailable(err) {
+			time.Sleep(time.Second)
+			continue
+		}
+		break
+	}
+	if err != nil {
 		return err
 	}
 	go globalMetering.Run(ctx)
