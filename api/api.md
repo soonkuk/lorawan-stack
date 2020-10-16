@@ -147,7 +147,10 @@
   - [Message `MACParameters.Channel`](#ttn.lorawan.v3.MACParameters.Channel)
   - [Message `MACSettings`](#ttn.lorawan.v3.MACSettings)
   - [Message `MACState`](#ttn.lorawan.v3.MACState)
+  - [Message `MACState.DataRateRange`](#ttn.lorawan.v3.MACState.DataRateRange)
+  - [Message `MACState.DataRateRanges`](#ttn.lorawan.v3.MACState.DataRateRanges)
   - [Message `MACState.JoinAccept`](#ttn.lorawan.v3.MACState.JoinAccept)
+  - [Message `MACState.RejectedDataRateRangesEntry`](#ttn.lorawan.v3.MACState.RejectedDataRateRangesEntry)
   - [Message `Session`](#ttn.lorawan.v3.Session)
   - [Message `SetEndDeviceRequest`](#ttn.lorawan.v3.SetEndDeviceRequest)
   - [Message `UpdateEndDeviceRequest`](#ttn.lorawan.v3.UpdateEndDeviceRequest)
@@ -448,6 +451,8 @@
   - [Message `SearchEntitiesRequest.AttributesContainEntry`](#ttn.lorawan.v3.SearchEntitiesRequest.AttributesContainEntry)
   - [Service `EndDeviceRegistrySearch`](#ttn.lorawan.v3.EndDeviceRegistrySearch)
   - [Service `EntityRegistrySearch`](#ttn.lorawan.v3.EntityRegistrySearch)
+- [File `lorawan-stack/api/secrets.proto`](#lorawan-stack/api/secrets.proto)
+  - [Message `Secret`](#ttn.lorawan.v3.Secret)
 - [File `lorawan-stack/api/user.proto`](#lorawan-stack/api/user.proto)
   - [Message `CreateTemporaryPasswordRequest`](#ttn.lorawan.v3.CreateTemporaryPasswordRequest)
   - [Message `CreateUserAPIKeyRequest`](#ttn.lorawan.v3.CreateUserAPIKeyRequest)
@@ -863,8 +868,8 @@ The AsEndDeviceRegistry service allows clients to manage their end devices on th
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `application_ids` | [`ApplicationIdentifiers`](#ttn.lorawan.v3.ApplicationIdentifiers) |  | Query upstream messages from all end devices of an application. Cannot be used in conjuction with EndDeviceIdentifiers. |
-| `end_device_ids` | [`EndDeviceIdentifiers`](#ttn.lorawan.v3.EndDeviceIdentifiers) |  | Query upstream messages from a single end device. Cannot be used in conjuction with ApplicationIdentifiers. |
+| `application_ids` | [`ApplicationIdentifiers`](#ttn.lorawan.v3.ApplicationIdentifiers) |  | Query upstream messages from all end devices of an application. Cannot be used in conjunction with EndDeviceIdentifiers. |
+| `end_device_ids` | [`EndDeviceIdentifiers`](#ttn.lorawan.v3.EndDeviceIdentifiers) |  | Query upstream messages from a single end device. Cannot be used in conjunction with ApplicationIdentifiers. |
 | `type` | [`string`](#string) |  | Query upstream messages of a specific type. If not set, then all upstream messages are returned. |
 | `limit` | [`google.protobuf.UInt32Value`](#google.protobuf.UInt32Value) |  | Limit number of results. |
 | `after` | [`google.protobuf.Timestamp`](#google.protobuf.Timestamp) |  | Query upstream messages after this timestamp only. |
@@ -2451,6 +2456,7 @@ This is used internally by the Network Server.
 | `rejected_adr_tx_power_indexes` | [`uint32`](#uint32) | repeated | ADR TX output power index values rejected by the device. Elements are sorted in ascending order. |
 | `rejected_frequencies` | [`uint64`](#uint64) | repeated | Frequencies rejected by the device. |
 | `last_downlink_at` | [`google.protobuf.Timestamp`](#google.protobuf.Timestamp) |  | Time when the last downlink message was scheduled. |
+| `rejected_data_rate_ranges` | [`MACState.RejectedDataRateRangesEntry`](#ttn.lorawan.v3.MACState.RejectedDataRateRangesEntry) | repeated | Data rate ranges rejected by the device per frequency. |
 
 #### Field Rules
 
@@ -2463,6 +2469,32 @@ This is used internally by the Network Server.
 | `rejected_adr_data_rate_indexes` | <p>`repeated.max_items`: `15`</p><p>`repeated.items.enum.defined_only`: `true`</p> |
 | `rejected_adr_tx_power_indexes` | <p>`repeated.max_items`: `15`</p><p>`repeated.items.uint32.lte`: `15`</p> |
 | `rejected_frequencies` | <p>`repeated.items.uint64.gte`: `100000`</p> |
+
+### <a name="ttn.lorawan.v3.MACState.DataRateRange">Message `MACState.DataRateRange`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `min_data_rate_index` | [`DataRateIndex`](#ttn.lorawan.v3.DataRateIndex) |  |  |
+| `max_data_rate_index` | [`DataRateIndex`](#ttn.lorawan.v3.DataRateIndex) |  |  |
+
+#### Field Rules
+
+| Field | Validations |
+| ----- | ----------- |
+| `min_data_rate_index` | <p>`enum.defined_only`: `true`</p> |
+| `max_data_rate_index` | <p>`enum.defined_only`: `true`</p> |
+
+### <a name="ttn.lorawan.v3.MACState.DataRateRanges">Message `MACState.DataRateRanges`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `ranges` | [`MACState.DataRateRange`](#ttn.lorawan.v3.MACState.DataRateRange) | repeated |  |
+
+#### Field Rules
+
+| Field | Validations |
+| ----- | ----------- |
+| `ranges` | <p>`repeated.min_items`: `1`</p> |
 
 ### <a name="ttn.lorawan.v3.MACState.JoinAccept">Message `MACState.JoinAccept`</a>
 
@@ -2481,6 +2513,13 @@ This is used internally by the Network Server.
 | `request` | <p>`message.required`: `true`</p> |
 | `keys` | <p>`message.required`: `true`</p> |
 | `correlation_ids` | <p>`repeated.items.string.max_len`: `100`</p> |
+
+### <a name="ttn.lorawan.v3.MACState.RejectedDataRateRangesEntry">Message `MACState.RejectedDataRateRangesEntry`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [`uint64`](#uint64) |  |  |
+| `value` | [`MACState.DataRateRanges`](#ttn.lorawan.v3.MACState.DataRateRanges) |  |  |
 
 ### <a name="ttn.lorawan.v3.Session">Message `Session`</a>
 
@@ -2756,6 +2795,9 @@ Gateway is the message that defines a gateway on the network.
 | `downlink_path_constraint` | [`DownlinkPathConstraint`](#ttn.lorawan.v3.DownlinkPathConstraint) |  |  |
 | `schedule_anytime_delay` | [`google.protobuf.Duration`](#google.protobuf.Duration) |  | Adjust the time that GS schedules class C messages in advance. This is useful for gateways that have a known high latency backhaul, like 3G and satellite. |
 | `update_location_from_status` | [`bool`](#bool) |  | update the location of this gateway from status messages |
+| `lbs_lns_secret` | [`Secret`](#ttn.lorawan.v3.Secret) |  | The LoRa Basics Station LNS secret. This is either an auth token (such as an API Key) or a TLS private certificate. Requires the RIGHT_GATEWAY_READ_SECRETS for reading and RIGHT_GATEWAY_WRITE_SECRETS for updating this value.
+
+next: 23 |
 
 #### Field Rules
 
@@ -6120,6 +6162,8 @@ Right is the enum that defines all the different rights to do something in the n
 | `RIGHT_GATEWAY_LINK` | 37 | The right to link as Gateway to a Gateway Server for traffic exchange, i.e. write uplink and read downlink (API keys only) This right is typically only given to a gateway. This right implies RIGHT_GATEWAY_INFO. |
 | `RIGHT_GATEWAY_STATUS_READ` | 38 | The right to view gateway status. |
 | `RIGHT_GATEWAY_LOCATION_READ` | 39 | The right to view view gateway location. |
+| `RIGHT_GATEWAY_WRITE_SECRETS` | 57 | The right to store secrets associated with this gateway. |
+| `RIGHT_GATEWAY_READ_SECRETS` | 58 | The right to retrieve secrets associated with this gateway. |
 | `RIGHT_GATEWAY_ALL` | 40 | The pseudo-right for all (current and future) gateway rights. |
 | `RIGHT_ORGANIZATION_INFO` | 41 | The right to view organization information. |
 | `RIGHT_ORGANIZATION_SETTINGS_BASIC` | 42 | The right to edit basic organization settings. |
@@ -6239,6 +6283,23 @@ This service is not implemented on all deployments.
 | `SearchGateways` | `GET` | `/api/v3/search/gateways` |  |
 | `SearchOrganizations` | `GET` | `/api/v3/search/organizations` |  |
 | `SearchUsers` | `GET` | `/api/v3/search/users` |  |
+
+## <a name="lorawan-stack/api/secrets.proto">File `lorawan-stack/api/secrets.proto`</a>
+
+### <a name="ttn.lorawan.v3.Secret">Message `Secret`</a>
+
+Secret contains a secret value. It also contains the ID of the Encryption key used to encrypt it.
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key_id` | [`string`](#string) |  | ID of the Key used to encrypt the secret. |
+| `value` | [`bytes`](#bytes) |  |  |
+
+#### Field Rules
+
+| Field | Validations |
+| ----- | ----------- |
+| `value` | <p>`bytes.max_len`: `2048`</p> |
 
 ## <a name="lorawan-stack/api/user.proto">File `lorawan-stack/api/user.proto`</a>
 

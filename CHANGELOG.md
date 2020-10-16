@@ -9,12 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- GCS endpoint to download UDP gateway configuration file.
+- `console.ui.gcs.base-url` and `console.ui.gcs.base-url` Console configuration options.
 - Support for sending end device uplinks in the Console.
 - PHY version filtering based on LoRaWAN MAC in the Console.
 - Meta information and status events in the event views in the Console.
 - Support for setting the frame counter width of an end device in the Console.
 - Include consumed airtime metadata in uplink messages and join requests (see `uplink_message.consumed_airtime` field).
 - Add end device location metadata on forwarded uplink messages (see `uplink_message.locations` field).
+- Store and retrieve LBS LNS Secrets from database.
+  - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added column.
+  - To encrypt the secrets set `is.gateways.encryption-key-id`.
+- Storage Integration API.
+- CLI support for Storage Integration (see `ttn-lw-cli end-devices storage` and `ttn-lw-cli applications storage` commands).
+- Network Server does not retry rejected `NewChannelReq` data rate ranges or rejected `DLChannelReq` frequencies anymore.
 
 - Federated Authentication capabilities using [OpenID Connect](https://openid.net/connect/).
   - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added and modified columns.
@@ -26,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Raw downlink PHY payloads are not stored anymore by Network Server.
 - Move documentation to [lorawan-stack-docs](https://github.com/TheThingsIndustries/lorawan-stack-docs).
 - Improve LinkADRReq scheduling condition computation and, as a consequence, downlink task efficiency.
+- CUPS Server only accepts The Things Stack API Key for token auth.
 
 ### Deprecated
 
@@ -45,6 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Last seen counter for applications, end devices and gateways in the Console.
 - `Use credentials` option being always checked in Pub/Sub edit form in the Console.
 - FPending being set on downlinks, when LinkADRReq is required, but all available TxPower and data rate index combinations are rejected by the device.
+- Coding rate for LoRa 2.4 GHz: it's now `4/8LI`.
+- End device import in the Console crashing in Firefox.
 
 ### Security
 
