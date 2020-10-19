@@ -25,6 +25,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/blang/semver"
 	"github.com/go-redis/redis/v7"
 	pbtypes "github.com/gogo/protobuf/types"
 	ulid "github.com/oklog/ulid/v2"
@@ -61,6 +62,8 @@ const (
 type DeviceRegistry struct {
 	Redis   *ttnredis.Client
 	LockTTL time.Duration
+	// CompatibilityVersion denotes the lowest possible stack version the registry should be compatible with.
+	CompatibilityVersion semver.Version
 
 	entropyMu *sync.Mutex
 	entropy   io.Reader
@@ -287,6 +290,8 @@ func decodeAES128Key(v interface{}) (*types.AES128Key, error) {
 	return key, nil
 }
 
+var errMissingField = errors.DefineCorruption("missing_field_value", "missing field `{field}` value")
+
 func getUplinkMatch(ctx context.Context, r redis.Cmdable, inputKeys, processingKeys matchKeySet, appID ttnpb.ApplicationIdentifiers, devID string, devAddr types.DevAddr, lsb uint16, matchKey, uidKey string) ([]*uplinkMatch, error) {
 	var isPending bool
 	switch matchKey {
@@ -386,6 +391,11 @@ func getUplinkMatch(ctx context.Context, r redis.Cmdable, inputKeys, processingK
 	}
 	for i, v := range vs {
 		if v == nil {
+			switch name := fields[i]; name {
+			case "pending_mac_state.lorawan_version", "mac_state.lorawan_version":
+				log.FromContext(ctx).WithField("field", name).Error("Device is missing required field")
+				return nil, errDatabaseCorruption.WithCause(errMissingField.WithAttributes("field", name).New())
+			}
 			continue
 		}
 		if isPending {
@@ -636,6 +646,7 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 			log.FromContext(ctx).WithError(err).Error("Failed to parse match uid value recorded")
 			return errDatabaseCorruption.WithCause(err)
 		}
+		ctx := log.NewContextWithField(ctx, "device_uid", res.UID)
 		ms, err := getUplinkMatch(ctx, r.Redis, matchKeys.Input, matchKeys.Processing, ids.ApplicationIdentifiers, ids.DeviceID, pld.DevAddr, lsb, res.Key, r.uidKey(res.UID))
 		if err != nil {
 			return err
@@ -664,7 +675,7 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 			log.FromContext(ctx).WithFields(log.Fields(
 				"scan_keys", scanKeys,
 				"args", args,
-			)).Error("Failed to run device match scan script")
+			)).WithError(err).Error("Failed to run device match scan script")
 			return ttnredis.ConvertError(err)
 		}
 		if err == redis.Nil {
@@ -700,54 +711,86 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 				Error("Failed to parse UID returned by device match scan script as a string")
 			return errDatabaseCorruption.WithCause(err)
 		}
-		ctx := ctx
-		if ctxTntID == cluster.PacketBrokerTenantID {
-			tntID, err := unique.ToTenantID(uid)
-			if err != nil {
-				log.FromContext(ctx).WithError(err).WithField("uid", uid).
-					Error("Failed to parse tenant ID from UID")
-				return errDatabaseCorruption.WithCause(err)
-			}
-			ctx = tenant.NewContext(ctx, tntID)
-		}
-		ids, err := unique.ToDeviceID(uid)
+		ctx := log.NewContextWithField(ctx, "device_uid", uid)
+
+		tntID, err := unique.ToTenantID(uid)
 		if err != nil {
-			log.FromContext(ctx).WithError(err).WithField("uid", uid).
-				Error("Failed to parse UID returned by device match scan script as device identifiers")
+			log.FromContext(ctx).WithError(err).
+				Error("Failed to parse UID returned by device match scan script as tenant identifiers")
 			return errDatabaseCorruption.WithCause(err)
 		}
-		ms, err := getUplinkMatch(ctx, r.Redis, matchKeys.Input, matchKeys.Processing, ids.ApplicationIdentifiers, ids.DeviceID, pld.DevAddr, lsb, scanKeys[0], r.uidKey(uid))
+		ok, err = func() (ok bool, err error) {
+			defer func() {
+				if err != nil || ok {
+					return
+				}
+				switch scanKeys[0] {
+				case matchKeys.Processing.ShortFCnt,
+					matchKeys.Processing.LongFCntNoRollover,
+					matchKeys.Processing.LongFCntRollover,
+					matchKeys.Processing.Pending,
+					matchKeys.Processing.Legacy:
+					// If the UID is from processing set, we don't need to remove it
+					args = args[:1]
+				default:
+					if len(args) > 1 {
+						args[1] = uid
+					} else {
+						args = append(args, uid)
+					}
+				}
+			}()
+
+			switch ctxTntID {
+			case tntID:
+			case cluster.PacketBrokerTenantID:
+				ctx = tenant.NewContext(ctx, tntID)
+			default:
+				return false, nil
+			}
+			ids, err := unique.ToDeviceID(uid)
+			if err != nil {
+				log.FromContext(ctx).WithError(err).
+					Error("Failed to parse UID returned by device match scan script as device identifiers")
+				return false, errDatabaseCorruption.WithCause(err)
+			}
+			ms, err := getUplinkMatch(ctx, r.Redis, matchKeys.Input, matchKeys.Processing, ids.ApplicationIdentifiers, ids.DeviceID, pld.DevAddr, lsb, scanKeys[0], r.uidKey(uid))
+			if err != nil {
+				log.FromContext(ctx).WithError(err).
+					Error("Failed to get uplink matches")
+				return false, err
+			}
+			for _, m := range ms {
+				ok, err := f(ctx, m)
+				if err != nil {
+					return false, errNoUplinkMatch.WithCause(err)
+				}
+				if ok {
+					b, err := msgpack.Marshal(MatchResult{
+						Key: scanKeys[0],
+						UID: uid,
+					})
+					if err != nil {
+						return false, err
+					}
+					_, err = r.Redis.Pipelined(func(p redis.Pipeliner) error {
+						p.Set(matchKeys.Match, string(b), cacheTTL)
+						p.Del(scanKeys...)
+						return nil
+					})
+					if err != nil {
+						return false, ttnredis.ConvertError(err)
+					}
+					return true, nil
+				}
+			}
+			return false, nil
+		}()
 		if err != nil {
 			return err
 		}
-		for _, m := range ms {
-			ok, err := f(ctx, m)
-			if err != nil {
-				return errNoUplinkMatch.WithCause(err)
-			}
-			if ok {
-				b, err := msgpack.Marshal(MatchResult{
-					Key: scanKeys[0],
-					UID: uid,
-				})
-				if err != nil {
-					return err
-				}
-				_, err = r.Redis.Pipelined(func(p redis.Pipeliner) error {
-					p.Set(matchKeys.Match, string(b), cacheTTL)
-					p.Del(scanKeys...)
-					return nil
-				})
-				if err != nil {
-					return ttnredis.ConvertError(err)
-				}
-				return nil
-			}
-		}
-		if len(args) > 1 {
-			args[1] = uid
-		} else {
-			args = append(args, uid)
+		if ok {
+			return nil
 		}
 	}
 	return errNoUplinkMatch.New()
@@ -926,6 +969,7 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 
 			var delFields []string
 			var setFields []interface{}
+			forceFieldWrite := r.CompatibilityVersion.Compare(semver.Version{Major: 3, Minor: 10}) < 0
 
 			// NOTE: The following sequence of switches use concept of "container" - a container is the pointer type "containing" the field value we're interested in.
 
@@ -933,7 +977,7 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 			case storedCont == nil && updatedCont == nil:
 			case updatedCont == nil:
 				delFields = append(delFields, "mac_settings.resets_f_cnt")
-			case storedCont == nil, storedCont.Value != updatedCont.Value:
+			case storedCont == nil, storedCont.Value != updatedCont.Value, forceFieldWrite:
 				setFields = append(setFields, "mac_settings.resets_f_cnt", encodeBool(updatedCont.Value))
 			}
 
@@ -941,7 +985,7 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 			case storedCont == nil && updatedCont == nil:
 			case updatedCont == nil:
 				delFields = append(delFields, "mac_state.lorawan_version")
-			case storedCont == nil, storedCont.LoRaWANVersion != updatedCont.LoRaWANVersion:
+			case storedCont == nil, storedCont.LoRaWANVersion != updatedCont.LoRaWANVersion, forceFieldWrite:
 				setFields = append(setFields, "mac_state.lorawan_version", updatedCont.LoRaWANVersion)
 			}
 
@@ -949,7 +993,7 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 			case storedCont == nil && updatedCont == nil:
 			case updatedCont == nil:
 				delFields = append(delFields, "pending_mac_state.lorawan_version")
-			case storedCont == nil, storedCont.LoRaWANVersion != updatedCont.LoRaWANVersion:
+			case storedCont == nil, storedCont.LoRaWANVersion != updatedCont.LoRaWANVersion, forceFieldWrite:
 				setFields = append(setFields, "pending_mac_state.lorawan_version", updatedCont.LoRaWANVersion)
 			}
 
@@ -958,17 +1002,17 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 			case updatedCont == nil:
 				delFields = append(delFields, "pending_session.keys.f_nwk_s_int_key.kek_label")
 				delFields = append(delFields, "pending_session.keys.f_nwk_s_int_key.encrypted_key")
-			case storedCont == nil, !bytes.Equal(storedCont.EncryptedKey, updatedCont.EncryptedKey):
+			case storedCont == nil, !bytes.Equal(storedCont.EncryptedKey, updatedCont.EncryptedKey), forceFieldWrite:
 				setFields = append(setFields, "pending_session.keys.f_nwk_s_int_key.encrypted_key", updatedCont.EncryptedKey)
 				fallthrough
-			case storedCont == nil, storedCont.KEKLabel != updatedCont.KEKLabel:
+			case storedCont == nil, storedCont.KEKLabel != updatedCont.KEKLabel, forceFieldWrite:
 				setFields = append(setFields, "pending_session.keys.f_nwk_s_int_key.kek_label", updatedCont.KEKLabel)
 			}
 			switch storedCont, updatedCont := stored.GetPendingSession().GetSessionKeys().GetFNwkSIntKey().GetKey(), updated.GetPendingSession().GetSessionKeys().GetFNwkSIntKey().GetKey(); {
 			case storedCont == nil && updatedCont == nil:
 			case updatedCont == nil:
 				delFields = append(delFields, "pending_session.keys.f_nwk_s_int_key.key")
-			case storedCont == nil, storedCont.Equal(*updatedCont):
+			case storedCont == nil, !storedCont.Equal(*updatedCont), forceFieldWrite:
 				setFields = append(setFields, "pending_session.keys.f_nwk_s_int_key.key", *updatedCont)
 			}
 
@@ -977,10 +1021,10 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 			case updatedCont == nil:
 				delFields = append(delFields, "session.keys.f_nwk_s_int_key.kek_label")
 				delFields = append(delFields, "session.keys.f_nwk_s_int_key.encrypted_key")
-			case storedCont == nil, !bytes.Equal(storedCont.EncryptedKey, updatedCont.EncryptedKey):
+			case storedCont == nil, !bytes.Equal(storedCont.EncryptedKey, updatedCont.EncryptedKey), forceFieldWrite:
 				setFields = append(setFields, "session.keys.f_nwk_s_int_key.encrypted_key", updatedCont.EncryptedKey)
 				fallthrough
-			case storedCont == nil, storedCont.KEKLabel != updatedCont.KEKLabel:
+			case storedCont == nil, storedCont.KEKLabel != updatedCont.KEKLabel, forceFieldWrite:
 				setFields = append(setFields, "session.keys.f_nwk_s_int_key.kek_label", updatedCont.KEKLabel)
 			}
 			switch storedCont, updatedCont := stored.GetSession().GetSessionKeys().GetFNwkSIntKey().GetKey(), updated.GetSession().GetSessionKeys().GetFNwkSIntKey().GetKey(); {
@@ -995,7 +1039,7 @@ func (r *DeviceRegistry) SetByID(ctx context.Context, appID ttnpb.ApplicationIde
 			case storedCont == nil && updatedCont == nil:
 			case updatedCont == nil:
 				delFields = append(delFields, "session.last_f_cnt_up")
-			case storedCont == nil, storedCont.LastFCntUp != updatedCont.LastFCntUp:
+			case storedCont == nil, storedCont.LastFCntUp != updatedCont.LastFCntUp, forceFieldWrite:
 				setFields = append(setFields, "session.last_f_cnt_up", updatedCont.LastFCntUp)
 			}
 

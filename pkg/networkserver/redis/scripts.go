@@ -72,9 +72,9 @@ return nil`)
 	deviceMatchScanScript = redis.NewScript(`if #ARGV == 2 then
 	redis.call("lrem", KEYS[2], 1, ARGV[2])
 end
-for i = 1, #KEYS, 2 do
+for i = 1, #KEYS do
   local uid
-  if KEYS[i]:sub(-7) == "pending" then
+  if KEYS[i]:sub(-10) == "processing" then
 	  uid = redis.call('rpop', KEYS[i])
   else
 	  uid = redis.call('rpoplpush', KEYS[i], KEYS[i+1])

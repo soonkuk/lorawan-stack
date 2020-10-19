@@ -1685,6 +1685,178 @@
       ]
     },
     {
+      "name": "lorawan-stack/api/applicationserver_integrations_storage.proto",
+      "description": "",
+      "package": "ttn.lorawan.v3",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "GetStoredApplicationUpRequest",
+          "longName": "GetStoredApplicationUpRequest",
+          "fullName": "ttn.lorawan.v3.GetStoredApplicationUpRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "application_ids",
+              "description": "Query upstream messages from all end devices of an application. Cannot be used in conjunction with EndDeviceIdentifiers.",
+              "label": "",
+              "type": "ApplicationIdentifiers",
+              "longType": "ApplicationIdentifiers",
+              "fullType": "ttn.lorawan.v3.ApplicationIdentifiers",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "end_device_ids",
+              "description": "Query upstream messages from a single end device. Cannot be used in conjunction with ApplicationIdentifiers.",
+              "label": "",
+              "type": "EndDeviceIdentifiers",
+              "longType": "EndDeviceIdentifiers",
+              "fullType": "ttn.lorawan.v3.EndDeviceIdentifiers",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Query upstream messages of a specific type. If not set, then all upstream messages are returned.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "string.in",
+                    "value": [
+                      "",
+                      "uplink_message",
+                      "join_accept",
+                      "downlink_ack",
+                      "downlink_nack",
+                      "downlink_sent",
+                      "downlink_failed",
+                      "downlink_queued",
+                      "downlink_queue_invalidated",
+                      "location_solved",
+                      "service_data"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "name": "limit",
+              "description": "Limit number of results.",
+              "label": "",
+              "type": "UInt32Value",
+              "longType": "google.protobuf.UInt32Value",
+              "fullType": "google.protobuf.UInt32Value",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "after",
+              "description": "Query upstream messages after this timestamp only.",
+              "label": "",
+              "type": "Timestamp",
+              "longType": "google.protobuf.Timestamp",
+              "fullType": "google.protobuf.Timestamp",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "before",
+              "description": "Query upstream messages before this timestamp only.",
+              "label": "",
+              "type": "Timestamp",
+              "longType": "google.protobuf.Timestamp",
+              "fullType": "google.protobuf.Timestamp",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "f_port",
+              "description": "Query uplinks on a specific FPort only.",
+              "label": "",
+              "type": "UInt32Value",
+              "longType": "google.protobuf.UInt32Value",
+              "fullType": "google.protobuf.UInt32Value",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "order",
+              "description": "Order results.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "string.in",
+                    "value": [
+                      "",
+                      "-received_at",
+                      "received_at"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "ApplicationUpStorage",
+          "longName": "ApplicationUpStorage",
+          "fullName": "ttn.lorawan.v3.ApplicationUpStorage",
+          "description": "",
+          "methods": [
+            {
+              "name": "GetStoredApplicationUp",
+              "description": "",
+              "requestType": "GetStoredApplicationUpRequest",
+              "requestLongType": "GetStoredApplicationUpRequest",
+              "requestFullType": "ttn.lorawan.v3.GetStoredApplicationUpRequest",
+              "requestStreaming": false,
+              "responseType": "ApplicationUp",
+              "responseLongType": "ApplicationUp",
+              "responseFullType": "ttn.lorawan.v3.ApplicationUp",
+              "responseStreaming": true,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/as/applications/{end_device_ids.application_ids.application_id}/devices/{end_device_ids.device_id}/packages/storage/{type}"
+                    },
+                    {
+                      "method": "GET",
+                      "pattern": "/as/applications/{application_ids.application_id}/packages/storage/{type}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "lorawan-stack/api/applicationserver_packages.proto",
       "description": "",
       "package": "ttn.lorawan.v3",
@@ -9509,6 +9681,92 @@
               "fullType": "google.protobuf.Timestamp",
               "ismap": false,
               "defaultValue": ""
+            },
+            {
+              "name": "rejected_data_rate_ranges",
+              "description": "Data rate ranges rejected by the device per frequency.",
+              "label": "repeated",
+              "type": "RejectedDataRateRangesEntry",
+              "longType": "MACState.RejectedDataRateRangesEntry",
+              "fullType": "ttn.lorawan.v3.MACState.RejectedDataRateRangesEntry",
+              "ismap": true,
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "DataRateRange",
+          "longName": "MACState.DataRateRange",
+          "fullName": "ttn.lorawan.v3.MACState.DataRateRange",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "min_data_rate_index",
+              "description": "",
+              "label": "",
+              "type": "DataRateIndex",
+              "longType": "DataRateIndex",
+              "fullType": "ttn.lorawan.v3.DataRateIndex",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "enum.defined_only",
+                    "value": true
+                  }
+                ]
+              }
+            },
+            {
+              "name": "max_data_rate_index",
+              "description": "",
+              "label": "",
+              "type": "DataRateIndex",
+              "longType": "DataRateIndex",
+              "fullType": "ttn.lorawan.v3.DataRateIndex",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "enum.defined_only",
+                    "value": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DataRateRanges",
+          "longName": "MACState.DataRateRanges",
+          "fullName": "ttn.lorawan.v3.MACState.DataRateRanges",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "ranges",
+              "description": "",
+              "label": "repeated",
+              "type": "DataRateRange",
+              "longType": "MACState.DataRateRange",
+              "fullType": "ttn.lorawan.v3.MACState.DataRateRange",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "repeated.min_items",
+                    "value": 1
+                  }
+                ]
+              }
             }
           ]
         },
@@ -9596,6 +9854,37 @@
                   }
                 ]
               }
+            }
+          ]
+        },
+        {
+          "name": "RejectedDataRateRangesEntry",
+          "longName": "MACState.RejectedDataRateRangesEntry",
+          "fullName": "ttn.lorawan.v3.MACState.RejectedDataRateRangesEntry",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "key",
+              "description": "",
+              "label": "",
+              "type": "uint64",
+              "longType": "uint64",
+              "fullType": "uint64",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "",
+              "label": "",
+              "type": "DataRateRanges",
+              "longType": "MACState.DataRateRanges",
+              "fullType": "ttn.lorawan.v3.MACState.DataRateRanges",
+              "ismap": false,
+              "defaultValue": ""
             }
           ]
         },
@@ -10961,6 +11250,16 @@
               "type": "bool",
               "longType": "bool",
               "fullType": "bool",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "lbs_lns_secret",
+              "description": "The LoRa Basics Station LNS secret.\nThis is either an auth token (such as an API Key) or a TLS private certificate.\nRequires the RIGHT_GATEWAY_READ_SECRETS for reading and RIGHT_GATEWAY_WRITE_SECRETS for updating this value.\n\nnext: 23",
+              "label": "",
+              "type": "Secret",
+              "longType": "Secret",
+              "fullType": "ttn.lorawan.v3.Secret",
               "ismap": false,
               "defaultValue": ""
             }
@@ -14113,6 +14412,16 @@
                   }
                 ]
               }
+            },
+            {
+              "name": "consumed_airtime",
+              "description": "Consumed airtime for the transmission of the join request. Calculated by Network Server using the RawPayload size and the transmission settings.",
+              "label": "",
+              "type": "Duration",
+              "longType": "google.protobuf.Duration",
+              "fullType": "google.protobuf.Duration",
+              "ismap": false,
+              "defaultValue": ""
             }
           ]
         },
@@ -20878,6 +21187,57 @@
               "fullType": "bool",
               "ismap": false,
               "defaultValue": ""
+            },
+            {
+              "name": "consumed_airtime",
+              "description": "Consumed airtime for the transmission of the uplink message. Calculated by Network Server using the RawPayload size and the transmission settings.",
+              "label": "",
+              "type": "Duration",
+              "longType": "google.protobuf.Duration",
+              "fullType": "google.protobuf.Duration",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "locations",
+              "description": "End device location metadata, set by the Application Server while handling the message.",
+              "label": "repeated",
+              "type": "LocationsEntry",
+              "longType": "ApplicationUplink.LocationsEntry",
+              "fullType": "ttn.lorawan.v3.ApplicationUplink.LocationsEntry",
+              "ismap": true,
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "LocationsEntry",
+          "longName": "ApplicationUplink.LocationsEntry",
+          "fullName": "ttn.lorawan.v3.ApplicationUplink.LocationsEntry",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "key",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "",
+              "label": "",
+              "type": "Location",
+              "longType": "Location",
+              "fullType": "ttn.lorawan.v3.Location",
+              "ismap": false,
+              "defaultValue": ""
             }
           ]
         },
@@ -21254,6 +21614,16 @@
                   }
                 ]
               }
+            },
+            {
+              "name": "consumed_airtime",
+              "description": "Consumed airtime for the transmission of the uplink message. Calculated by Network Server using the RawPayload size and the transmission settings.",
+              "label": "",
+              "type": "Duration",
+              "longType": "google.protobuf.Duration",
+              "fullType": "google.protobuf.Duration",
+              "ismap": false,
+              "defaultValue": ""
             }
           ]
         }
@@ -24951,6 +25321,16 @@
               "description": "The right to view view gateway location."
             },
             {
+              "name": "RIGHT_GATEWAY_WRITE_SECRETS",
+              "number": "57",
+              "description": "The right to store secrets associated with this gateway."
+            },
+            {
+              "name": "RIGHT_GATEWAY_READ_SECRETS",
+              "number": "58",
+              "description": "The right to retrieve secrets associated with this gateway."
+            },
+            {
               "name": "RIGHT_GATEWAY_ALL",
               "number": "40",
               "description": "The pseudo-right for all (current and future) gateway rights."
@@ -25748,6 +26128,59 @@
           ]
         }
       ]
+    },
+    {
+      "name": "lorawan-stack/api/secrets.proto",
+      "description": "",
+      "package": "ttn.lorawan.v3",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": false,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "Secret",
+          "longName": "Secret",
+          "fullName": "ttn.lorawan.v3.Secret",
+          "description": "Secret contains a secret value. It also contains the ID of the Encryption key used to encrypt it.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "key_id",
+              "description": "ID of the Key used to encrypt the secret.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "bytes.max_len",
+                    "value": 2048
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "services": []
     },
     {
       "name": "lorawan-stack/api/user.proto",

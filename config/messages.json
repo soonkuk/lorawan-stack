@@ -611,6 +611,15 @@
       "file": "i18n.go"
     }
   },
+  "enum:RIGHT_GATEWAY_READ_SECRETS": {
+    "translations": {
+      "en": "retrieve secrets associated with a gateway"
+    },
+    "description": {
+      "package": "pkg/ttnpb",
+      "file": "i18n.go"
+    }
+  },
   "enum:RIGHT_GATEWAY_SETTINGS_API_KEYS": {
     "translations": {
       "en": "view and edit gateway API keys"
@@ -659,6 +668,15 @@
   "enum:RIGHT_GATEWAY_TRAFFIC_READ": {
     "translations": {
       "en": "read gateway traffic"
+    },
+    "description": {
+      "package": "pkg/ttnpb",
+      "file": "i18n.go"
+    }
+  },
+  "enum:RIGHT_GATEWAY_WRITE_SECRETS": {
+    "translations": {
+      "en": "store secrets for a gateway"
     },
     "description": {
       "package": "pkg/ttnpb",
@@ -1826,6 +1844,78 @@
       "file": "registry.go"
     }
   },
+  "error:pkg/applicationserver/io/packages/storage/postgres:database": {
+    "translations": {
+      "en": "database error"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage/postgres",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage/postgres:negative_batch_size": {
+    "translations": {
+      "en": "batch size `{size}` is negative"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage/postgres",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage/postgres:no_device_id": {
+    "translations": {
+      "en": "no device or application id set"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage/postgres",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage/postgres:no_tenant_id": {
+    "translations": {
+      "en": "no tenant id set"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage/postgres",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage:invalid_interval": {
+    "translations": {
+      "en": "invalid interval `{interval}`"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage:no_app_id": {
+    "translations": {
+      "en": "no app id"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage:no_provider": {
+    "translations": {
+      "en": "no provider configured for storage"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "errors.tti.go"
+    }
+  },
+  "error:pkg/applicationserver/io/packages/storage:not_implemented": {
+    "translations": {
+      "en": "provider `{provider}` not implemented"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "errors.tti.go"
+    }
+  },
   "error:pkg/applicationserver/io/packages:package_not_implemented": {
     "translations": {
       "en": "package `{name}` is not implemented"
@@ -2202,6 +2292,15 @@
     "description": {
       "package": "pkg/applicationserver",
       "file": "payload.go"
+    }
+  },
+  "error:pkg/applicationserver:invalid_ttl": {
+    "translations": {
+      "en": "Invalid TTL `{ttl}`"
+    },
+    "description": {
+      "package": "pkg/applicationserver",
+      "file": "config.go"
     }
   },
   "error:pkg/applicationserver:join_server_unavailable": {
@@ -2612,6 +2711,15 @@
   "error:pkg/basicstation/cups:invalid_token": {
     "translations": {
       "en": "invalid provisioning token"
+    },
+    "description": {
+      "package": "pkg/basicstation/cups",
+      "file": "update_info.go"
+    }
+  },
+  "error:pkg/basicstation/cups:lns_credentials_not_found": {
+    "translations": {
+      "en": "LNS credentials not found for gateway `{gateway_uid}`"
     },
     "description": {
       "package": "pkg/basicstation/cups",
@@ -3635,6 +3743,15 @@
       "file": "attributes.go"
     }
   },
+  "error:pkg/errors:request": {
+    "translations": {
+      "en": "request to `{url}` failed"
+    },
+    "description": {
+      "package": "pkg/errors",
+      "file": "conversion.go"
+    }
+  },
   "error:pkg/errors:validation": {
     "translations": {
       "en": "invalid `{field}`: {reason}"
@@ -3642,6 +3759,15 @@
     "description": {
       "package": "pkg/errors",
       "file": "validation.go"
+    }
+  },
+  "error:pkg/errors:x509_unknown_authority": {
+    "translations": {
+      "en": "unknown certificate authority"
+    },
+    "description": {
+      "package": "pkg/errors",
+      "file": "conversion.go"
     }
   },
   "error:pkg/events/grpc:no_identifiers": {
@@ -5012,6 +5138,15 @@
       "file": "gateway_registry.go"
     }
   },
+  "error:pkg/identityserver:gateway_secret_encryption_key_not_found": {
+    "translations": {
+      "en": "a gateway secret encryption key with id `{id}` not found"
+    },
+    "description": {
+      "package": "pkg/identityserver",
+      "file": "gateway_registry.go"
+    }
+  },
   "error:pkg/identityserver:insufficient_tenant_rights": {
     "translations": {
       "en": "insufficient tenant rights"
@@ -6360,6 +6495,15 @@
     "description": {
       "package": "pkg/networkserver/redis",
       "file": "application_uplink_queue.go"
+    }
+  },
+  "error:pkg/networkserver/redis:missing_field_value": {
+    "translations": {
+      "en": "missing field `{field}` value"
+    },
+    "description": {
+      "package": "pkg/networkserver/redis",
+      "file": "registry.go"
     }
   },
   "error:pkg/networkserver/redis:missing_payload": {
@@ -8511,6 +8655,24 @@
     "description": {
       "package": "pkg/applicationserver",
       "file": "observability.go"
+    }
+  },
+  "event:as.packages.storage.up.drop": {
+    "translations": {
+      "en": "drop upstream data message"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "observability.tti.go"
+    }
+  },
+  "event:as.packages.storage.up.store": {
+    "translations": {
+      "en": "store upstream data message"
+    },
+    "description": {
+      "package": "pkg/applicationserver/io/packages/storage",
+      "file": "observability.tti.go"
     }
   },
   "event:as.pubsub.delete": {

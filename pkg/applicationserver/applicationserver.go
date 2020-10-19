@@ -83,6 +83,8 @@ type ApplicationServer struct {
 
 	interopClient InteropClient
 	interopID     string
+
+	endDeviceFetcher EndDeviceFetcher
 }
 
 // Context returns the context of the Application Server.
@@ -132,8 +134,13 @@ func New(c *component.Component, conf *Config) (as *ApplicationServer, err error
 			ttnpb.PayloadFormatter_FORMATTER_JAVASCRIPT: javascript.New(),
 			ttnpb.PayloadFormatter_FORMATTER_CAYENNELPP: cayennelpp.New(),
 		}),
-		interopClient: interopCl,
-		interopID:     conf.Interop.ID,
+		interopClient:    interopCl,
+		interopID:        conf.Interop.ID,
+		endDeviceFetcher: conf.EndDeviceFetcher.Fetcher,
+	}
+
+	if as.endDeviceFetcher == nil {
+		as.endDeviceFetcher = &NoopEndDeviceFetcher{}
 	}
 	retryIO := io.NewRetryServer(as)
 
@@ -946,6 +953,14 @@ func (as *ApplicationServer) handleUplink(ctx context.Context, ids ttnpb.EndDevi
 		uplink.AppSKey = dev.Session.AppSKey
 		uplink.LastAFCntDown = dev.Session.LastAFCntDown
 	}
+
+	isDev, err := as.endDeviceFetcher.Get(ctx, ids, "locations")
+	if err != nil {
+		logger.WithError(err).Warn("Failed to retrieve end device locations")
+	} else {
+		uplink.Locations = isDev.GetLocations()
+	}
+
 	// TODO: Run uplink messages through location solvers async (https://github.com/TheThingsNetwork/lorawan-stack/issues/37)
 	return nil
 }
@@ -961,6 +976,14 @@ func (as *ApplicationServer) handleSimulatedUplink(ctx context.Context, ids ttnp
 	if err != nil {
 		return err
 	}
+
+	isDev, err := as.endDeviceFetcher.Get(ctx, ids, "locations")
+	if err != nil {
+		log.FromContext(ctx).WithError(err).Warn("Failed to retrieve end device locations")
+	} else {
+		uplink.Locations = isDev.GetLocations()
+	}
+
 	return as.decodeUplink(ctx, dev, uplink, link.DefaultFormatters)
 }
 

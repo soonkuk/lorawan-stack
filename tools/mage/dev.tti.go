@@ -14,13 +14,13 @@ func (Dev) InitMTStack() error {
 	if mg.Verbose() {
 		fmt.Printf("Initializing the Stack with multi-tenancy\n")
 	}
-	if err := execGo("run", "./cmd/tti-lw-stack", "is-db", "init"); err != nil {
+	if err := runGo("./cmd/tti-lw-stack", "is-db", "init"); err != nil {
 		return err
 	}
-	if err := execGo("run", "./cmd/tti-lw-stack", "is-db", "create-tenant", "--id", tenandID); err != nil {
+	if err := runGo("./cmd/tti-lw-stack", "is-db", "create-tenant", "--id", tenandID); err != nil {
 		return err
 	}
-	if err := execGo("run", "./cmd/tti-lw-stack", "is-db", "create-admin-user",
+	if err := runGo("./cmd/tti-lw-stack", "is-db", "create-admin-user",
 		"--tenant-id", tenandID,
 		"--id", "admin",
 		"--email", "admin@localhost",
@@ -28,7 +28,7 @@ func (Dev) InitMTStack() error {
 	); err != nil {
 		return err
 	}
-	if err := execGo("run", "./cmd/tti-lw-stack", "is-db", "create-oauth-client",
+	if err := runGo("./cmd/tti-lw-stack", "is-db", "create-oauth-client",
 		"--tenant-id", "NULL",
 		"--id", "cli",
 		"--name", "Command Line Interface",
@@ -38,7 +38,7 @@ func (Dev) InitMTStack() error {
 	); err != nil {
 		return err
 	}
-	if err := execGo("run", "./cmd/tti-lw-stack", "is-db", "create-oauth-client",
+	if err := runGo("./cmd/tti-lw-stack", "is-db", "create-oauth-client",
 		"--tenant-id", "NULL",
 		"--id", "console",
 		"--name", "Console",
@@ -52,7 +52,7 @@ func (Dev) InitMTStack() error {
 	); err != nil {
 		return err
 	}
-	return execGo("run", "./cmd/tti-lw-stack", "is-db", "create-oauth-client",
+	return runGo("./cmd/tti-lw-stack", "is-db", "create-oauth-client",
 		"--tenant-id", "NULL",
 		"--id", "device-claiming",
 		"--name", "Device Claiming",

@@ -20,6 +20,7 @@ import (
 
 	"go.thethings.network/lorawan-stack/v3/cmd/internal/shared"
 	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver"
+	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io/packages"
 	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io/web"
 	"go.thethings.network/lorawan-stack/v3/pkg/config"
 )
@@ -45,5 +46,28 @@ var DefaultApplicationServerConfig = applicationserver.Config{
 		QueueSize: 16,
 		Workers:   16,
 		Downlinks: web.DownlinksConfig{PublicAddress: shared.DefaultPublicURL + "/api/v3"},
+	},
+	EndDeviceFetcher: applicationserver.EndDeviceFetcherConfig{
+		Cache: applicationserver.EndDeviceFetcherCacheConfig{
+			Enable: true,
+			TTL:    5 * time.Minute,
+		},
+	},
+	Packages: applicationserver.ApplicationPackagesConfig{
+		Config: packages.Config{
+			Storage: packages.StorageConfig{
+				Postgres: packages.PostgresConfig{
+					InsertBatchSize: 1024,
+					SelectBatchSize: 1024,
+				},
+				Bulk: packages.BulkConfig{
+					MaxSize:  1024,
+					Interval: 10 * time.Second,
+				},
+				Enable: packages.StorageTypesConfig{
+					UplinkMessage: true,
+				},
+			},
+		},
 	},
 }
