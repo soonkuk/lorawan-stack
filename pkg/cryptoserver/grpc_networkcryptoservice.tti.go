@@ -140,20 +140,23 @@ func (s networkCryptoServiceServer) DeriveNwkSKeys(ctx context.Context, req *ttn
 		return nil, err
 	}
 	// TODO: Encrypt root keys (https://github.com/thethingsindustries/lorawan-stack/issues/1562)
-	res := &ttnpb.NwkSKeysResponse{}
-	res.FNwkSIntKey, err = cryptoutil.WrapAES128Key(ctx, nwkSKeys.FNwkSIntKey, "", s.KeyVault)
+	fNwkSIntKeyEnvelope, err := cryptoutil.WrapAES128Key(ctx, nwkSKeys.FNwkSIntKey, "", s.KeyVault)
 	if err != nil {
 		return nil, err
 	}
-	res.SNwkSIntKey, err = cryptoutil.WrapAES128Key(ctx, nwkSKeys.SNwkSIntKey, "", s.KeyVault)
+	sNwkSIntKeyEnvelope, err := cryptoutil.WrapAES128Key(ctx, nwkSKeys.SNwkSIntKey, "", s.KeyVault)
 	if err != nil {
 		return nil, err
 	}
-	res.NwkSEncKey, err = cryptoutil.WrapAES128Key(ctx, nwkSKeys.NwkSEncKey, "", s.KeyVault)
+	nwkSEncKeyEnvelope, err := cryptoutil.WrapAES128Key(ctx, nwkSKeys.NwkSEncKey, "", s.KeyVault)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	return &ttnpb.NwkSKeysResponse{
+		FNwkSIntKey: *fNwkSIntKeyEnvelope,
+		SNwkSIntKey: *sNwkSIntKeyEnvelope,
+		NwkSEncKey:  *nwkSEncKeyEnvelope,
+	}, nil
 }
 
 var errNwkKeyNotExposed = errors.DefineFailedPrecondition("nwk_key_not_exposed", "NwkKey not exposed")
@@ -182,9 +185,5 @@ func (s networkCryptoServiceServer) GetNwkKey(ctx context.Context, req *ttnpb.Ge
 		return nil, err
 	}
 	// TODO: Encrypt root keys (https://github.com/thethingsindustries/lorawan-stack/issues/1562)
-	env, err := cryptoutil.WrapAES128Key(ctx, *nwkKey, "", s.KeyVault)
-	if err != nil {
-		return nil, err
-	}
-	return &env, nil
+	return cryptoutil.WrapAES128Key(ctx, *nwkKey, "", s.KeyVault)
 }
