@@ -15,6 +15,7 @@
   - [Message `Billing`](#tti.lorawan.v3.Billing)
   - [Message `Billing.AWSSaaSMarketplace`](#tti.lorawan.v3.Billing.AWSSaaSMarketplace)
   - [Message `Billing.Stripe`](#tti.lorawan.v3.Billing.Stripe)
+  - [Message `BillingIdentifiers`](#tti.lorawan.v3.BillingIdentifiers)
 - [File `lorawan-stack/api/tti/configuration.proto`](#lorawan-stack/api/tti/configuration.proto)
   - [Message `Configuration`](#tti.lorawan.v3.Configuration)
   - [Message `Configuration.Cluster`](#tti.lorawan.v3.Configuration.Cluster)
@@ -47,6 +48,7 @@
   - [Message `MeteringData.TenantMeteringData`](#tti.lorawan.v3.MeteringData.TenantMeteringData)
 - [File `lorawan-stack/api/tti/tenant.proto`](#lorawan-stack/api/tti/tenant.proto)
   - [Message `CreateTenantRequest`](#tti.lorawan.v3.CreateTenantRequest)
+  - [Message `GetTenantIdentifiersForBillingIdentifiersRequest`](#tti.lorawan.v3.GetTenantIdentifiersForBillingIdentifiersRequest)
   - [Message `GetTenantIdentifiersForEndDeviceEUIsRequest`](#tti.lorawan.v3.GetTenantIdentifiersForEndDeviceEUIsRequest)
   - [Message `GetTenantIdentifiersForGatewayEUIRequest`](#tti.lorawan.v3.GetTenantIdentifiersForGatewayEUIRequest)
   - [Message `GetTenantRegistryTotalsRequest`](#tti.lorawan.v3.GetTenantRegistryTotalsRequest)
@@ -171,6 +173,18 @@
 | `plan_id` | <p>`string.min_len`: `1`</p> |
 | `subscription_id` | <p>`string.min_len`: `1`</p> |
 | `subscription_item_id` | <p>`string.min_len`: `1`</p> |
+
+### <a name="tti.lorawan.v3.BillingIdentifiers">Message `BillingIdentifiers`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `billing_id` | [`string`](#string) |  |  |
+
+#### Field Rules
+
+| Field | Validations |
+| ----- | ----------- |
+| `billing_id` | <p>`string.max_len`: `250`</p> |
 
 ## <a name="lorawan-stack/api/tti/configuration.proto">File `lorawan-stack/api/tti/configuration.proto`</a>
 
@@ -428,6 +442,18 @@
 | ----- | ----------- |
 | `tenant` | <p>`message.required`: `true`</p> |
 
+### <a name="tti.lorawan.v3.GetTenantIdentifiersForBillingIdentifiersRequest">Message `GetTenantIdentifiersForBillingIdentifiersRequest`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `ids` | [`BillingIdentifiers`](#tti.lorawan.v3.BillingIdentifiers) |  |  |
+
+#### Field Rules
+
+| Field | Validations |
+| ----- | ----------- |
+| `ids` | <p>`message.required`: `true`</p> |
+
 ### <a name="tti.lorawan.v3.GetTenantIdentifiersForEndDeviceEUIsRequest">Message `GetTenantIdentifiersForEndDeviceEUIsRequest`</a>
 
 | Field | Type | Label | Description |
@@ -500,6 +526,7 @@ Tenant is the message that defines a Tenant in the network.
 | `capabilities` | [`google.protobuf.Struct`](#google.protobuf.Struct) |  |  |
 | `configuration` | [`Configuration`](#tti.lorawan.v3.Configuration) |  |  |
 | `billing` | [`Billing`](#tti.lorawan.v3.Billing) |  |  |
+| `billing_identifiers` | [`BillingIdentifiers`](#tti.lorawan.v3.BillingIdentifiers) |  |  |
 
 #### Field Rules
 
@@ -562,6 +589,7 @@ Tenant is the message that defines a Tenant in the network.
 | `Delete` | [`TenantIdentifiers`](#tti.lorawan.v3.TenantIdentifiers) | [`.google.protobuf.Empty`](#google.protobuf.Empty) |  |
 | `GetIdentifiersForEndDeviceEUIs` | [`GetTenantIdentifiersForEndDeviceEUIsRequest`](#tti.lorawan.v3.GetTenantIdentifiersForEndDeviceEUIsRequest) | [`TenantIdentifiers`](#tti.lorawan.v3.TenantIdentifiers) |  |
 | `GetIdentifiersForGatewayEUI` | [`GetTenantIdentifiersForGatewayEUIRequest`](#tti.lorawan.v3.GetTenantIdentifiersForGatewayEUIRequest) | [`TenantIdentifiers`](#tti.lorawan.v3.TenantIdentifiers) |  |
+| `GetIdentifiersForBillingIdentifiers` | [`GetTenantIdentifiersForBillingIdentifiersRequest`](#tti.lorawan.v3.GetTenantIdentifiersForBillingIdentifiersRequest) | [`TenantIdentifiers`](#tti.lorawan.v3.TenantIdentifiers) |  |
 
 #### HTTP bindings
 

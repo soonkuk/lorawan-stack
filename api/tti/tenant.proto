@@ -51,6 +51,7 @@ message Tenant {
 
   Configuration configuration = 16;
   Billing billing = 17;
+  BillingIdentifiers billing_identifiers = 18;
 }
 
 message Tenants {
@@ -92,6 +93,10 @@ message GetTenantIdentifiersForEndDeviceEUIsRequest {
 
 message GetTenantIdentifiersForGatewayEUIRequest {
   bytes eui = 1 [(gogoproto.customtype) = "go.thethings.network/lorawan-stack/v3/pkg/types.EUI64", (gogoproto.nullable) = false, (gogoproto.customname) = "EUI"];
+}
+
+message GetTenantIdentifiersForBillingIdentifiersRequest {
+  BillingIdentifiers ids = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (validate.rules).message.required = true];
 }
 
 message GetTenantRegistryTotalsRequest {

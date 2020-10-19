@@ -14,6 +14,8 @@ var TenantFieldPathsNested = []string{
 	"billing.provider.stripe.plan_id",
 	"billing.provider.stripe.subscription_id",
 	"billing.provider.stripe.subscription_item_id",
+	"billing_identifiers",
+	"billing_identifiers.billing_id",
 	"capabilities",
 	"configuration",
 	"configuration.default_cluster",
@@ -67,6 +69,7 @@ var TenantFieldPathsNested = []string{
 var TenantFieldPathsTopLevel = []string{
 	"attributes",
 	"billing",
+	"billing_identifiers",
 	"capabilities",
 	"configuration",
 	"contact_info",
@@ -127,6 +130,8 @@ var CreateTenantRequestFieldPathsNested = []string{
 	"tenant.billing.provider.stripe.plan_id",
 	"tenant.billing.provider.stripe.subscription_id",
 	"tenant.billing.provider.stripe.subscription_item_id",
+	"tenant.billing_identifiers",
+	"tenant.billing_identifiers.billing_id",
 	"tenant.capabilities",
 	"tenant.configuration",
 	"tenant.configuration.default_cluster",
@@ -195,6 +200,8 @@ var UpdateTenantRequestFieldPathsNested = []string{
 	"tenant.billing.provider.stripe.plan_id",
 	"tenant.billing.provider.stripe.subscription_id",
 	"tenant.billing.provider.stripe.subscription_item_id",
+	"tenant.billing_identifiers",
+	"tenant.billing_identifiers.billing_id",
 	"tenant.capabilities",
 	"tenant.configuration",
 	"tenant.configuration.default_cluster",
@@ -264,6 +271,14 @@ var GetTenantIdentifiersForGatewayEUIRequestFieldPathsNested = []string{
 
 var GetTenantIdentifiersForGatewayEUIRequestFieldPathsTopLevel = []string{
 	"eui",
+}
+var GetTenantIdentifiersForBillingIdentifiersRequestFieldPathsNested = []string{
+	"ids",
+	"ids.billing_id",
+}
+
+var GetTenantIdentifiersForBillingIdentifiersRequestFieldPathsTopLevel = []string{
+	"ids",
 }
 var GetTenantRegistryTotalsRequestFieldPathsNested = []string{
 	"field_mask",

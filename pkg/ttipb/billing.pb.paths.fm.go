@@ -17,6 +17,13 @@ var BillingFieldPathsNested = []string{
 var BillingFieldPathsTopLevel = []string{
 	"provider",
 }
+var BillingIdentifiersFieldPathsNested = []string{
+	"billing_id",
+}
+
+var BillingIdentifiersFieldPathsTopLevel = []string{
+	"billing_id",
+}
 var Billing_StripeFieldPathsNested = []string{
 	"customer_id",
 	"plan_id",
