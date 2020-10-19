@@ -4805,6 +4805,15 @@
       "file": "store.go"
     }
   },
+  "error:pkg/identityserver/store:billing_identifiers_not_found": {
+    "translations": {
+      "en": "billing identifiers `{ids}` not found"
+    },
+    "description": {
+      "package": "pkg/identityserver/store",
+      "file": "tenant_store.tti.go"
+    }
+  },
   "error:pkg/identityserver/store:client_not_found": {
     "translations": {
       "en": "client `{client_id}` not found"
