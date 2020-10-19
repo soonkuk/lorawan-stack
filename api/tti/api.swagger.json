@@ -273,6 +273,17 @@
     }
   },
   "definitions": {
+    "BillingAWSSaaSMarketplace": {
+      "type": "object",
+      "properties": {
+        "customer_identifier": {
+          "type": "string"
+        },
+        "product_code": {
+          "type": "string"
+        }
+      }
+    },
     "BillingStripe": {
       "type": "object",
       "properties": {
@@ -557,6 +568,9 @@
       "properties": {
         "stripe": {
           "$ref": "#/definitions/BillingStripe"
+        },
+        "aws_saas_marketplace": {
+          "$ref": "#/definitions/BillingAWSSaaSMarketplace"
         }
       }
     },

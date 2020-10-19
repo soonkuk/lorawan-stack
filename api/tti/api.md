@@ -13,6 +13,7 @@
   - [Message `AuthenticationProviderIdentifiers`](#tti.lorawan.v3.AuthenticationProviderIdentifiers)
 - [File `lorawan-stack/api/tti/billing.proto`](#lorawan-stack/api/tti/billing.proto)
   - [Message `Billing`](#tti.lorawan.v3.Billing)
+  - [Message `Billing.AWSSaaSMarketplace`](#tti.lorawan.v3.Billing.AWSSaaSMarketplace)
   - [Message `Billing.Stripe`](#tti.lorawan.v3.Billing.Stripe)
 - [File `lorawan-stack/api/tti/configuration.proto`](#lorawan-stack/api/tti/configuration.proto)
   - [Message `Configuration`](#tti.lorawan.v3.Configuration)
@@ -137,6 +138,21 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `stripe` | [`Billing.Stripe`](#tti.lorawan.v3.Billing.Stripe) |  |  |
+| `aws_saas_marketplace` | [`Billing.AWSSaaSMarketplace`](#tti.lorawan.v3.Billing.AWSSaaSMarketplace) |  |  |
+
+### <a name="tti.lorawan.v3.Billing.AWSSaaSMarketplace">Message `Billing.AWSSaaSMarketplace`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `customer_identifier` | [`string`](#string) |  |  |
+| `product_code` | [`string`](#string) |  |  |
+
+#### Field Rules
+
+| Field | Validations |
+| ----- | ----------- |
+| `customer_identifier` | <p>`string.min_len`: `1`</p> |
+| `product_code` | <p>`string.min_len`: `1`</p> |
 
 ### <a name="tti.lorawan.v3.Billing.Stripe">Message `Billing.Stripe`</a>
 

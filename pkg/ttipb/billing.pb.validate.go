@@ -59,7 +59,7 @@ func (m *Billing) ValidateFields(paths ...string) error {
 			}
 			if len(subs) == 0 {
 				subs = []string{
-					"stripe",
+					"stripe", "aws_saas_marketplace",
 				}
 			}
 			for name, subs := range _processPaths(subs) {
@@ -75,6 +75,22 @@ func (m *Billing) ValidateFields(paths ...string) error {
 						if err := v.ValidateFields(subs...); err != nil {
 							return BillingValidationError{
 								field:  "stripe",
+								reason: "embedded message failed validation",
+								cause:  err,
+							}
+						}
+					}
+
+				case "aws_saas_marketplace":
+					w, ok := m.Provider.(*Billing_AWSSaaSMarketplace_)
+					if !ok || w == nil {
+						continue
+					}
+
+					if v, ok := interface{}(m.GetAWSSaaSMarketplace()).(interface{ ValidateFields(...string) error }); ok {
+						if err := v.ValidateFields(subs...); err != nil {
+							return BillingValidationError{
+								field:  "aws_saas_marketplace",
 								reason: "embedded message failed validation",
 								cause:  err,
 							}
@@ -261,3 +277,103 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = Billing_StripeValidationError{}
+
+// ValidateFields checks the field values on Billing_AWSSaaSMarketplace with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, an error is returned.
+func (m *Billing_AWSSaaSMarketplace) ValidateFields(paths ...string) error {
+	if m == nil {
+		return nil
+	}
+
+	if len(paths) == 0 {
+		paths = Billing_AWSSaaSMarketplaceFieldPathsNested
+	}
+
+	for name, subs := range _processPaths(append(paths[:0:0], paths...)) {
+		_ = subs
+		switch name {
+		case "customer_identifier":
+
+			if utf8.RuneCountInString(m.GetCustomerIdentifier()) < 1 {
+				return Billing_AWSSaaSMarketplaceValidationError{
+					field:  "customer_identifier",
+					reason: "value length must be at least 1 runes",
+				}
+			}
+
+		case "product_code":
+
+			if utf8.RuneCountInString(m.GetProductCode()) < 1 {
+				return Billing_AWSSaaSMarketplaceValidationError{
+					field:  "product_code",
+					reason: "value length must be at least 1 runes",
+				}
+			}
+
+		default:
+			return Billing_AWSSaaSMarketplaceValidationError{
+				field:  name,
+				reason: "invalid field path",
+			}
+		}
+	}
+	return nil
+}
+
+// Billing_AWSSaaSMarketplaceValidationError is the validation error returned
+// by Billing_AWSSaaSMarketplace.ValidateFields if the designated constraints
+// aren't met.
+type Billing_AWSSaaSMarketplaceValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e Billing_AWSSaaSMarketplaceValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e Billing_AWSSaaSMarketplaceValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e Billing_AWSSaaSMarketplaceValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e Billing_AWSSaaSMarketplaceValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e Billing_AWSSaaSMarketplaceValidationError) ErrorName() string {
+	return "Billing_AWSSaaSMarketplaceValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e Billing_AWSSaaSMarketplaceValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sBilling_AWSSaaSMarketplace.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = Billing_AWSSaaSMarketplaceValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = Billing_AWSSaaSMarketplaceValidationError{}

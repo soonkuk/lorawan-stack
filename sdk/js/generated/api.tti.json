@@ -294,6 +294,63 @@
               "fullType": "tti.lorawan.v3.Billing.Stripe",
               "ismap": false,
               "defaultValue": ""
+            },
+            {
+              "name": "aws_saas_marketplace",
+              "description": "",
+              "label": "",
+              "type": "AWSSaaSMarketplace",
+              "longType": "Billing.AWSSaaSMarketplace",
+              "fullType": "tti.lorawan.v3.Billing.AWSSaaSMarketplace",
+              "ismap": false,
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "AWSSaaSMarketplace",
+          "longName": "Billing.AWSSaaSMarketplace",
+          "fullName": "tti.lorawan.v3.Billing.AWSSaaSMarketplace",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "customer_identifier",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "string.min_len",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            {
+              "name": "product_code",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "string.min_len",
+                    "value": 1
+                  }
+                ]
+              }
             }
           ]
         },

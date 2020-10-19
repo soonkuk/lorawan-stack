@@ -56,6 +56,39 @@ func (dst *Billing) SetFields(src *Billing, paths ...string) error {
 							dst.Provider = nil
 						}
 					}
+				case "aws_saas_marketplace":
+					_, srcOk := src.Provider.(*Billing_AWSSaaSMarketplace_)
+					if !srcOk && src.Provider != nil {
+						return fmt.Errorf("attempt to set oneof 'aws_saas_marketplace', while different oneof is set in source")
+					}
+					_, dstOk := dst.Provider.(*Billing_AWSSaaSMarketplace_)
+					if !dstOk && dst.Provider != nil {
+						return fmt.Errorf("attempt to set oneof 'aws_saas_marketplace', while different oneof is set in destination")
+					}
+					if len(oneofSubs) > 0 {
+						var newDst, newSrc *Billing_AWSSaaSMarketplace
+						if !srcOk && !dstOk {
+							continue
+						}
+						if srcOk {
+							newSrc = src.Provider.(*Billing_AWSSaaSMarketplace_).AWSSaaSMarketplace
+						}
+						if dstOk {
+							newDst = dst.Provider.(*Billing_AWSSaaSMarketplace_).AWSSaaSMarketplace
+						} else {
+							newDst = &Billing_AWSSaaSMarketplace{}
+							dst.Provider = &Billing_AWSSaaSMarketplace_{AWSSaaSMarketplace: newDst}
+						}
+						if err := newDst.SetFields(newSrc, oneofSubs...); err != nil {
+							return err
+						}
+					} else {
+						if src != nil {
+							dst.Provider = src.Provider
+						} else {
+							dst.Provider = nil
+						}
+					}
 
 				default:
 					return fmt.Errorf("invalid oneof field: '%s.%s'", name, oneofName)
@@ -111,6 +144,37 @@ func (dst *Billing_Stripe) SetFields(src *Billing_Stripe, paths ...string) error
 			} else {
 				var zero string
 				dst.SubscriptionItemID = zero
+			}
+
+		default:
+			return fmt.Errorf("invalid field: '%s'", name)
+		}
+	}
+	return nil
+}
+
+func (dst *Billing_AWSSaaSMarketplace) SetFields(src *Billing_AWSSaaSMarketplace, paths ...string) error {
+	for name, subs := range _processPaths(paths) {
+		switch name {
+		case "customer_identifier":
+			if len(subs) > 0 {
+				return fmt.Errorf("'customer_identifier' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.CustomerIdentifier = src.CustomerIdentifier
+			} else {
+				var zero string
+				dst.CustomerIdentifier = zero
+			}
+		case "product_code":
+			if len(subs) > 0 {
+				return fmt.Errorf("'product_code' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.ProductCode = src.ProductCode
+			} else {
+				var zero string
+				dst.ProductCode = zero
 			}
 
 		default:
