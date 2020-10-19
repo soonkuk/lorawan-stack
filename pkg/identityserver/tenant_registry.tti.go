@@ -296,6 +296,20 @@ func (is *IdentityServer) getTenantIdentifiersForGatewayEUI(ctx context.Context,
 	return ids, nil
 }
 
+func (is *IdentityServer) getTenantIdentifiersForBillingIdentifiers(ctx context.Context, req *ttipb.GetTenantIdentifiersForBillingIdentifiersRequest) (ids *ttipb.TenantIdentifiers, err error) {
+	if rights := tenantRightsFromContext(ctx); !rights.read {
+		return nil, errNoTenantRights.New()
+	}
+	err = is.withReadDatabase(ctx, func(db *gorm.DB) (err error) {
+		ids, err = store.GetTenantStore(db).GetTenantIDForBillingIdentifiers(ctx, req.BillingIdentifiers)
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	return ids, nil
+}
+
 func (is *IdentityServer) getTenantRegistryTotals(ctx context.Context, req *ttipb.GetTenantRegistryTotalsRequest) (*ttipb.TenantRegistryTotals, error) {
 	if rights := tenantRightsFromContext(ctx); !rights.canRead(ctx, req.TenantIdentifiers) {
 		return nil, errNoTenantRights.New()
@@ -386,6 +400,10 @@ func (tr *tenantRegistry) GetIdentifiersForEndDeviceEUIs(ctx context.Context, re
 
 func (tr *tenantRegistry) GetIdentifiersForGatewayEUI(ctx context.Context, req *ttipb.GetTenantIdentifiersForGatewayEUIRequest) (*ttipb.TenantIdentifiers, error) {
 	return tr.getTenantIdentifiersForGatewayEUI(ctx, req)
+}
+
+func (tr *tenantRegistry) GetIdentifiersForBillingIdentifiers(ctx context.Context, req *ttipb.GetTenantIdentifiersForBillingIdentifiersRequest) (*ttipb.TenantIdentifiers, error) {
+	return tr.getTenantIdentifiersForBillingIdentifiers(ctx, req)
 }
 
 func (tr *tenantRegistry) GetRegistryTotals(ctx context.Context, req *ttipb.GetTenantRegistryTotalsRequest) (*ttipb.TenantRegistryTotals, error) {

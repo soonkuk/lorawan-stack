@@ -23,9 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Storage Integration API.
 - CLI support for Storage Integration (see `ttn-lw-cli end-devices storage` and `ttn-lw-cli applications storage` commands).
 - Network Server does not retry rejected `NewChannelReq` data rate ranges or rejected `DLChannelReq` frequencies anymore.
-
 - Federated Authentication capabilities using [OpenID Connect](https://openid.net/connect/).
   - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added and modified columns.
+- Store and retrieve billing identifiers from database.
+  - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added column.
 
 ### Changed
 

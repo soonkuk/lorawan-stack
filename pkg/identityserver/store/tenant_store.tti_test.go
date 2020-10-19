@@ -56,6 +56,9 @@ func TestTenantStore(t *testing.T) {
 					},
 				},
 			},
+			BillingIdentifiers: &ttipb.BillingIdentifiers{
+				BillingID: "cus_XXX",
+			},
 		})
 		a.So(err, should.BeNil)
 		a.So(created.TenantID, should.Equal, "foo")
@@ -73,13 +76,14 @@ func TestTenantStore(t *testing.T) {
 		a.So(created.MaxUsers, should.BeNil)
 		a.So(created.GetConfiguration().GetDefaultCluster().GetUI().GetBrandingBaseURL(), should.Equal, "https://assets.thethings.example.com/branding")
 		a.So(created.GetBilling().GetStripe().GetCustomerID(), should.Equal, "cus_XXX")
+		a.So(created.GetBillingIdentifiers().GetBillingID(), should.Equal, "cus_XXX")
 
 		got, err := store.GetTenant(ctx, &ttipb.TenantIdentifiers{TenantID: "foo"}, &pbtypes.FieldMask{
 			Paths: []string{
 				"name", "attributes", "state", "max_applications",
 				"max_clients", "max_end_devices", "max_gateways",
 				"max_organizations", "max_users",
-				"configuration", "billing",
+				"configuration", "billing", "billing_identifiers",
 			},
 		})
 		a.So(err, should.BeNil)
@@ -98,6 +102,7 @@ func TestTenantStore(t *testing.T) {
 		a.So(got.MaxUsers, should.BeNil)
 		a.So(got.GetConfiguration().GetDefaultCluster().GetUI().GetBrandingBaseURL(), should.Equal, "https://assets.thethings.example.com/branding")
 		a.So(got.GetBilling().GetStripe().GetCustomerID(), should.Equal, "cus_XXX")
+		a.So(got.GetBillingIdentifiers().GetBillingID(), should.Equal, "cus_XXX")
 
 		_, err = store.UpdateTenant(ctx, &ttipb.Tenant{
 			TenantIdentifiers: ttipb.TenantIdentifiers{TenantID: "bar"},
@@ -129,12 +134,15 @@ func TestTenantStore(t *testing.T) {
 					},
 				},
 			},
+			BillingIdentifiers: &ttipb.BillingIdentifiers{
+				BillingID: "cus_YYY",
+			},
 		}, &pbtypes.FieldMask{
 			Paths: []string{
 				"description", "attributes", "state", "max_applications",
 				"max_clients", "max_end_devices", "max_gateways",
 				"max_organizations", "max_users",
-				"configuration", "billing.provider.stripe.plan_id",
+				"configuration", "billing.provider.stripe.plan_id", "billing_identifiers",
 			},
 		})
 		a.So(err, should.BeNil)
@@ -151,6 +159,7 @@ func TestTenantStore(t *testing.T) {
 		a.So(updated.MaxUsers, should.Resemble, &pbtypes.UInt64Value{Value: 7})
 		a.So(updated.Configuration, should.BeNil)
 		a.So(updated.GetBilling().GetStripe().GetPlanID(), should.Equal, "plan_XXX")
+		a.So(updated.GetBillingIdentifiers().GetBillingID(), should.Equal, "cus_YYY")
 
 		got, err = store.GetTenant(ctx, &ttipb.TenantIdentifiers{TenantID: "foo"}, nil)
 		a.So(err, should.BeNil)
@@ -163,6 +172,7 @@ func TestTenantStore(t *testing.T) {
 		a.So(got.Configuration, should.BeNil)
 		a.So(got.GetBilling().GetStripe().GetCustomerID(), should.Equal, "cus_XXX")
 		a.So(got.GetBilling().GetStripe().GetPlanID(), should.Equal, "plan_XXX")
+		a.So(got.GetBillingIdentifiers().GetBillingID(), should.Equal, "cus_YYY")
 
 		list, err := store.FindTenants(ctx, nil, &pbtypes.FieldMask{Paths: []string{"name"}})
 		a.So(err, should.BeNil)
@@ -237,6 +247,43 @@ func TestGetTenantIDForEndDeviceEUIs(t *testing.T) {
 		a.So(err, should.BeNil)
 
 		a.So(*id, should.Resemble, tenant.FromContext(ctx))
+	})
+}
+
+func TestGetTenantIdentifiersForBillingIdentifiers(t *testing.T) {
+	a := assertions.New(t)
+	ctx := test.Context()
+
+	WithDB(t, func(t *testing.T, db *gorm.DB) {
+		prepareTest(db, &Tenant{})
+		store := GetTenantStore(db)
+
+		created, err := store.CreateTenant(ctx, &ttipb.Tenant{
+			TenantIdentifiers: ttipb.TenantIdentifiers{TenantID: "foo"},
+			BillingIdentifiers: &ttipb.BillingIdentifiers{
+				BillingID: "cus_XXX",
+			},
+		})
+		a.So(err, should.BeNil)
+		a.So(created, should.NotBeNil)
+
+		failed, err := store.CreateTenant(ctx, &ttipb.Tenant{
+			TenantIdentifiers: ttipb.TenantIdentifiers{TenantID: "bar"},
+			BillingIdentifiers: &ttipb.BillingIdentifiers{
+				BillingID: "cus_XXX",
+			},
+		})
+		a.So(err, should.NotBeNil)
+		a.So(failed, should.BeNil)
+
+		ids, err := store.GetTenantIDForBillingIdentifiers(ctx, ttipb.BillingIdentifiers{BillingID: "cus_YYY"})
+		a.So(err, should.NotBeNil)
+		a.So(errors.IsNotFound(err), should.BeTrue)
+		a.So(ids, should.BeNil)
+
+		ids, err = store.GetTenantIDForBillingIdentifiers(ctx, ttipb.BillingIdentifiers{BillingID: "cus_XXX"})
+		a.So(err, should.BeNil)
+		a.So(ids.GetTenantID(), should.Equal, "foo")
 	})
 }
 
