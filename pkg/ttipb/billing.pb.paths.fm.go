@@ -4,6 +4,9 @@ package ttipb
 
 var BillingFieldPathsNested = []string{
 	"provider",
+	"provider.aws_saas_marketplace",
+	"provider.aws_saas_marketplace.customer_identifier",
+	"provider.aws_saas_marketplace.product_code",
 	"provider.stripe",
 	"provider.stripe.customer_id",
 	"provider.stripe.plan_id",
@@ -26,4 +29,13 @@ var Billing_StripeFieldPathsTopLevel = []string{
 	"plan_id",
 	"subscription_id",
 	"subscription_item_id",
+}
+var Billing_AWSSaaSMarketplaceFieldPathsNested = []string{
+	"customer_identifier",
+	"product_code",
+}
+
+var Billing_AWSSaaSMarketplaceFieldPathsTopLevel = []string{
+	"customer_identifier",
+	"product_code",
 }

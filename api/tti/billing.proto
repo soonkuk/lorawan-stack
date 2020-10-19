@@ -17,9 +17,15 @@ message Billing {
     string subscription_item_id = 4 [(gogoproto.customname) = "SubscriptionItemID", (validate.rules).string.min_len = 1];
   }
 
+  message AWSSaaSMarketplace {
+    string customer_identifier = 1 [(validate.rules).string.min_len = 1];
+    string product_code = 2 [(validate.rules).string.min_len = 1];
+  }
+
   oneof provider {
     option (validate.required) = true;
 
     Stripe stripe = 17;
+    AWSSaaSMarketplace aws_saas_marketplace = 18 [(gogoproto.customname) = "AWSSaaSMarketplace"];
   }
 }
