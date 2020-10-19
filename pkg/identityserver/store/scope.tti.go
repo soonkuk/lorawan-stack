@@ -59,3 +59,16 @@ func withProviderID(id ...string) func(*gorm.DB) *gorm.DB {
 		}
 	}
 }
+
+func withBillingIdentifiers(ids ...string) func(*gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		switch len(ids) {
+		case 0:
+			return db
+		case 1:
+			return db.Where("billing_identifiers = ?", ids[0])
+		default:
+			return db.Where("billing_identifiers IN (?)", ids)
+		}
+	}
+}

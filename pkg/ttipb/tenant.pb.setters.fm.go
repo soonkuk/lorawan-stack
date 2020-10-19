@@ -214,6 +214,31 @@ func (dst *Tenant) SetFields(src *Tenant, paths ...string) error {
 					dst.Billing = nil
 				}
 			}
+		case "billing_identifiers":
+			if len(subs) > 0 {
+				var newDst, newSrc *BillingIdentifiers
+				if (src == nil || src.BillingIdentifiers == nil) && dst.BillingIdentifiers == nil {
+					continue
+				}
+				if src != nil {
+					newSrc = src.BillingIdentifiers
+				}
+				if dst.BillingIdentifiers != nil {
+					newDst = dst.BillingIdentifiers
+				} else {
+					newDst = &BillingIdentifiers{}
+					dst.BillingIdentifiers = newDst
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.BillingIdentifiers = src.BillingIdentifiers
+				} else {
+					dst.BillingIdentifiers = nil
+				}
+			}
 
 		default:
 			return fmt.Errorf("invalid field: '%s'", name)
@@ -452,6 +477,35 @@ func (dst *GetTenantIdentifiersForGatewayEUIRequest) SetFields(src *GetTenantIde
 			} else {
 				var zero go_thethings_network_lorawan_stack_v3_pkg_types.EUI64
 				dst.EUI = zero
+			}
+
+		default:
+			return fmt.Errorf("invalid field: '%s'", name)
+		}
+	}
+	return nil
+}
+
+func (dst *GetTenantIdentifiersForBillingIdentifiersRequest) SetFields(src *GetTenantIdentifiersForBillingIdentifiersRequest, paths ...string) error {
+	for name, subs := range _processPaths(paths) {
+		switch name {
+		case "ids":
+			if len(subs) > 0 {
+				var newDst, newSrc *BillingIdentifiers
+				if src != nil {
+					newSrc = &src.BillingIdentifiers
+				}
+				newDst = &dst.BillingIdentifiers
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.BillingIdentifiers = src.BillingIdentifiers
+				} else {
+					var zero BillingIdentifiers
+					dst.BillingIdentifiers = zero
+				}
 			}
 
 		default:

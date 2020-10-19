@@ -189,6 +189,21 @@ func (s *tenantStore) GetTenantIDForGatewayEUI(ctx context.Context, eui types.EU
 	return &ttipb.TenantIdentifiers{TenantID: gtwModel.TenantID}, nil
 }
 
+var errBillingIdentifiersNotFound = errors.DefineNotFound("billing_identifiers_not_found", "billing identifiers `{ids}` not found")
+
+func (s *tenantStore) GetTenantIDForBillingIdentifiers(ctx context.Context, id ttipb.BillingIdentifiers) (*ttipb.TenantIdentifiers, error) {
+	defer trace.StartRegion(ctx, "get tenant id for billing identifiers").End()
+	query := s.query(ctx, nil, withBillingIdentifiers(id.BillingID)).Select("tenant_id")
+	var tntModel Tenant
+	if err := query.First(&tntModel).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, errBillingIdentifiersNotFound.WithAttributes("ids", id.BillingID)
+		}
+		return nil, err
+	}
+	return &ttipb.TenantIdentifiers{TenantID: tntModel.TenantID}, nil
+}
+
 func (s *tenantStore) CountEntities(ctx context.Context, id *ttipb.TenantIdentifiers, entityType string) (uint64, error) {
 	defer trace.StartRegion(ctx, "count entities for tenant id").End()
 	var total uint64

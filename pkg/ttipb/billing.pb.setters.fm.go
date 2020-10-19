@@ -102,6 +102,27 @@ func (dst *Billing) SetFields(src *Billing, paths ...string) error {
 	return nil
 }
 
+func (dst *BillingIdentifiers) SetFields(src *BillingIdentifiers, paths ...string) error {
+	for name, subs := range _processPaths(paths) {
+		switch name {
+		case "billing_id":
+			if len(subs) > 0 {
+				return fmt.Errorf("'billing_id' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.BillingID = src.BillingID
+			} else {
+				var zero string
+				dst.BillingID = zero
+			}
+
+		default:
+			return fmt.Errorf("invalid field: '%s'", name)
+		}
+	}
+	return nil
+}
+
 func (dst *Billing_Stripe) SetFields(src *Billing_Stripe, paths ...string) error {
 	for name, subs := range _processPaths(paths) {
 		switch name {

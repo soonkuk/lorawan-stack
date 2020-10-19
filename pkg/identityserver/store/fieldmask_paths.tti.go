@@ -6,6 +6,7 @@ const (
 	// NOTE: please keep this sorted
 	allowRegistrationsField = "allow_registrations"
 	billingField            = "billing"
+	billingIdentifiersField = "billing_identifiers"
 	configurationField      = "configuration"
 	maxApplicationsField    = "max_applications"
 	maxClientsField         = "max_clients"

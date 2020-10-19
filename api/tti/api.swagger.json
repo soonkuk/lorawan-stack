@@ -574,6 +574,14 @@
         }
       }
     },
+    "v3BillingIdentifiers": {
+      "type": "object",
+      "properties": {
+        "billing_id": {
+          "type": "string"
+        }
+      }
+    },
     "v3ContactInfo": {
       "type": "object",
       "properties": {
@@ -728,6 +736,9 @@
         },
         "billing": {
           "$ref": "#/definitions/v3Billing"
+        },
+        "billing_identifiers": {
+          "$ref": "#/definitions/v3BillingIdentifiers"
         }
       },
       "description": "Tenant is the message that defines a Tenant in the network."

@@ -29,3 +29,7 @@ message Billing {
     AWSSaaSMarketplace aws_saas_marketplace = 18 [(gogoproto.customname) = "AWSSaaSMarketplace"];
   }
 }
+
+message BillingIdentifiers {
+  string billing_id = 1 [(gogoproto.customname) = "BillingID", (validate.rules).string.max_len = 250];
+}

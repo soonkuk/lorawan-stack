@@ -436,6 +436,35 @@
               }
             }
           ]
+        },
+        {
+          "name": "BillingIdentifiers",
+          "longName": "BillingIdentifiers",
+          "fullName": "tti.lorawan.v3.BillingIdentifiers",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "billing_id",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "string.max_len",
+                    "value": 250
+                  }
+                ]
+              }
+            }
+          ]
         }
       ],
       "services": []
@@ -1640,6 +1669,35 @@
           ]
         },
         {
+          "name": "GetTenantIdentifiersForBillingIdentifiersRequest",
+          "longName": "GetTenantIdentifiersForBillingIdentifiersRequest",
+          "fullName": "tti.lorawan.v3.GetTenantIdentifiersForBillingIdentifiersRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "ids",
+              "description": "",
+              "label": "",
+              "type": "BillingIdentifiers",
+              "longType": "BillingIdentifiers",
+              "fullType": "tti.lorawan.v3.BillingIdentifiers",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "message.required",
+                    "value": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "GetTenantIdentifiersForEndDeviceEUIsRequest",
           "longName": "GetTenantIdentifiersForEndDeviceEUIsRequest",
           "fullName": "tti.lorawan.v3.GetTenantIdentifiersForEndDeviceEUIsRequest",
@@ -2058,6 +2116,16 @@
               "fullType": "tti.lorawan.v3.Billing",
               "ismap": false,
               "defaultValue": ""
+            },
+            {
+              "name": "billing_identifiers",
+              "description": "",
+              "label": "",
+              "type": "BillingIdentifiers",
+              "longType": "BillingIdentifiers",
+              "fullType": "tti.lorawan.v3.BillingIdentifiers",
+              "ismap": false,
+              "defaultValue": ""
             }
           ]
         },
@@ -2396,6 +2464,18 @@
               "requestType": "GetTenantIdentifiersForGatewayEUIRequest",
               "requestLongType": "GetTenantIdentifiersForGatewayEUIRequest",
               "requestFullType": "tti.lorawan.v3.GetTenantIdentifiersForGatewayEUIRequest",
+              "requestStreaming": false,
+              "responseType": "TenantIdentifiers",
+              "responseLongType": "TenantIdentifiers",
+              "responseFullType": "tti.lorawan.v3.TenantIdentifiers",
+              "responseStreaming": false
+            },
+            {
+              "name": "GetIdentifiersForBillingIdentifiers",
+              "description": "",
+              "requestType": "GetTenantIdentifiersForBillingIdentifiersRequest",
+              "requestLongType": "GetTenantIdentifiersForBillingIdentifiersRequest",
+              "requestFullType": "tti.lorawan.v3.GetTenantIdentifiersForBillingIdentifiersRequest",
               "requestStreaming": false,
               "responseType": "TenantIdentifiers",
               "responseLongType": "TenantIdentifiers",

@@ -116,6 +116,7 @@ func (s *Stripe) createTenant(ctx context.Context, sub *stripe.Subscription) err
 	tntFieldMask := types.FieldMask{
 		Paths: []string{
 			"billing",
+			"billing_identifiers",
 			"contact_info",
 			"description",
 			"max_applications",
@@ -306,6 +307,9 @@ func (s *Stripe) toTenant(sub *stripe.Subscription, subscriptionItem *stripe.Sub
 					SubscriptionItemID: subscriptionItem.ID,
 				},
 			},
+		},
+		BillingIdentifiers: &ttipb.BillingIdentifiers{
+			BillingID: sub.ID,
 		},
 	}, nil
 }

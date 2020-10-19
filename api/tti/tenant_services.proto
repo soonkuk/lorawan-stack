@@ -47,4 +47,5 @@ service TenantRegistry {
 
   rpc GetIdentifiersForEndDeviceEUIs(GetTenantIdentifiersForEndDeviceEUIsRequest) returns (TenantIdentifiers);
   rpc GetIdentifiersForGatewayEUI(GetTenantIdentifiersForGatewayEUIRequest) returns (TenantIdentifiers);
+  rpc GetIdentifiersForBillingIdentifiers(GetTenantIdentifiersForBillingIdentifiersRequest) returns (TenantIdentifiers);
 }

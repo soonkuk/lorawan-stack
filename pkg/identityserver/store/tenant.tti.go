@@ -33,7 +33,9 @@ type Tenant struct {
 	MaxUsers         *WrappedUint64
 
 	Configuration postgres.Jsonb
-	Billing       postgres.Jsonb
+
+	Billing            postgres.Jsonb
+	BillingIdentifiers *string `gorm:"unique_index:tenant_billing_identifiers;type:VARCHAR(250)"`
 }
 
 func init() {
@@ -52,6 +54,13 @@ var tenantPBSetters = map[string]func(*ttipb.Tenant, *Tenant){
 	maxGatewaysField:      func(pb *ttipb.Tenant, tnt *Tenant) { pb.MaxGateways = tnt.MaxGateways.toPB() },
 	maxOrganizationsField: func(pb *ttipb.Tenant, tnt *Tenant) { pb.MaxOrganizations = tnt.MaxOrganizations.toPB() },
 	maxUsersField:         func(pb *ttipb.Tenant, tnt *Tenant) { pb.MaxUsers = tnt.MaxUsers.toPB() },
+	billingIdentifiersField: func(pb *ttipb.Tenant, tnt *Tenant) {
+		if tnt.BillingIdentifiers != nil {
+			pb.BillingIdentifiers = &ttipb.BillingIdentifiers{BillingID: *tnt.BillingIdentifiers}
+		} else {
+			pb.BillingIdentifiers = nil
+		}
+	},
 }
 
 // functions to set fields from the tenant proto into the tenant model.
@@ -68,6 +77,13 @@ var tenantModelSetters = map[string]func(*Tenant, *ttipb.Tenant){
 	maxGatewaysField:      func(tnt *Tenant, pb *ttipb.Tenant) { tnt.MaxGateways = wrappedUint64(pb.MaxGateways) },
 	maxOrganizationsField: func(tnt *Tenant, pb *ttipb.Tenant) { tnt.MaxOrganizations = wrappedUint64(pb.MaxOrganizations) },
 	maxUsersField:         func(tnt *Tenant, pb *ttipb.Tenant) { tnt.MaxUsers = wrappedUint64(pb.MaxUsers) },
+	billingIdentifiersField: func(tnt *Tenant, pb *ttipb.Tenant) {
+		if pb.BillingIdentifiers != nil {
+			tnt.BillingIdentifiers = &pb.BillingIdentifiers.BillingID
+		} else {
+			tnt.BillingIdentifiers = nil
+		}
+	},
 }
 
 // fieldMask to use if a nil or empty fieldmask is passed.
@@ -84,19 +100,20 @@ func init() {
 
 // fieldmask path to column name in tenants table.
 var tenantColumnNames = map[string][]string{
-	attributesField:       {},
-	billingField:          {billingField},
-	contactInfoField:      {},
-	nameField:             {nameField},
-	descriptionField:      {descriptionField},
-	stateField:            {stateField},
-	maxApplicationsField:  {maxApplicationsField},
-	maxClientsField:       {maxClientsField},
-	maxEndDevicesField:    {maxEndDevicesField},
-	maxGatewaysField:      {maxGatewaysField},
-	maxOrganizationsField: {maxOrganizationsField},
-	maxUsersField:         {maxUsersField},
-	configurationField:    {configurationField},
+	attributesField:         {},
+	billingField:            {billingField},
+	contactInfoField:        {},
+	nameField:               {nameField},
+	descriptionField:        {descriptionField},
+	stateField:              {stateField},
+	maxApplicationsField:    {maxApplicationsField},
+	maxClientsField:         {maxClientsField},
+	maxEndDevicesField:      {maxEndDevicesField},
+	maxGatewaysField:        {maxGatewaysField},
+	maxOrganizationsField:   {maxOrganizationsField},
+	maxUsersField:           {maxUsersField},
+	configurationField:      {configurationField},
+	billingIdentifiersField: {billingIdentifiersField},
 }
 
 func (tnt Tenant) toPB(pb *ttipb.Tenant, fieldMask *types.FieldMask) error {
