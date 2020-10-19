@@ -5,5 +5,6 @@ package migrations
 func init() {
 	All = append(All,
 		TenantStripeAttributeBilling{},
+		TenantStripeBillingIdentifiers{},
 	)
 }
