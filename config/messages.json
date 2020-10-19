@@ -4805,15 +4805,6 @@
       "file": "store.go"
     }
   },
-  "error:pkg/identityserver/store:billing_identifiers_not_found": {
-    "translations": {
-      "en": "billing identifiers `{ids}` not found"
-    },
-    "description": {
-      "package": "pkg/identityserver/store",
-      "file": "tenant_store.tti.go"
-    }
-  },
   "error:pkg/identityserver/store:client_not_found": {
     "translations": {
       "en": "client `{client_id}` not found"
@@ -5741,6 +5732,24 @@
       "file": "registry.go"
     }
   },
+  "error:pkg/joinserver:application_activation_settings": {
+    "translations": {
+      "en": "failed to get application activation settings"
+    },
+    "description": {
+      "package": "pkg/joinserver",
+      "file": "joinserver.go"
+    }
+  },
+  "error:pkg/joinserver:application_activation_settings_not_found": {
+    "translations": {
+      "en": "application activation settings not found"
+    },
+    "description": {
+      "package": "pkg/joinserver",
+      "file": "grpc_application_activation_settings_registry.go"
+    }
+  },
   "error:pkg/joinserver:caller_not_authorized": {
     "translations": {
       "en": "caller `{name}` is not authorized for the entity"
@@ -5903,6 +5912,15 @@
       "file": "errors.go"
     }
   },
+  "error:pkg/joinserver:kek": {
+    "translations": {
+      "en": "KEK not found"
+    },
+    "description": {
+      "package": "pkg/joinserver",
+      "file": "joinserver.go"
+    }
+  },
   "error:pkg/joinserver:lorawan_major_version": {
     "translations": {
       "en": "unsupported LoRaWAN major version: `{major}`"
@@ -6038,6 +6056,15 @@
       "file": "errors.go"
     }
   },
+  "error:pkg/joinserver:no_paths": {
+    "translations": {
+      "en": "no paths specified"
+    },
+    "description": {
+      "package": "pkg/joinserver",
+      "file": "grpc_application_activation_settings_registry.go"
+    }
+  },
   "error:pkg/joinserver:no_payload": {
     "translations": {
       "en": "no message payload specified"
@@ -6149,6 +6176,15 @@
   "error:pkg/joinserver:unknown_join_eui": {
     "translations": {
       "en": "JoinEUI specified is not known"
+    },
+    "description": {
+      "package": "pkg/joinserver",
+      "file": "errors.go"
+    }
+  },
+  "error:pkg/joinserver:unwrap_key": {
+    "translations": {
+      "en": "failed to unwrap key"
     },
     "description": {
       "package": "pkg/joinserver",

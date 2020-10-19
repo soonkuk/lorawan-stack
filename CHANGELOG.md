@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added and modified columns.
 - Store and retrieve billing identifiers from database.
   - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added column.
+- Functionality to allow admin users to list all organizations in the Console.
 
 ### Changed
 
@@ -36,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move documentation to [lorawan-stack-docs](https://github.com/TheThingsIndustries/lorawan-stack-docs).
 - Improve LinkADRReq scheduling condition computation and, as a consequence, downlink task efficiency.
 - CUPS Server only accepts The Things Stack API Key for token auth.
+- Improve MQTT Pub/Sub task restart conditions and error propagation.
 
 ### Deprecated
 
@@ -57,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - FPending being set on downlinks, when LinkADRReq is required, but all available TxPower and data rate index combinations are rejected by the device.
 - Coding rate for LoRa 2.4 GHz: it's now `4/8LI`.
 - End device import in the Console crashing in Firefox.
+- Creation of multicast end devices in the Console.
 
 ### Security
 

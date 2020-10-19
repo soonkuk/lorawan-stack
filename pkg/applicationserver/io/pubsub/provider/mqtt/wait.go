@@ -1,4 +1,4 @@
-// Copyright © 2019 The Things Network Foundation, The Things Industries B.V.
+// Copyright © 2020 The Things Network Foundation, The Things Industries B.V.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package applicationserver
+package mqtt
 
 import (
-	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io"
-	"go.thethings.network/lorawan-stack/v3/pkg/component"
-	"go.thethings.network/lorawan-stack/v3/pkg/util/test"
+	"context"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-func init() {
-	io.DialTaskBackoffConfig.IntervalFunc = component.MakeTaskBackoffIntervalFunc(false, component.DefaultTaskBackoffResetDuration, (1<<5)*test.Delay)
+// waitToken awaits the token operation to finish in parallel with the context.
+// Keep in mind that context deadlines do not cancel the underlying MQTT client operation.
+func waitToken(ctx context.Context, token mqtt.Token) error {
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-token.Done():
+		return token.Error()
+	}
 }
