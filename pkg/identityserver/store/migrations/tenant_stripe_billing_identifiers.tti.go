@@ -37,9 +37,9 @@ func (m TenantStripeBillingIdentifiers) Apply(ctx context.Context, db *gorm.DB) 
 			if err := jsonpb.TTN().Unmarshal(model.Billing.RawMessage, billing); err != nil {
 				return err
 			}
-			if billing.GetStripe() == nil {
-				continue
-			}
+		}
+		if billing.GetStripe() == nil {
+			continue
 		}
 		subscriptionID := billing.GetStripe().GetSubscriptionID()
 		model.BillingIdentifiers = &subscriptionID
