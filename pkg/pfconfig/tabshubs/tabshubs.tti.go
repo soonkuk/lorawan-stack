@@ -26,6 +26,11 @@ type DataRates [16][3]int
 // [2] -> Max Data Rate (number)
 type Upchannels [8][3]int
 
+// Config is the tabs hubs region config
+type Config struct {
+	Region string `json:"region"`
+}
+
 // RouterConfig contains the router configuration.
 // This message is sent by the Gateway Server.
 type RouterConfig struct {
@@ -41,10 +46,8 @@ type RouterConfig struct {
 	MuxTime        float64               `json:"MuxTime"`
 	MaxEIRP        int                   `json:"max_eirp"`
 	Protocol       int                   `json:"protocol"`
-	Config         struct {
-		Region string `json:"region"`
-	} `json:"config"`
-	Beaconing []int `json:"bcning"`
+	Beaconing      []int                 `json:"bcning"`
+	Config         Config                `json:"config"`
 }
 
 const (
