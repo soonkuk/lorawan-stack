@@ -58,7 +58,10 @@ func (f *tabsHubs) FromDownlink(ctx context.Context, uid string, down ttnpb.Down
 		state State
 		ok    bool
 	)
-	if state, ok = ws.SessionFromContext(ctx).State.Load().(State); !ok {
+	session := ws.SessionFromContext(ctx)
+	session.DataMu.Lock()
+	defer session.DataMu.Unlock()
+	if state, ok = session.Data.(State); !ok {
 		return nil, errSessionStateNotFound
 	}
 

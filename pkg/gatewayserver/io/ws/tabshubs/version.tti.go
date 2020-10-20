@@ -39,6 +39,7 @@ func (f *tabsHubs) GetRouterConfig(ctx context.Context, msg []byte, bandID strin
 	if err := json.Unmarshal(msg, &version); err != nil {
 		return nil, nil, nil, err
 	}
+
 	cfg, err := pfconfig.GetRouterConfig(bandID, fp, time.Now())
 	if err != nil {
 		return nil, nil, nil, err

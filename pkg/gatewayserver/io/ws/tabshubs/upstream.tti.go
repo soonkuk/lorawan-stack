@@ -8,13 +8,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"math"
-	"reflect"
 	"time"
 
 	"go.thethings.network/lorawan-stack/v3/pkg/basicstation"
 	"go.thethings.network/lorawan-stack/v3/pkg/encoding/lorawan"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
-	"go.thethings.network/lorawan-stack/v3/pkg/frequencyplans"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws/util"
@@ -434,11 +432,7 @@ func (f *tabsHubs) HandleUp(ctx context.Context, raw []byte, ids ttnpb.GatewayId
 
 	switch typ {
 	case TypeUpstreamVersion:
-		// TODO: Placeholder. Probably need a PrimaryFrequencyPlan() on the Connection.
-		keys := reflect.ValueOf(conn.FrequencyPlans).MapKeys()
-		fp := keys[0].Interface().(*frequencyplans.FrequencyPlan)
-
-		ctx, msg, stat, err := f.GetRouterConfig(ctx, raw, conn.BandID(), fp, receivedAt)
+		ctx, msg, stat, err := f.GetRouterConfig(ctx, raw, conn.BandID(), conn.PrimaryFrequencyPlan(), receivedAt)
 		logger = log.FromContext(ctx)
 		if err != nil {
 			logger.WithError(err).Warn("Failed to generate router configuration")
@@ -470,10 +464,11 @@ func (f *tabsHubs) HandleUp(ctx context.Context, raw []byte, ids ttnpb.GatewayId
 			return nil, err
 		}
 		session := ws.SessionFromContext(ctx)
-		lbsState := State{
+		session.DataMu.Lock()
+		session.Data = State{
 			ID: int32(jreq.UpInfo.XTime >> 48),
 		}
-		session.State.Store(lbsState)
+		session.DataMu.Unlock()
 		recordTime(jreq.RefTime, jreq.UpInfo.XTime, receivedAt)
 
 	case TypeUpstreamUplinkDataFrame:
@@ -496,10 +491,11 @@ func (f *tabsHubs) HandleUp(ctx context.Context, raw []byte, ids ttnpb.GatewayId
 			return nil, err
 		}
 		session := ws.SessionFromContext(ctx)
-		lbsState := State{
+		session.DataMu.Lock()
+		session.Data = State{
 			ID: int32(updf.UpInfo.XTime >> 48),
 		}
-		session.State.Store(lbsState)
+		session.DataMu.Unlock()
 		recordTime(updf.RefTime, updf.UpInfo.XTime, receivedAt)
 
 	case TypeUpstreamTxConfirmation:
