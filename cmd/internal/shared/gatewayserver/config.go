@@ -55,5 +55,8 @@ var DefaultGatewayServerConfig = gatewayserver.Config{
 		Listen:    ":1887",
 		ListenTLS: ":8887",
 	},
+	TabsHubs: gatewayserver.TabsHubsConfig{
+		Config: ws.DefaultConfig,
+	},
 	UpdateConnectionStatsDebounceTime: 3 * time.Second,
 }
