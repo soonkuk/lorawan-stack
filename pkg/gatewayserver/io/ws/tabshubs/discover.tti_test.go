@@ -19,7 +19,7 @@ import (
 func TestDiscover(t *testing.T) {
 	a := assertions.New(t)
 	ctx := context.Background()
-	var lbsLNS lbsLNS
+	var th tabsHubs
 	eui := types.EUI64{0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11}
 	mockServer := mockServer{
 		ids: ttnpb.GatewayIdentifiers{
@@ -57,7 +57,7 @@ func TestDiscover(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			msg, err := json.Marshal(tc.Query)
 			a.So(err, should.BeNil)
-			resp := lbsLNS.HandleConnectionInfo(ctx, msg, mockServer, info, time.Now())
+			resp := th.HandleConnectionInfo(ctx, msg, mockServer, info, time.Now())
 			expected, _ := json.Marshal(tc.ExpectedResponse)
 			a.So(string(resp), should.Equal, string(expected))
 		})

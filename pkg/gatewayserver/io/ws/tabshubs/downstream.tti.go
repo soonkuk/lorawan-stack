@@ -50,7 +50,6 @@ func (f *tabsHubs) FromDownlink(ctx context.Context, uid string, down ttnpb.Down
 	var dnmsg DownlinkMessage
 	settings := down.GetScheduled()
 	dnmsg.Pdu = hex.EncodeToString(down.GetRawPayload())
-	dnmsg.RCtx = int64(settings.Downlink.AntennaIndex)
 	dnmsg.SeqNo = int64(f.tokens.Next(down.CorrelationIDs, dlTime))
 
 	// The first 16 bits of XTime gets the session ID from the upstream latestXTime and the other 48 bits are concentrator timestamp accounted for rollover.
@@ -88,10 +87,7 @@ func (dnmsg *DownlinkMessage) ToDownlinkMessage() ttnpb.DownlinkMessage {
 			Scheduled: &ttnpb.TxSettings{
 				DataRateIndex: ttnpb.DataRateIndex(dnmsg.DR),
 				Frequency:     uint64(dnmsg.Freq),
-				Downlink: &ttnpb.TxSettings_Downlink{
-					AntennaIndex: uint32(dnmsg.RCtx),
-				},
-				Timestamp: uint32(dnmsg.XTime),
+				Timestamp:     uint32(dnmsg.XTime),
 			},
 		},
 	}

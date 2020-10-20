@@ -45,7 +45,7 @@ func TestMarshalJSON(t *testing.T) {
 					},
 				},
 			},
-			Expected: []byte(`{"msgtype":"jreq","MHdr":0,"JoinEui":"2222:2222:2222:2222","DevEui":"1111:1111:1111:1111","DevNonce":18000,"MIC":12345678,"RefTime":0,"DR":1,"Freq":868300000,"upinfo":{"rxtime":1548059982,"rtcx":0,"xtime":12666373963464220,"gpstime":0,"rssi":89,"snr":9.25}}`),
+			Expected: []byte(`{"msgtype":"jreq","MHdr":0,"JoinEui":"2222:2222:2222:2222","DevEui":"1111:1111:1111:1111","DevNonce":18000,"MIC":12345678,"RefTime":0,"DR":1,"Freq":868300000,"upinfo":{"rxtime":1548059982,"rtcx":0,"xtime":12666373963464220,"rssi":89,"snr":9.25}}`),
 		},
 		{
 			Name: "UplinkDataFrame",
@@ -69,18 +69,15 @@ func TestMarshalJSON(t *testing.T) {
 					},
 				},
 			},
-			Expected: []byte(`{"msgtype":"updf","MHdr":64,"DevAddr":287454020,"FCtrl":48,"Fcnt":25,"FOpts":"FD","FPort":0,"FRMPayload":"Ymxhamthc25kJ3M=","MIC":12345678,"RefTime":0,"DR":1,"Freq":868300000,"upinfo":{"rxtime":1548059982,"rtcx":0,"xtime":12666373963464220,"gpstime":0,"rssi":89,"snr":9.25}}`),
+			Expected: []byte(`{"msgtype":"updf","MHdr":64,"DevAddr":287454020,"FCtrl":48,"Fcnt":25,"FOpts":"FD","FPort":0,"FRMPayload":"Ymxhamthc25kJ3M=","MIC":12345678,"RefTime":0,"regionid":0,"DR":1,"Freq":868300000,"upinfo":{"rxtime":1548059982,"rtcx":0,"xtime":12666373963464220,"rssi":89,"snr":9.25}}`),
 		},
 		{
 			Name: "TxConfirmation",
 			Message: TxConfirmation{
-				Diid:    35,
-				DevEUI:  basicstation.EUI{EUI64: types.EUI64{0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11}},
-				XTime:   1552906698,
-				TxTime:  1552906698,
-				GpsTime: 1552906698,
+				SeqNo:  35,
+				DevEUI: basicstation.EUI{EUI64: types.EUI64{0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11}},
 			},
-			Expected: []byte(`{"msgtype":"dntxed","diid":35,"DevEui":"1111:1111:1111:1111","rctx":0,"xtime":1552906698,"txtime":1552906698,"gpstime":1552906698}`),
+			Expected: []byte(`{"msgtype":"dntxed","seqno":35,"routerid":0,"DevEui":"1111:1111:1111:1111"}`),
 		},
 	} {
 		t.Run(tc.Name, func(t *testing.T) {
@@ -90,7 +87,7 @@ func TestMarshalJSON(t *testing.T) {
 				t.Fatalf("Unexpected error: %v", err)
 			}
 			if !a.So(msg, should.Resemble, tc.Expected) {
-				t.Fatalf("Unexpected message: %v", msg)
+				t.Fatalf("Unexpected message: %v", string(msg))
 			}
 		})
 	}
@@ -633,14 +630,13 @@ func TestJreqFromUplinkDataFrame(t *testing.T) {
 func TestTxAck(t *testing.T) {
 	a := assertions.New(t)
 	txConf := TxConfirmation{
-		Diid:    1,
-		RefTime: 0,
+		SeqNo: 1,
 	}
 	correlationIDs := []string{"i3N84kvunPAS8wOmiEKbhsP62wNMRdmn", "deK3h59wUZhR0xb17eumTkauGQxoB5xn"}
-	var lnsLNS lbsLNS
+	var th tabsHubs
 	now := time.Now()
-	lnsLNS.tokens.Next(correlationIDs, time.Unix(int64(0), 0))
-	txAck := txConf.ToTxAck(context.Background(), lnsLNS.tokens, now)
+	th.tokens.Next(correlationIDs, time.Unix(int64(0), 0))
+	txAck := txConf.ToTxAck(context.Background(), th.tokens, now)
 	if !a.So(txAck, should.Resemble, &ttnpb.TxAcknowledgment{
 		CorrelationIDs: correlationIDs,
 		Result:         ttnpb.TxAcknowledgment_SUCCESS,
