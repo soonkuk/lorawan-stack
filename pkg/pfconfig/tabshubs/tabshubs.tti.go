@@ -54,8 +54,8 @@ const (
 
 var errFrequencyPlan = errors.DefineInvalidArgument("frequency_plan", "invalid frequency plan `{name}`")
 
-// RegionIDToRegion maps the regionid field to the region field.
-var RegionIDToRegion = map[string]int{
+// RegionToRegionID maps the region field to the regionID field.
+var RegionToRegionID = map[string]int{
 	"EU863": 1,
 	"US902": 2,
 	"EU433": 3,
@@ -103,6 +103,8 @@ func GetRouterConfig(bandID string, fp *frequencyplans.FrequencyPlan, dlTime tim
 	conf.Region = fmt.Sprintf("%s%s", s[0], s[1])
 	conf.Config.Region = fmt.Sprintf("%s%s/tracknet", s[0], s[1])
 
+	conf.RegionID = RegionToRegionID[conf.Region]
+
 	if len(fp.Radios) == 0 {
 		return RouterConfig{}, errFrequencyPlan.New()
 	}
@@ -131,10 +133,22 @@ func GetRouterConfig(bandID string, fp *frequencyplans.FrequencyPlan, dlTime tim
 	// These fields are not defined in the v1.5 ref design https://doc.sm.tc/station/gw_v1.5.html#rfconf-object and would cause a parsing error.
 	sx1301Conf.Radios[0].TxFreqMin = 0
 	sx1301Conf.Radios[0].TxFreqMax = 0
+
+	// Disable fields not used by Tabs Hubs
+	sx1301Conf.LoRaStandardChannel = &shared.IFConfig{
+		Enable: false,
+	}
+	sx1301Conf.FSKChannel = &shared.IFConfig{
+		Enable: false,
+	}
+
 	// Remove hardware specific values that are not necessary.
 	sx1301Conf.TxLUTConfigs = nil
 	for i := range sx1301Conf.Radios {
-		sx1301Conf.Radios[i].Type = ""
+		sx1301Conf.Radios[i] = shared.RFConfig{
+			Enable:    sx1301Conf.Radios[i].Enable,
+			Frequency: sx1301Conf.Radios[i].Frequency,
+		}
 	}
 	if err != nil {
 		return RouterConfig{}, err
