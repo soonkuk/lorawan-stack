@@ -47,9 +47,10 @@ func deriveName() (string, error) {
 func newDNS(ctx context.Context, config *Config, options ...Option) (Cluster, error) {
 	c := &dnsCluster{
 		cluster: &cluster{
-			ctx:   ctx,
-			tls:   config.TLS,
-			peers: make(map[string]*peer),
+			ctx:           ctx,
+			tls:           config.TLS,
+			tlsServerName: config.TLSServerName,
+			peers:         make(map[string]*peer),
 		},
 		resolver:      net.DefaultResolver,
 		peerDiscovery: make(map[string][]ttnpb.ClusterRole),
