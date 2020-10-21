@@ -33,6 +33,7 @@ For details about compatibility between different releases, see the **Commitment
 - Storage Integration.
   - This requires additional configuration and initialization of the database schema (`ttn-lw-stack storage-db init`). A PostgreSQL-compatible database is required, and it is highly recommended to setup a separate database instance; avoid re-using the IS database.
 - Downlink count for end devices in the Console.
+- Support for TabsHubs gateways.
 
 ### Changed
 
