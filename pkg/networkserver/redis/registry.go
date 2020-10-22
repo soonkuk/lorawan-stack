@@ -727,6 +727,13 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 			return errDatabaseCorruption.WithCause(err)
 		}
 		ctx := log.NewContextWithField(ctx, "device_uid", uid)
+
+		tntID, err := unique.ToTenantID(uid)
+		if err != nil {
+			log.FromContext(ctx).WithError(err).
+				Error("Failed to parse UID returned by device match scan script as tenant identifiers")
+			return errDatabaseCorruption.WithCause(err)
+		}
 		ok, err = func() (ok bool, err error) {
 			defer func() {
 				if err != nil || ok {
@@ -750,6 +757,13 @@ func (r *DeviceRegistry) RangeByUplinkMatches(ctx context.Context, up *ttnpb.Upl
 				}
 			}()
 
+			switch ctxTntID {
+			case tntID:
+			case cluster.PacketBrokerTenantID:
+				ctx = tenant.NewContext(ctx, tntID)
+			default:
+				return false, nil
+			}
 			ids, err := unique.ToDeviceID(uid)
 			if err != nil {
 				log.FromContext(ctx).WithError(err).
