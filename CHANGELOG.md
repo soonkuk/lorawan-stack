@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Store and retrieve billing identifiers from database.
   - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added column.
 - Functionality to allow admin users to list all organizations in the Console.
+- Downlink count for end devices in the Console.
 
 ### Changed
 
@@ -62,6 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - End device import in the Console crashing in Firefox.
 - Creation of multicast end devices in the Console.
 - Propagation of `cluster.tls-server-name` when using `cluster.discovery-mode=DNS`.
+- Overwriting values in the end device wizard in the Console.
+- Redirect loops when logging out of the Console if the Console OAuth client had no logout redirect URI(s) set.
 
 ### Security
 
