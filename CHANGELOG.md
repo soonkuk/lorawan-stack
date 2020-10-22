@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Store and retrieve billing identifiers from database.
   - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added column.
 - Functionality to allow admin users to list all organizations in the Console.
+- Storage Integration.
+  - This requires additional configuration and initialization of the database schema (`ttn-lw-stack storage-db init`). A PostgreSQL-compatible database is required, and it is highly recommended to setup a separate database instance; avoid re-using the IS database.
 
 ### Changed
 
