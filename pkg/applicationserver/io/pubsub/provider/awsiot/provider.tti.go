@@ -5,8 +5,10 @@ package awsiot
 
 import (
 	"context"
+	"encoding/base32"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -19,6 +21,7 @@ import (
 	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io/pubsub/provider"
 	"go.thethings.network/lorawan-stack/v3/pkg/applicationserver/io/pubsub/provider/mqtt"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
+	"go.thethings.network/lorawan-stack/v3/pkg/random"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 )
 
@@ -104,7 +107,11 @@ func (impl) OpenConnection(ctx context.Context, target provider.Target) (pc *pro
 	topics := provider.Topics(target)
 	if defaultIntegration := settings.AWSIoT.GetDefault(); defaultIntegration != nil {
 		if mqttSettings.ClientID == "" {
-			mqttSettings.ClientID = fmt.Sprintf("thethings-%s", defaultIntegration.StackName)
+			mqttSettings.ClientID = fmt.Sprintf(
+				"thethings-%s-%s",
+				defaultIntegration.StackName,
+				strings.ToLower(base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(random.Bytes(5))),
+			)
 		}
 		topics = &defaultIntegrationTopics{
 			baseTopic: fmt.Sprintf(defaultIntegrationBaseTopicFormat, defaultIntegration.StackName),

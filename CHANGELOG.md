@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve LinkADRReq scheduling condition computation and, as a consequence, downlink task efficiency.
 - CUPS Server only accepts The Things Stack API Key for token auth.
 - Improve MQTT Pub/Sub task restart conditions and error propagation.
+- AWS IoT MQTT client ID that now contains some random entropy.
 
 ### Deprecated
 
