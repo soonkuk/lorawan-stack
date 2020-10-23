@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"time"
 
-	"go.thethings.network/lorawan-stack/v3/pkg/basicstation"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws"
@@ -44,7 +43,7 @@ func (f *tabsHubs) HandleConnectionInfo(ctx context.Context, raw []byte, server 
 	euiWithPrefix := fmt.Sprintf("eui-%s", ids.EUI.String())
 	res := DiscoverResponse{
 		EUI: req.EUI,
-		Muxs: basicstation.EUI{
+		Muxs: EUI{
 			Prefix: "muxs",
 		},
 		URI: fmt.Sprintf("%s://%s%s/%s", info.Scheme, info.Address, trafficEndPointPrefix, euiWithPrefix),

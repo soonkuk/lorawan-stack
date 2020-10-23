@@ -10,7 +10,6 @@ import (
 	"math"
 	"time"
 
-	"go.thethings.network/lorawan-stack/v3/pkg/basicstation"
 	"go.thethings.network/lorawan-stack/v3/pkg/encoding/lorawan"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io"
@@ -46,12 +45,12 @@ type RadioMetaData struct {
 
 // JoinRequest is the LoRaWAN Join Request message from Tabs Hubs protocol.
 type JoinRequest struct {
-	MHdr     uint             `json:"MHdr"`
-	JoinEUI  basicstation.EUI `json:"JoinEui"`
-	DevEUI   basicstation.EUI `json:"DevEui"`
-	DevNonce uint             `json:"DevNonce"`
-	MIC      int32            `json:"MIC"`
-	RefTime  float64          `json:"RefTime"`
+	MHdr     uint    `json:"MHdr"`
+	JoinEUI  EUI     `json:"JoinEui"`
+	DevEUI   EUI     `json:"DevEui"`
+	DevNonce uint    `json:"DevNonce"`
+	MIC      int32   `json:"MIC"`
+	RefTime  float64 `json:"RefTime"`
 	RadioMetaData
 }
 
@@ -96,9 +95,9 @@ func (updf UplinkDataFrame) MarshalJSON() ([]byte, error) {
 
 // TxConfirmation is the LoRaWAN Join Request message from the Tabs Hubs protocol.
 type TxConfirmation struct {
-	SeqNo    int64            `json:"seqno"`
-	RouterID int64            `json:"routerid"` // The gateway ID as an number. Not used.
-	DevEUI   basicstation.EUI `json:"DevEui"`
+	SeqNo    int64 `json:"seqno"`
+	RouterID int64 `json:"routerid"` // The gateway ID as an number. Not used.
+	DevEUI   EUI   `json:"DevEui"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -197,11 +196,11 @@ func (req *JoinRequest) FromUplinkMessage(up *ttnpb.UplinkMessage, bandID string
 		return errUplinkMessage.New()
 	}
 
-	req.DevEUI = basicstation.EUI{
+	req.DevEUI = EUI{
 		EUI64: jreqPayload.DevEUI,
 	}
 
-	req.JoinEUI = basicstation.EUI{
+	req.JoinEUI = EUI{
 		EUI64: jreqPayload.JoinEUI,
 	}
 

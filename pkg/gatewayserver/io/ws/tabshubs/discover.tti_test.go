@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/smartystreets/assertions"
-	"go.thethings.network/lorawan-stack/v3/pkg/basicstation"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 	"go.thethings.network/lorawan-stack/v3/pkg/types"
@@ -40,14 +39,14 @@ func TestDiscover(t *testing.T) {
 		{
 			Name: "Valid",
 			Query: DiscoverQuery{
-				EUI: basicstation.EUI{
+				EUI: EUI{
 					Prefix: "router",
 					EUI64:  eui,
 				},
 			},
 			ExpectedResponse: DiscoverResponse{
-				EUI: basicstation.EUI{Prefix: "router", EUI64: eui},
-				Muxs: basicstation.EUI{
+				EUI: EUI{Prefix: "router", EUI64: eui},
+				Muxs: EUI{
 					Prefix: "muxs",
 				},
 				URI: "wss://thethings.example.com:8887/traffic/eui-1111111111111111",

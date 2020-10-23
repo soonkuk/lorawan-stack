@@ -5,7 +5,6 @@ package tabshubs
 import (
 	"encoding/json"
 
-	"go.thethings.network/lorawan-stack/v3/pkg/basicstation"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 )
 
@@ -27,16 +26,16 @@ const (
 // DiscoverQuery contains the unique identifier of the gateway.
 // This message is sent by the gateway.
 type DiscoverQuery struct {
-	EUI basicstation.EUI `json:"router"`
+	EUI EUI `json:"router"`
 }
 
 // DiscoverResponse contains the response to the discover query.
 // This message is sent by the Gateway Server.
 type DiscoverResponse struct {
-	EUI   basicstation.EUI `json:"router"`
-	Muxs  basicstation.EUI `json:"muxs,omitempty"`
-	URI   string           `json:"uri,omitempty"`
-	Error string           `json:"error,omitempty"`
+	EUI   EUI    `json:"router"`
+	Muxs  EUI    `json:"muxs,omitempty"`
+	URI   string `json:"uri,omitempty"`
+	Error string `json:"error,omitempty"`
 }
 
 var errNotSupported = errors.DefineFailedPrecondition("not_supported", "not supported")
