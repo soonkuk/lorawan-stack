@@ -59,7 +59,8 @@ type Config struct {
 	MQTTV2       config.MQTT        `name:"mqtt-v2"`
 	UDP          UDPConfig          `name:"udp"`
 	BasicStation BasicStationConfig `name:"basic-station"`
-	TabsHubs     TabsHubsConfig     `name:"tabs-hubs"`
+
+	TabsHubs TabsHubsConfig `name:"tabs-hubs"`
 }
 
 // ForwardDevAddrPrefixes parses the configured forward map.

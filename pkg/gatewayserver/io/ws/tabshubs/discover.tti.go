@@ -63,7 +63,7 @@ func logAndWrapDiscoverError(ctx context.Context, err error, msg string) []byte 
 	logger.WithError(err).Warn(msg)
 	errMsg, err := json.Marshal(DiscoverResponse{Error: msg})
 	if err != nil {
-		logger.WithError(err).Warn("Failed to marshal error message")
+		logger.WithError(err).Error("Failed to marshal error message")
 		return nil
 	}
 	return errMsg

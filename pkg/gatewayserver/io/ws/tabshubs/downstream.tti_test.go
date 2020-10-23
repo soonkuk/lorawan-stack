@@ -7,11 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"go.thethings.network/lorawan-stack/v3/pkg/tenant"
-	"go.thethings.network/lorawan-stack/v3/pkg/ttipb"
-
 	"github.com/smartystreets/assertions"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws"
+	"go.thethings.network/lorawan-stack/v3/pkg/tenant"
+	"go.thethings.network/lorawan-stack/v3/pkg/ttipb"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 	"go.thethings.network/lorawan-stack/v3/pkg/unique"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/test/assertions/should"

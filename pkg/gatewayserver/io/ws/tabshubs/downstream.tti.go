@@ -28,8 +28,8 @@ type DownlinkMessage struct {
 	MuxTime float64 `json:"MuxTime"`
 }
 
-// marshalJSON marshals dnmsg to a JSON byte array.
-func (dnmsg DownlinkMessage) marshalJSON() ([]byte, error) {
+// MarshalJSON marshals dnmsg to a JSON byte array.
+func (dnmsg DownlinkMessage) MarshalJSON() ([]byte, error) {
 	type Alias DownlinkMessage
 	return json.Marshal(struct {
 		Type string `json:"msgtype"`
@@ -66,7 +66,6 @@ func (f *tabsHubs) FromDownlink(ctx context.Context, uid string, down ttnpb.Down
 
 	dnmsg.XTime = int64(state.ID)<<48 | (int64(concentratorTime) / int64(time.Microsecond) & 0xFFFFFFFFFF)
 
-	// TODO: Check this
 	dnmsg.DevEUI = "00-00-00-00-00-00-00-00"
 
 	// Fix the Tx Parameters since we don't use the gateway scheduler.
@@ -76,7 +75,7 @@ func (f *tabsHubs) FromDownlink(ctx context.Context, uid string, down ttnpb.Down
 	// Add the MuxTime for RTT measurement
 	dnmsg.MuxTime = float64(dlTime.UnixNano()) / float64(time.Second)
 
-	return dnmsg.marshalJSON()
+	return dnmsg.MarshalJSON()
 }
 
 // ToDownlinkMessage translates the LNS DownlinkMessage "dnmsg" to ttnpb.DownlinkMessage.
