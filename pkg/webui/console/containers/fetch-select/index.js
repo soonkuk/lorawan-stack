@@ -33,7 +33,7 @@ export default function({
   defaultTitle,
   optionsFormatter = formatOptions,
   defaultDescription,
-  additionalOptions,
+  additionalOptions = [],
 }) {
   @storeConnect(
     function(state) {

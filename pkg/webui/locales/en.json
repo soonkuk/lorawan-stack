@@ -201,7 +201,7 @@
   "console.containers.freq-plans-select.index.title": "Frequency plan",
   "console.containers.freq-plans-select.index.warning": "Frequency plans unavailable",
   "console.containers.freq-plans-select.index.description": "The frequency plan used by the end device",
-  "console.containers.freq-plans-select.index.none": "Do not use a frequency plan",
+  "console.containers.freq-plans-select.index.none": "Do not set a frequency plan",
   "console.containers.gateway-location-form.gateway-location-form.locationDescription": "The location of this gateway may be publicly displayed",
   "console.containers.gateway-location-form.gateway-location-form.updateLocationFromStatus": "Update from status messages",
   "console.containers.gateway-location-form.gateway-location-form.updateLocationFromStatusDescription": "Update the location of this gateway based on incoming status messages",
