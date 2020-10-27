@@ -46,6 +46,7 @@ import (
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/udp"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws/lbslns"
+	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws/tabshubs"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/upstream"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/upstream/ns"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/upstream/packetbroker"
@@ -289,6 +290,20 @@ func New(c *component.Component, conf *Config, opts ...Option) (gs *GatewayServe
 					UseTrafficTLSAddress: conf.BasicStation.UseTrafficTLSAddress,
 					WSPingInterval:       conf.BasicStation.WSPingInterval,
 					AllowUnauthenticated: conf.BasicStation.AllowUnauthenticated,
+				},
+			},
+		},
+		{
+			Name:      "tabshubs",
+			Formatter: tabshubs.NewFormatter(),
+			listenerConfig: listenerConfig{
+				fallbackFreqPlanID: conf.TabsHubs.FallbackFrequencyPlanID,
+				listen:             conf.TabsHubs.Listen,
+				listenTLS:          conf.TabsHubs.ListenTLS,
+				frontend: ws.Config{
+					UseTrafficTLSAddress: conf.TabsHubs.UseTrafficTLSAddress,
+					WSPingInterval:       conf.TabsHubs.WSPingInterval,
+					AllowUnauthenticated: conf.TabsHubs.AllowUnauthenticated,
 				},
 			},
 		},

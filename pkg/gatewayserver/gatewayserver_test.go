@@ -42,6 +42,7 @@ import (
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/udp"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws/lbslns"
+	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/io/ws/tabshubs"
 	gsredis "go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/redis"
 	"go.thethings.network/lorawan-stack/v3/pkg/gatewayserver/upstream/mock"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcclient"
@@ -112,6 +113,13 @@ func TestGatewayServer(t *testing.T) {
 		},
 		BasicStation: gatewayserver.BasicStationConfig{
 			Listen: ":1887",
+			Config: ws.Config{
+				WSPingInterval:       wsPingInterval,
+				AllowUnauthenticated: true,
+			},
+		},
+		TabsHubs: gatewayserver.TabsHubsConfig{
+			Listen: ":1888",
 			Config: ws.Config{
 				WSPingInterval:       wsPingInterval,
 				AllowUnauthenticated: true,
@@ -522,6 +530,109 @@ func TestGatewayServer(t *testing.T) {
 							return
 						}
 						var msg lbslns.DownlinkMessage
+						if err := json.Unmarshal(data, &msg); err != nil {
+							cancel(err)
+							return
+						}
+						dlmesg := msg.ToDownlinkMessage()
+						downCh <- &ttnpb.GatewayDown{
+							DownlinkMessage: &dlmesg,
+						}
+					}
+				}()
+				<-ctx.Done()
+				return ctx.Err()
+			},
+		},
+		{
+			Protocol:               "tabshubs",
+			SupportsStatus:         false,
+			DetectsDisconnect:      true,
+			DetectsInvalidMessages: true,
+			ValidAuth: func(ctx context.Context, ids ttnpb.GatewayIdentifiers, key string) bool {
+				return ids.EUI != nil
+			},
+			Link: func(ctx context.Context, t *testing.T, ids ttnpb.GatewayIdentifiers, key string, upCh <-chan *ttnpb.GatewayUp, downCh chan<- *ttnpb.GatewayDown) error {
+				if ids.EUI == nil {
+					t.SkipNow()
+				}
+				wsConn, _, err := websocket.DefaultDialer.Dial("ws://0.0.0.0:1888/traffic/"+registeredGatewayID, nil)
+				if err != nil {
+					return err
+				}
+				defer wsConn.Close()
+				ctx, cancel := errorcontext.New(ctx)
+				// Write upstream.
+				go func() {
+					for {
+						select {
+						case <-ctx.Done():
+							return
+						case msg := <-upCh:
+							for _, uplink := range msg.UplinkMessages {
+								var payload ttnpb.Message
+								if err := lorawan.UnmarshalMessage(uplink.RawPayload, &payload); err != nil {
+									// Ignore invalid uplinks
+									continue
+								}
+								var thUpstream []byte
+								if payload.GetMType() == ttnpb.MType_JOIN_REQUEST {
+									var jreq tabshubs.JoinRequest
+									err := jreq.FromUplinkMessage(uplink, test.EUFrequencyPlanID)
+									if err != nil {
+										cancel(err)
+										return
+									}
+									thUpstream, err = jreq.MarshalJSON()
+									if err != nil {
+										cancel(err)
+										return
+									}
+								}
+								if payload.GetMType() == ttnpb.MType_UNCONFIRMED_UP || payload.GetMType() == ttnpb.MType_CONFIRMED_UP {
+									var updf tabshubs.UplinkDataFrame
+									err := updf.FromUplinkMessage(uplink, test.EUFrequencyPlanID)
+									if err != nil {
+										cancel(err)
+										return
+									}
+									thUpstream, err = updf.MarshalJSON()
+									if err != nil {
+										cancel(err)
+										return
+									}
+								}
+								if err := wsConn.WriteMessage(websocket.TextMessage, thUpstream); err != nil {
+									cancel(err)
+									return
+								}
+							}
+							if msg.TxAcknowledgment != nil {
+								txConf := tabshubs.TxConfirmation{
+									SeqNo: 0,
+								}
+								thUpstream, err := txConf.MarshalJSON()
+								if err != nil {
+									cancel(err)
+									return
+								}
+								if err := wsConn.WriteMessage(websocket.TextMessage, thUpstream); err != nil {
+									cancel(err)
+									return
+								}
+							}
+						}
+					}
+				}()
+				// Read downstream.
+				go func() {
+					for {
+						_, data, err := wsConn.ReadMessage()
+						if err != nil {
+							cancel(err)
+							return
+						}
+						var msg tabshubs.DownlinkMessage
 						if err := json.Unmarshal(data, &msg); err != nil {
 							cancel(err)
 							return
