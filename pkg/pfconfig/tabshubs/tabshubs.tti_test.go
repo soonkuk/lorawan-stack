@@ -3,7 +3,6 @@
 package tabshubs
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -135,7 +134,6 @@ func TestGetRouterConfig(t *testing.T) {
 				t.Fatalf("Expected error")
 			} else {
 				cfg.MuxTime = 0
-				fmt.Println(cfg.UpChannels)
 				if !a.So(cfg, should.Resemble, tc.Cfg) {
 					t.Fatalf("Invalid config: %v", cfg)
 				}
@@ -145,7 +143,6 @@ func TestGetRouterConfig(t *testing.T) {
 }
 
 func TestGetDataRatesFromFrequencyPlan(t *testing.T) {
-	a := assertions.New(t)
 	for _, tc := range []struct {
 		Name           string
 		BandID         string
@@ -193,6 +190,7 @@ func TestGetDataRatesFromFrequencyPlan(t *testing.T) {
 		},
 	} {
 		t.Run(tc.Name, func(t *testing.T) {
+			a := assertions.New(t)
 			drs, err := getDataRatesFromBandID(tc.BandID)
 			if err != nil && (tc.ErrorAssertion == nil || !a.So(tc.ErrorAssertion(err), should.BeTrue)) {
 				t.Fatalf("Unexpected error: %v", err)
