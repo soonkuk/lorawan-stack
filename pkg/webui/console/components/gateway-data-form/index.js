@@ -15,7 +15,6 @@
 import React from 'react'
 import bind from 'autobind-decorator'
 import { defineMessages } from 'react-intl'
-import { omit } from 'lodash'
 
 import delay from '@console/constants/delays'
 import frequencyPlans from '@console/constants/frequency-plans'
@@ -156,7 +155,9 @@ class GatewayDataForm extends React.Component {
     const { onSubmit } = this.props
 
     const castedValues = validationSchema.cast(
-      this.isNoFrequencyPlan(values.frequency_plan_id) ? omit(values, 'frequency_plan_id') : values,
+      this.isNoFrequencyPlan(values.frequency_plan_id)
+        ? { ...values, frequency_plan_id: '' }
+        : values,
     )
 
     onSubmit(castedValues, helpers)
