@@ -20,6 +20,8 @@ import { Col, Row, Container } from 'react-grid-system'
 import { bindActionCreators } from 'redux'
 import { replace } from 'connected-react-router'
 
+import frequencyPlans from '@console/constants/frequency-plans'
+
 import toast from '@ttn-lw/components/toast'
 import { withBreadcrumb } from '@ttn-lw/components/breadcrumbs/context'
 import Breadcrumb from '@ttn-lw/components/breadcrumbs/breadcrumb'
@@ -176,7 +178,7 @@ export default class GatewayGeneralSettings extends React.Component {
     const initialValues = {
       ids: { ...ids },
       gateway_server_address,
-      frequency_plan_id,
+      frequency_plan_id: frequency_plan_id ? frequency_plan_id : frequencyPlans.EMPTY_FREQ_PLAN,
       enforce_duty_cycle,
       name,
       description,
