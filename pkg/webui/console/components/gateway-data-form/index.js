@@ -18,6 +18,7 @@ import { defineMessages } from 'react-intl'
 import { omit } from 'lodash'
 
 import delay from '@console/constants/delays'
+import frequencyPlans from '@console/constants/frequency-plans'
 
 import Form from '@ttn-lw/components/form'
 import Input from '@ttn-lw/components/input'
@@ -177,7 +178,7 @@ class GatewayDataForm extends React.Component {
   }
 
   isNoFrequencyPlan(value) {
-    return Boolean(value === 'no-frequency-plan')
+    return Boolean(value === frequencyPlans.EMPTY_FREQ_PLAN)
   }
 
   isNotValidDuration(value) {
