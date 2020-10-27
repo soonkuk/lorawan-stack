@@ -34,8 +34,6 @@ const m = defineMessages({
 
 const formatOptions = plans => plans.map(plan => ({ value: plan.id, label: plan.name }))
 
-const additionalGsFrequencyPlans = [{ value: 'no-frequency-plan', label: m.none }]
-
 const CreateFrequencyPlansSelector = source =>
   CreateFetchSelect({
     fetchOptions: source === 'ns' ? getNsFrequencyPlans : getGsFrequencyPlans,
@@ -46,7 +44,7 @@ const CreateFrequencyPlansSelector = source =>
     defaultTitle: m.title,
     optionsFormatter: formatOptions,
     defaultDescription: m.description,
-    additionalOptions: source === 'gs' ? additionalGsFrequencyPlans : [],
+    additionalOptions: source === 'gs' ? [{ value: 'no-frequency-plan', label: m.none }] : [],
   })
 
 export const GsFrequencyPlansSelect = CreateFrequencyPlansSelector('gs')
