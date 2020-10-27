@@ -119,7 +119,7 @@ func TestGatewayServer(t *testing.T) {
 			},
 		},
 		TabsHubs: gatewayserver.TabsHubsConfig{
-			Listen: ":7000",
+			Listen: ":1888",
 			Config: ws.Config{
 				WSPingInterval:       wsPingInterval,
 				AllowUnauthenticated: true,
@@ -556,7 +556,7 @@ func TestGatewayServer(t *testing.T) {
 				if ids.EUI == nil {
 					t.SkipNow()
 				}
-				wsConn, _, err := websocket.DefaultDialer.Dial("ws://0.0.0.0:7000/traffic/"+registeredGatewayID, nil)
+				wsConn, _, err := websocket.DefaultDialer.Dial("ws://0.0.0.0:1888/traffic/"+registeredGatewayID, nil)
 				if err != nil {
 					return err
 				}
