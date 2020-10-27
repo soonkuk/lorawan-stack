@@ -118,7 +118,14 @@ class GatewayDataForm extends React.Component {
     children: PropTypes.node.isRequired,
     error: PropTypes.error,
     /** React reference to be passed to the form. */
-    formRef: PropTypes.shape({}),
+    formRef: PropTypes.shape({
+      current: PropTypes.shape({
+        setFieldTouched: PropTypes.func,
+        values: PropTypes.shape({
+          frequency_plan_id: PropTypes.string,
+        }),
+      }),
+    }),
     initialValues: PropTypes.gateway,
     onSubmit: PropTypes.func.isRequired,
     update: PropTypes.bool,
@@ -140,13 +147,32 @@ class GatewayDataForm extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const { update } = this.props
+    const { values } = this.props.formRef.current
+
+    if (this.isNoFrequencyPlan(values.frequency_plan_id) && update) {
+      this.setFrequencyPlanTouched()
+      this.setState({
+        showFrequencyPlanWarning: true,
+      })
+    }
+  }
+
   @bind
   onScheduleAnytimeDelayChange(value) {
     this.setState({ shouldDisplayWarning: this.isNotValidDuration(value) })
   }
 
   @bind
+  setFrequencyPlanTouched() {
+    const { setFieldTouched } = this.props.formRef.current
+    setFieldTouched('frequency_plan_id')
+  }
+
+  @bind
   handleFrequencyPlanChange(freqPlan) {
+    this.setFrequencyPlanTouched()
     this.setState({ showFrequencyPlanWarning: this.isNoFrequencyPlan(freqPlan.value) })
   }
 

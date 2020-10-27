@@ -119,6 +119,7 @@ export default class GatewayAdd extends React.Component {
               onSubmit={this.handleSubmit}
               initialValues={initialValues}
               update={false}
+              formRef={React.createRef()}
             >
               <FormSubmit component={SubmitButton} message={m.createGateway} />
             </GatewayDataForm>
