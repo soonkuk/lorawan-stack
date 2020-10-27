@@ -3,7 +3,9 @@
 All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+with the exception that this project **does not** follow Semantic Versioning.
+
+For details about compatibility between different releases, see the **Commitments and Releases** section of our README.
 
 ## [Unreleased]
 
@@ -42,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CUPS Server only accepts The Things Stack API Key for token auth.
 - Improve MQTT Pub/Sub task restart conditions and error propagation.
 - AWS IoT MQTT client ID that now contains some random entropy.
+- Pausing event streams is not saving up arriving events during the pause anymore.
 
 ### Deprecated
 
@@ -67,6 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Propagation of `cluster.tls-server-name` when using `cluster.discovery-mode=DNS`.
 - Overwriting values in the end device wizard in the Console.
 - Redirect loops when logging out of the Console if the Console OAuth client had no logout redirect URI(s) set.
+- Event selection not working properly when the event stream is paused in the Console.
 
 ### Security
 
