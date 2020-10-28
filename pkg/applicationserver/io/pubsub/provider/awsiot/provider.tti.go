@@ -172,6 +172,12 @@ func (t defaultIntegrationTopics) GetDownlinkQueued() *ttnpb.ApplicationPubSub_M
 	}
 }
 
+func (t defaultIntegrationTopics) GetDownlinkQueueInvalidated() *ttnpb.ApplicationPubSub_Message {
+	return &ttnpb.ApplicationPubSub_Message{
+		Topic: "downlink/invalidated",
+	}
+}
+
 func (t defaultIntegrationTopics) GetLocationSolved() *ttnpb.ApplicationPubSub_Message {
 	return &ttnpb.ApplicationPubSub_Message{
 		Topic: "location/solved",

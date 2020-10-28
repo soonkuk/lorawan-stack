@@ -52,6 +52,8 @@ func main() {
 		pb = &ttnpb.EndDevice{}
 	case "ttnpb.GatewayConnectionStats":
 		pb = &ttnpb.GatewayConnectionStats{}
+	case "ttnpb.ApplicationActivationSettings":
+		pb = &ttnpb.ApplicationActivationSettings{}
 	default:
 		log.Printf("Unknown type: `%s`", *typ)
 		flag.Usage()

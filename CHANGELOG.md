@@ -34,6 +34,8 @@ For details about compatibility between different releases, see the **Commitment
   - This requires additional configuration and initialization of the database schema (`ttn-lw-stack storage-db init`). A PostgreSQL-compatible database is required, and it is highly recommended to setup a separate database instance; avoid re-using the IS database.
 - Downlink count for end devices in the Console.
 - Support for Tabs Hubs gateways.
+- Support for Application Activation Settings in the Join Server to configure Application Server KEK, ID and Home NetID.
+- Downlink queue invalidated message sent upstream by Application Server to support applications to re-encrypt the downlink queue when Application Server skips FRMPayload crypto.
 
 ### Changed
 
@@ -46,6 +48,8 @@ For details about compatibility between different releases, see the **Commitment
 - Improve MQTT Pub/Sub task restart conditions and error propagation.
 - AWS IoT MQTT client ID that now contains some random entropy.
 - Pausing event streams is not saving up arriving events during the pause anymore.
+- Gateway server can now update the gateway location only if the gateway is authenticated.
+- Right to manage links on Application Server is now `RIGHT_APPLICATION_SETTINGS_BASIC`.
 
 ### Deprecated
 
