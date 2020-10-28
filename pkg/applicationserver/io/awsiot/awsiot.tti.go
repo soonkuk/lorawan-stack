@@ -69,6 +69,8 @@ func NewSubscription(ctx context.Context, config asaws.Config) (*io.Subscription
 					upType = "down/failed"
 				case *ttnpb.ApplicationUp_DownlinkQueued:
 					upType = "down/queued"
+				case *ttnpb.ApplicationUp_DownlinkQueueInvalidated:
+					upType = "down/invalidated"
 				case *ttnpb.ApplicationUp_LocationSolved:
 					upType = "location"
 				default:
