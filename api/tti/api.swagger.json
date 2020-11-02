@@ -22,7 +22,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -44,7 +44,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -100,7 +100,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -132,7 +132,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -170,7 +170,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -211,7 +211,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -252,7 +252,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -363,8 +363,7 @@
       "type": "object",
       "properties": {
         "disable_upload": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         }
       }
     },
@@ -372,12 +371,10 @@
       "type": "object",
       "properties": {
         "disable_upload": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "use_gravatar": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         }
       }
     },
@@ -402,8 +399,7 @@
       "type": "object",
       "properties": {
         "required": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         }
       }
     },
@@ -411,8 +407,7 @@
       "type": "object",
       "properties": {
         "required": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "token_ttl": {
           "type": "string"
@@ -423,20 +418,16 @@
       "type": "object",
       "properties": {
         "create_applications": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "create_clients": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "create_gateways": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "create_organizations": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         }
       }
     },
@@ -469,8 +460,7 @@
       "type": "object",
       "properties": {
         "required": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         }
       }
     },
@@ -595,8 +585,7 @@
           "type": "string"
         },
         "public": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "validated_at": {
           "type": "string",
@@ -854,8 +843,7 @@
           "format": "date-time"
         },
         "require_password_update": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "state": {
           "$ref": "#/definitions/v3State",
@@ -863,7 +851,6 @@
         },
         "admin": {
           "type": "boolean",
-          "format": "boolean",
           "description": "This user is an admin.\nThis field can only be modified by other admins."
         },
         "temporary_password": {
