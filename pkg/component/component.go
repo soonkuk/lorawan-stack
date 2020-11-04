@@ -36,6 +36,7 @@ import (
 	"go.thethings.network/lorawan-stack/v3/pkg/interop"
 	"go.thethings.network/lorawan-stack/v3/pkg/log"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcserver"
+	"go.thethings.network/lorawan-stack/v3/pkg/tenant"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 	"go.thethings.network/lorawan-stack/v3/pkg/web"
 	"golang.org/x/crypto/acme/autocert"
@@ -240,7 +241,7 @@ func (c *Component) AddContextFiller(f fillcontext.Filler) {
 // FromRequestContext returns a derived context from the component context with key values from the request context.
 // This can be used to decouple the lifetime from the request context while keeping security information.
 func (c *Component) FromRequestContext(ctx context.Context) context.Context {
-	return c.ctx
+	return tenant.NewContext(c.ctx, tenant.FromContext(ctx))
 }
 
 // Start starts the component.
