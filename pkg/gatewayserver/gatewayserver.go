@@ -798,9 +798,8 @@ func (gs *GatewayServer) updateConnStats(conn connectionEntry) {
 
 	defer func() {
 		logger.Debug("Delete connection stats")
-
-		if err := gs.ClearConnectionStats(conn.Connection); err != nil {
-			logger.WithError(err).Error("Failed to delete connection stats")
+		if err := gs.statsRegistry.Set(gs.FromRequestContext(ctx), conn.Gateway().GatewayIdentifiers, nil); err != nil {
+			logger.WithError(err).Error("Failed to clear connection stats")
 		}
 	}()
 
@@ -810,11 +809,9 @@ func (gs *GatewayServer) updateConnStats(conn connectionEntry) {
 			return
 		case <-conn.StatsChanged():
 		}
-
-		if err := gs.UpdateConnectionStats(conn.Connection); err != nil {
+		if err := gs.statsRegistry.Set(ctx, conn.Gateway().GatewayIdentifiers, conn.Stats()); err != nil {
 			logger.WithError(err).Error("Failed to update connection stats")
 		}
-
 		timeout := time.After(gs.updateConnectionStatsDebounceTime)
 		select {
 		case <-ctx.Done():
@@ -978,14 +975,4 @@ func recoverHandler(ctx context.Context) error {
 		return err
 	}
 	return nil
-}
-
-// UpdateConnectionStats updates the connection stats for a gateway.
-func (gs *GatewayServer) UpdateConnectionStats(conn *io.Connection) error {
-	return gs.statsRegistry.Set(conn.Context(), conn.Gateway().GatewayIdentifiers, conn.Stats())
-}
-
-// ClearConnectionStats clears the connection stats for a gateway.
-func (gs *GatewayServer) ClearConnectionStats(conn *io.Connection) error {
-	return gs.statsRegistry.Set(conn.Context(), conn.Gateway().GatewayIdentifiers, nil)
 }
