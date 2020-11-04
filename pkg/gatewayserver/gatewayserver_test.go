@@ -1344,7 +1344,7 @@ func TestGatewayServer(t *testing.T) {
 						a.So(ok, should.BeTrue)
 						a.So(conn.Stats(), should.NotBeNil)
 						if config.Stats != nil {
-							a.So(gs.UpdateConnectionStats(conn), should.BeNil)
+							a.So(config.Stats.Set(conn.Context(), ids, conn.Stats()), should.BeNil)
 						}
 
 						stats, err := statsClient.GetGatewayConnectionStats(statsCtx, &ids)
@@ -1630,7 +1630,7 @@ func TestGatewayServer(t *testing.T) {
 						a.So(ok, should.BeTrue)
 						a.So(conn.Stats(), should.NotBeNil)
 						if config.Stats != nil {
-							a.So(gs.UpdateConnectionStats(conn), should.BeNil)
+							a.So(config.Stats.Set(conn.Context(), ids, conn.Stats()), should.BeNil)
 						}
 
 						stats, err := statsClient.GetGatewayConnectionStats(statsCtx, &ids)
