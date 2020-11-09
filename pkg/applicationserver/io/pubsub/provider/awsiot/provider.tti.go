@@ -103,6 +103,14 @@ func (impl) OpenConnection(ctx context.Context, target provider.Target) (pc *pro
 			}
 			return req.Header, nil
 		},
+
+		// AWS IoT Core MQTT does not seem to handle fragmentation using websocket continuation frames:
+		//   websocket: close 1003 (unsupported data): Text or Continuation frame is not supported
+		// Paho's underlying websocket library github.com/gorilla/websocket uses fragmentation when the message exceeds the
+		// configured write buffer size (default 4 KiB). Therefore, it is increased to a sufficiently high value to allow
+		// for large metadata and uplink tokens.
+		WebSocketReadBufferSize:  10 * 1024,
+		WebSocketWriteBufferSize: 10 * 1024,
 	}
 	topics := provider.Topics(target)
 	if defaultIntegration := settings.AWSIoT.GetDefault(); defaultIntegration != nil {
