@@ -158,3 +158,41 @@ func (p TTIProto) All(ctx context.Context) {
 func (p TTIProto) Clean(ctx context.Context) {
 	mg.CtxDeps(ctx, TTIProto.GoClean, TTIProto.SwaggerClean, TTIProto.MarkdownClean, TTIProto.JsSDKClean)
 }
+
+// HugoData generates Hugo data files.
+func (p TTIProto) HugoData(context.Context) error {
+	for _, api := range []string{"api", "api/tti"} {
+		if err := withProtoc(func(pCtx *protocContext, protoc func(...string) error) error {
+			if err := protoc(
+				fmt.Sprintf("--hugodata_out=output_path=%[1]s:%[1]s", filepath.Join(pCtx.WorkingDirectory)),
+				fmt.Sprintf("%s/%s/*.proto", pCtx.WorkingDirectory, api),
+			); err != nil {
+				return fmt.Errorf("failed to generate protos: %w", err)
+			}
+			return nil
+		}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// HugoDataClean removes generated Hugo data files.
+func (p TTIProto) HugoDataClean(context.Context) error {
+	for _, api := range []string{"ttn", "tti"} {
+		if err := filepath.Walk(filepath.Join("api", fmt.Sprintf("%s.lorawan.v3", api)), func(path string, _ os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			for _, ext := range []string{"enums.yml", "messages.yml", "services.yml"} {
+				if strings.HasSuffix(path, ext) {
+					return sh.Rm(path)
+				}
+			}
+			return nil
+		}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
