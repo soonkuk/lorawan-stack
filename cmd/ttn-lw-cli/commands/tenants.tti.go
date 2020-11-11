@@ -232,7 +232,7 @@ var (
 				tenant = &ttipb.Tenant{TenantIdentifiers: *tenantID}
 			}
 
-			if err := util.SetFields(&tenant, setTenantFlags); err != nil {
+			if err := util.SetFields(tenant, setTenantFlags); err != nil {
 				return err
 			}
 			tenant.Attributes = mergeAttributes(tenant.Attributes, cmd.Flags())
