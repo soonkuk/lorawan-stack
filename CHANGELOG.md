@@ -11,13 +11,24 @@ For details about compatibility between different releases, see the **Commitment
 
 ### Added
 
+- More password validation rules in the user management form in the Console.
+
 ### Changed
+
+- Limitation of displayed and stored events in the Console to 2000.
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+- Next button title in the end device wizard in the Console.
+- Navigation to the user edit page after creation in the Console.
+- The port number of the `--http.redirect-to-host` option was ignored when `--http.redirect-to-tls` was used. This could lead to situations where the HTTPS server would always redirect to port 443, even if a different one was specified.
+  - If the HTTPS server is available on `https://thethings.example.com:8443`, the following config is required: `--http.redirect-to-tls --http.redirect-to-host=thethings.example.com:8443`.
+- Status display on the error view in the Console.
+- Event views in the Console freezing after receiving thousands of events.
 
 ### Security
 

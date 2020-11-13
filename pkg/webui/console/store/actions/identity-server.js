@@ -12,9 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import ApplicationCollaboratorAdd from './application-collaborator-add'
-import connect from './connect'
+import { createRequestActions } from './lib'
 
-const ConnectedCollaboratorAdd = connect(ApplicationCollaboratorAdd)
-
-export { ConnectedCollaboratorAdd as default, ApplicationCollaboratorAdd }
+export const GET_IS_CONFIGURATION_BASE = 'GET_IS_CONFIGURATION'
+export const [
+  {
+    request: GET_IS_CONFIGURATION,
+    success: GET_IS_CONFIGURATION_SUCCESS,
+    failure: GET_IS_CONFIGURATION_FAILURE,
+  },
+  {
+    request: getIsConfiguration,
+    success: getIsConfigurationSuccess,
+    failure: getIsConfigurationFailure,
+  },
+] = createRequestActions(GET_IS_CONFIGURATION_BASE)

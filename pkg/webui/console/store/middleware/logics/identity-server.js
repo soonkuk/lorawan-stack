@@ -12,9 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import ApplicationCollaboratorAdd from './application-collaborator-add'
-import connect from './connect'
+import api from '@console/api'
 
-const ConnectedCollaboratorAdd = connect(ApplicationCollaboratorAdd)
+import * as is from '@console/store/actions/identity-server'
 
-export { ConnectedCollaboratorAdd as default, ApplicationCollaboratorAdd }
+import createRequestLogic from './lib'
+
+const getIsConfigurationLogic = createRequestLogic({
+  type: is.GET_IS_CONFIGURATION,
+  async process() {
+    return api.is.getConfiguration()
+  },
+})
+
+export default [getIsConfigurationLogic]

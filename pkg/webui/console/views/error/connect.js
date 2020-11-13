@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import ApplicationCollaboratorAdd from './application-collaborator-add'
-import connect from './connect'
+import { connect } from 'react-redux'
 
-const ConnectedCollaboratorAdd = connect(ApplicationCollaboratorAdd)
+import { selectConnectionStatus } from '@console/store/selectors/status'
 
-export { ConnectedCollaboratorAdd as default, ApplicationCollaboratorAdd }
+export default ErrorView =>
+  connect(state => ({
+    isOnline: selectConnectionStatus(state),
+  }))(ErrorView)

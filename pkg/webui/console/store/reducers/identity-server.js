@@ -12,9 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import ApplicationCollaboratorAdd from './application-collaborator-add'
-import connect from './connect'
+import { handleActions } from 'redux-actions'
 
-const ConnectedCollaboratorAdd = connect(ApplicationCollaboratorAdd)
+import { GET_IS_CONFIGURATION_SUCCESS } from '@console/store/actions/identity-server'
 
-export { ConnectedCollaboratorAdd as default, ApplicationCollaboratorAdd }
+const defaultState = {
+  configuration: {},
+}
+
+export default handleActions(
+  {
+    [GET_IS_CONFIGURATION_SUCCESS]: (state, { payload }) => ({
+      ...state,
+      configuration: payload.configuration,
+    }),
+  },
+  defaultState,
+)

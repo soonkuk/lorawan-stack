@@ -12,9 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import ApplicationCollaboratorAdd from './application-collaborator-add'
-import connect from './connect'
+import Marshaler from '../util/marshaler'
 
-const ConnectedCollaboratorAdd = connect(ApplicationCollaboratorAdd)
+class Is {
+  constructor(service) {
+    this._api = service
+  }
 
-export { ConnectedCollaboratorAdd as default, ApplicationCollaboratorAdd }
+  async getConfiguration() {
+    const result = await this._api.GetConfiguration()
+
+    return Marshaler.payloadSingleResponse(result)
+  }
+}
+
+export default Is
