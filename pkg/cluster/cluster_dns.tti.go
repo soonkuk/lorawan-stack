@@ -4,6 +4,7 @@ package cluster
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -197,13 +198,6 @@ func (c *dnsCluster) updatePeers(ctx context.Context) {
 		}
 	}
 
-	options := rpcclient.DefaultDialOptions(c.ctx)
-	if c.tls {
-		options = append(options, grpc.WithTransportCredentials(credentials.NewTLS(c.tlsConfig)))
-	} else {
-		options = append(options, grpc.WithInsecure())
-	}
-
 	var newPeers []*peer
 
 	// Re-use existing peers, connect to new peers.
@@ -218,6 +212,18 @@ func (c *dnsCluster) updatePeers(ctx context.Context) {
 			"name", peer.Name(),
 			"roles", peer.Roles(),
 		))
+		options := rpcclient.DefaultDialOptions(c.ctx)
+		if c.tls {
+			tlsConfig := &tls.Config{}
+			if c.tlsConfig != nil {
+				tlsConfig = c.tlsConfig.Clone()
+			}
+			tlsConfig.ServerName = peer.tlsServerName
+			logger = logger.WithField("tls_server_name", peer.tlsServerName)
+			options = append(options, grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)))
+		} else {
+			options = append(options, grpc.WithInsecure())
+		}
 		logger.Debug("Connecting to peer...")
 		peer.conn, peer.connErr = grpc.DialContext(peer.ctx, peer.target, options...)
 		if peer.connErr != nil {
