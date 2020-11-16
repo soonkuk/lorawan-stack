@@ -31,6 +31,7 @@ For details about compatibility between different releases, see the **Commitment
 
 - Simulated uplinks visibility in webhook messages.
 - Retransmission handling.
+- Use TLS client configuration for all external HTTP calls. This fixes issues where HTTP calls would fail if custom (e.g. self-signed) CAs were used.
 
 ### Security
 

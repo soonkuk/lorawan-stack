@@ -102,6 +102,10 @@ func New(c *component.Component, conf *Config) (as *ApplicationServer, err error
 
 	baseConf := c.GetBaseConfig(ctx)
 
+	transport, err := c.HTTPTransport(ctx)
+	if err != nil {
+		return nil, err
+	}
 	var interopCl InteropClient
 	if !conf.Interop.IsZero() {
 		interopConf := conf.Interop.InteropClient
@@ -109,6 +113,9 @@ func New(c *component.Component, conf *Config) (as *ApplicationServer, err error
 			return c.GetTLSClientConfig(ctx)
 		}
 		interopConf.BlobConfig = baseConf.Blob
+		if interopConf.Transport == nil {
+			interopConf.Transport = transport
+		}
 
 		interopCl, err = interop.NewClient(ctx, interopConf)
 		if err != nil {
@@ -200,6 +207,9 @@ func New(c *component.Component, conf *Config) (as *ApplicationServer, err error
 		c.RegisterWeb(webhooks)
 	}
 
+	if conf.Webhooks.Templates.Transport == nil {
+		conf.Webhooks.Templates.Transport = transport
+	}
 	if as.webhookTemplates, err = conf.Webhooks.Templates.NewTemplateStore(); err != nil {
 		return nil, err
 	}

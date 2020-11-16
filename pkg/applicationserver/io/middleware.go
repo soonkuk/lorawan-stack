@@ -16,6 +16,7 @@ package io
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	"go.thethings.network/lorawan-stack/v3/pkg/config"
@@ -179,4 +180,9 @@ func (rs RetryServer) DownlinkQueueReplace(ctx context.Context, ids ttnpb.EndDev
 // DownlinkQueueList implements Server using the upstream Server.
 func (rs RetryServer) DownlinkQueueList(ctx context.Context, ids ttnpb.EndDeviceIdentifiers) ([]*ttnpb.ApplicationDownlink, error) {
 	return rs.upstream.DownlinkQueueList(ctx, ids)
+}
+
+// HTTPClient implements Server using the upstream Server.
+func (rs RetryServer) HTTPClient(ctx context.Context) (*http.Client, error) {
+	return rs.upstream.HTTPClient(ctx)
 }

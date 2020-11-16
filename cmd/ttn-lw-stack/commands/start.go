@@ -170,6 +170,20 @@ var startCommand = &cobra.Command{
 
 		redisConsumerID := redis.Key(host, strconv.Itoa(os.Getpid()))
 
+		transport, err := c.HTTPTransport(ctx)
+		if err != nil {
+			logger.WithError(err).Error("Failed to setup HTTP transport")
+		}
+		if cfg := config.ServiceBase.DeviceRepository; cfg.Transport == nil {
+			cfg.Transport = transport
+		}
+		if cfg := config.ServiceBase.FrequencyPlans; cfg.Transport == nil {
+			cfg.Transport = transport
+		}
+		if cfg := config.ServiceBase.Interop.SenderClientCA; cfg.Transport == nil {
+			cfg.Transport = transport
+		}
+
 		if start.IdentityServer || startDefault {
 			logger.Info("Setting up Identity Server")
 			if config.IS.OAuth.UI.TemplateData.SentryDSN == "" {
