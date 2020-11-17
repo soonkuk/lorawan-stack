@@ -194,6 +194,8 @@ func New(conf *Config) *Client {
 		Database: conf.ReadOnly.Database,
 		Password: conf.ReadOnly.Password,
 		PoolSize: conf.ReadOnly.PoolSize,
+		Failover: conf.Failover,
+		TLS:      conf.TLS,
 	}
 	if !readOnlyConfig.IsZero() {
 		cl.readClient = &Client{
