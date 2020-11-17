@@ -5,7 +5,6 @@ package cluster
 import (
 	"context"
 	"crypto/tls"
-	"errors"
 	"fmt"
 	"math/rand"
 	"net"
@@ -16,6 +15,7 @@ import (
 	"time"
 
 	"github.com/golang/groupcache/consistenthash"
+	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 	"go.thethings.network/lorawan-stack/v3/pkg/log"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcclient"
 	"go.thethings.network/lorawan-stack/v3/pkg/tenant"
@@ -224,12 +224,12 @@ func (c *dnsCluster) updatePeers(ctx context.Context) {
 		} else {
 			options = append(options, grpc.WithInsecure())
 		}
-		logger.Debug("Connecting to peer...")
+		logger.Info("Connecting to peer...")
 		peer.conn, peer.connErr = grpc.DialContext(peer.ctx, peer.target, options...)
 		if peer.connErr != nil {
 			logger.WithError(peer.connErr).Error("Failed to connect to peer")
 		} else {
-			logger.Debug("Connected to peer")
+			logger.Info("Connected to peer")
 		}
 		newPeers = append(newPeers, peer)
 	}
@@ -260,7 +260,7 @@ func (c *dnsCluster) updatePeers(ctx context.Context) {
 				"target", peer.target,
 				"name", peer.Name(),
 				"roles", peer.Roles(),
-			)).Debug("Schedule peer for disconnect")
+			)).Info("Schedule peer for disconnect")
 			oldPeers = append(oldPeers, peer)
 		}
 	}
@@ -388,27 +388,27 @@ func (c *dnsCluster) GetPeer(ctx context.Context, role ttnpb.ClusterRole, ids tt
 		}
 		peer, ok := c.peers[peerID]
 		if !ok || peer == nil {
-			logger.WithField("peer_id", peerID).Debug("Peer no longer available")
+			logger.WithField("peer_id", peerID).Warn("Peer no longer available")
 			return nil, errPeerUnavailable.WithAttributes("cluster_role", roleString)
 		}
 		return peer, nil
 	default:
 		hashMap := c.consistentHashes[role]
 		if hashMap == nil {
-			logger.Debug("No consistent hash map for peers with requested role")
+			logger.Warn("No consistent hash map for peers with requested role")
 			return nil, errPeerUnavailable.WithAttributes("cluster_role", roleString)
 		}
 		key := idKey(ctx, ids)
 		logger.WithField("hash_key", key).Debug("Select peer using consistent hash")
 		peerID := hashMap.Get(key)
 		if peerID == "" {
-			logger.Debug("Empty consistent hash map for peers with requested role")
+			logger.Warn("Empty consistent hash map for peers with requested role")
 			return nil, errPeerUnavailable.WithAttributes("cluster_role", roleString)
 		}
 		logger = logger.WithField("peer_id", peerID)
 		peer, ok := c.peers[peerID]
 		if !ok || peer == nil {
-			logger.WithField("peer_id", peerID).Debug("Peer no longer available")
+			logger.WithField("peer_id", peerID).Warn("Peer no longer available")
 			return nil, errPeerUnavailable.WithAttributes("cluster_role", roleString)
 		}
 		return peer, nil
