@@ -30,7 +30,10 @@ type ClaimRegistry interface {
 	GetPeerID(ctx context.Context, ids ttnpb.Identifiers, candidateIDs ...string) (string, error)
 }
 
-var errInvalidClaimingBackend = errors.DefineInvalidArgument("claiming_backend", "invalid ID claiming backend")
+var (
+	errInvalidClaimingBackend = errors.DefineInvalidArgument("claiming_backend", "invalid ID claiming backend")
+	errUnclaimedIdentifiers   = errors.DefineUnavailable("unclaimed_identifiers", "unclaimed identifiers")
+)
 
 // NewClaimRegistry instantiates a new cluster claim registry based on the given config.
 func NewClaimRegistry(ctx context.Context, config *ClaimRegistryConfig) (ClaimRegistry, error) {

@@ -143,5 +143,5 @@ func (r *RedisClaimRegistry) GetPeerID(ctx context.Context, ids ttnpb.Identifier
 			return candidateIDs[i], nil
 		}
 	}
-	return "", errPeerUnavailable
+	return "", errUnclaimedIdentifiers.New()
 }
