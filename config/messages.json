@@ -2843,6 +2843,15 @@
       "file": "cluster.go"
     }
   },
+  "error:pkg/cluster:unclaimed_identifiers": {
+    "translations": {
+      "en": "unclaimed identifiers"
+    },
+    "description": {
+      "package": "pkg/cluster",
+      "file": "claims.tti.go"
+    }
+  },
   "error:pkg/component:listen_endpoint": {
     "translations": {
       "en": "could not listen on `{endpoint}` address"
