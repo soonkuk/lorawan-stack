@@ -356,6 +356,8 @@ func idKey(ctx context.Context, ids ttnpb.Identifiers) string {
 	return ids.EntityType() + ":" + unique.ID(ctx, ids)
 }
 
+var errNoPeersAvailable = errors.DefineUnavailable("no_peers_available", "no {cluster_role} peers available")
+
 func (c *dnsCluster) GetPeer(ctx context.Context, role ttnpb.ClusterRole, ids ttnpb.Identifiers) (Peer, error) {
 	role = overridePeerRole(ctx, role, ids)
 	roleString := strings.Title(strings.Replace(role.String(), "_", " ", -1))
@@ -365,13 +367,8 @@ func (c *dnsCluster) GetPeer(ctx context.Context, role ttnpb.ClusterRole, ids tt
 	defer c.peerMu.RUnlock()
 
 	matches := c.byRole[role]
-	switch len(matches) {
-	case 0:
-		logger.Debug("No peer with requested role")
-		return nil, errPeerUnavailable.WithAttributes("cluster_role", roleString)
-	case 1:
-		logger.Debug("Select only peer with requested role")
-		return matches[0], nil
+	if len(matches) == 0 {
+		return nil, errNoPeersAvailable.WithAttributes("cluster_role", roleString)
 	}
 
 	if ids == nil {

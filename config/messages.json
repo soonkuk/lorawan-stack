@@ -2807,6 +2807,15 @@
       "file": "cluster.go"
     }
   },
+  "error:pkg/cluster:no_peers_available": {
+    "translations": {
+      "en": "no {cluster_role} peers available"
+    },
+    "description": {
+      "package": "pkg/cluster",
+      "file": "cluster_dns.tti.go"
+    }
+  },
   "error:pkg/cluster:peer_connection": {
     "translations": {
       "en": "connection to peer `{name}` on `{address}` failed"
