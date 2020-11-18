@@ -168,9 +168,10 @@ func (c *dnsCluster) updatePeers(ctx context.Context) {
 				name := record.String()
 				address := net.JoinHostPort(record.String(), port)
 				peers[name] = &peer{
-					name:   name,
-					roles:  roles,
-					target: address,
+					name:          name,
+					roles:         roles,
+					target:        address,
+					tlsServerName: c.getTLSServerName(address),
 				}
 			}
 		} else { // Port is not known, use SRV records.
@@ -190,9 +191,10 @@ func (c *dnsCluster) updatePeers(ctx context.Context) {
 				name := record.Target[:strings.Index(record.Target, ".")]
 				address := fmt.Sprintf("%s:%d", strings.TrimSuffix(record.Target, "."), record.Port)
 				peers[name] = &peer{
-					name:   name,
-					roles:  roles,
-					target: address,
+					name:          name,
+					roles:         roles,
+					target:        address,
+					tlsServerName: c.getTLSServerName(address),
 				}
 			}
 		}
