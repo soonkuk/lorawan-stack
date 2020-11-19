@@ -900,7 +900,7 @@ func (as *ApplicationServer) handleUplink(ctx context.Context, ids ttnpb.EndDevi
 				dev.Session = dev.PendingSession
 				dev.PendingSession = nil
 				mask = append(mask, "session", "pending_session")
-				logger.Info("Switched to pending session")
+				logger.Debug("Switched to pending session")
 			default:
 				appSKey, err := as.fetchAppSKey(ctx, ids, uplink.SessionKeyID)
 				if err != nil {
@@ -919,7 +919,7 @@ func (as *ApplicationServer) handleUplink(ctx context.Context, ids ttnpb.EndDevi
 				dev.PendingSession = nil
 				dev.DevAddr = ids.DevAddr
 				mask = append(mask, "session", "pending_session", "ids.dev_addr")
-				logger.Info("Restored session")
+				logger.Debug("Restored session")
 
 				switch {
 				case previousSession != nil:
