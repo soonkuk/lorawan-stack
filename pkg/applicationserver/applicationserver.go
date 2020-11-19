@@ -20,8 +20,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net"
-	"os"
-	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -879,11 +877,6 @@ func (as *ApplicationServer) migrateDownlinkQueue(ctx context.Context, ids ttnpb
 	return newQueue, nil
 }
 
-var skipFetchLocation = func() bool {
-	v, _ := strconv.ParseBool(os.Getenv("TTN_LW_AS_EXP_SKIP_FETCH_LOCATION"))
-	return v
-}()
-
 func (as *ApplicationServer) handleUplink(ctx context.Context, ids ttnpb.EndDeviceIdentifiers, uplink *ttnpb.ApplicationUplink, link *link) error {
 	ctx = log.NewContextWithField(ctx, "session_key_id", uplink.SessionKeyID)
 	logger := log.FromContext(ctx)
@@ -970,13 +963,11 @@ func (as *ApplicationServer) handleUplink(ctx context.Context, ids ttnpb.EndDevi
 		uplink.LastAFCntDown = dev.Session.LastAFCntDown
 	}
 
-	if !skipFetchLocation {
-		isDev, err := as.endDeviceFetcher.Get(ctx, ids, "locations")
-		if err != nil {
-			logger.WithError(err).Warn("Failed to retrieve end device locations")
-		} else {
-			uplink.Locations = isDev.GetLocations()
-		}
+	isDev, err := as.endDeviceFetcher.Get(ctx, ids, "locations")
+	if err != nil {
+		logger.WithError(err).Warn("Failed to retrieve end device locations")
+	} else {
+		uplink.Locations = isDev.GetLocations()
 	}
 
 	// TODO: Run uplink messages through location solvers async (https://github.com/TheThingsNetwork/lorawan-stack/issues/37)
