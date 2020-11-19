@@ -17,8 +17,6 @@ package applicationserver
 import (
 	"context"
 	"fmt"
-	"os"
-	"strconv"
 	"sync/atomic"
 	"time"
 
@@ -163,11 +161,6 @@ func (as *ApplicationServer) connectLink(ctx context.Context, link *link) error 
 	return nil
 }
 
-var ackImmediately = func() bool {
-	v, _ := strconv.ParseBool(os.Getenv("TTN_LW_AS_EXP_ACK_IMMEDIATELY"))
-	return v
-}()
-
 func (as *ApplicationServer) link(ctx context.Context, ids ttnpb.ApplicationIdentifiers, target *ttnpb.ApplicationLink) (err error) {
 	uid := unique.ID(ctx, ids)
 	ctx = log.NewContextWithField(ctx, "application_uid", uid)
@@ -245,21 +238,6 @@ func (as *ApplicationServer) link(ctx context.Context, ids ttnpb.ApplicationIden
 			}
 		}()
 	}
-
-	type acker func() error
-	sendAck := func() error {
-		return stream.Send(ttnpb.Empty)
-	}
-	noop := func() error {
-		return nil
-	}
-	var ackBeforeSendUp, ackAfterHandleUp acker
-	if ackImmediately {
-		ackBeforeSendUp, ackAfterHandleUp = sendAck, noop
-	} else {
-		ackBeforeSendUp, ackAfterHandleUp = noop, sendAck
-	}
-
 	for {
 		up, err := stream.Recv()
 		if err != nil {
@@ -273,8 +251,7 @@ func (as *ApplicationServer) link(ctx context.Context, ids ttnpb.ApplicationIden
 		atomic.AddUint64(&l.ups, 1)
 		atomic.StoreInt64(&l.lastUpTime, time.Now().UnixNano())
 
-		ackBeforeSendUp()
-		err = l.sendUp(ctx, up, ackAfterHandleUp)
+		err = l.sendUp(ctx, up, func() error { return stream.Send(ttnpb.Empty) })
 		if err != nil {
 			return err
 		}
