@@ -117,8 +117,8 @@ github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398/go.mod h1:a1uqR
 github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
 github.com/TheThingsIndustries/grpc-gateway v1.15.2-gogo h1:rWB4sbEKoL7xUC9ixUkJOBlPOeF0hcwzXHTISXZM7eA=
 github.com/TheThingsIndustries/grpc-gateway v1.15.2-gogo/go.mod h1:fU1VeKM8T+38FAMQNH0zO2BT6grnMyphff4CD9w1DTM=
-github.com/TheThingsIndustries/mage v1.9.1-0.20200903200531-c4338a8882c1 h1:8DvB0OKDe/TkkrFObSQQmSlIER/ww05A/+21SipFYRc=
-github.com/TheThingsIndustries/mage v1.9.1-0.20200903200531-c4338a8882c1/go.mod h1:z5UZb/iS3GoOSn0JgWuiw7dxlurVYTu+/jHXqQg881A=
+github.com/TheThingsIndustries/mage v1.10.0 h1:3cvfWuvZO1oxK6UkRJ+a4elkECQSKvlTCXUFMk6LIuU=
+github.com/TheThingsIndustries/mage v1.10.0/go.mod h1:z5UZb/iS3GoOSn0JgWuiw7dxlurVYTu+/jHXqQg881A=
 github.com/TheThingsIndustries/magepkg v0.0.0-20190214092847-6c0299b7c3ed h1:rsGbnyV9cP0ocol1W17uTbZ1iWcEeg+gp3ivzW6NQ6Q=
 github.com/TheThingsIndustries/magepkg v0.0.0-20190214092847-6c0299b7c3ed/go.mod h1:InVSk9cxzZR1y4QaHF4CbDQ/uFeoTnbJfnwiKM04UNo=
 github.com/TheThingsIndustries/mystique v0.0.0-20200127144137-4aa959111fe7 h1:Vb+sqm8nZUi+3N10QB8g2Gio2luOgfQnLlO6eLTuYDY=
