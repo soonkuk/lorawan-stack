@@ -32,7 +32,7 @@ func initializeLicense(ctx context.Context) (context.Context, error) {
 			LicenseIdentifiers:      ttipb.LicenseIdentifiers{LicenseID: "unlicensed"},
 			CreatedAt:               now,
 			ValidFrom:               now,
-			WarnFor:                 time.Hour,
+			WarnFor:                 time.Minute * 30,
 			ValidUntil:              now.Add(time.Hour),
 			ComponentAddressRegexps: []string{"localhost"},
 			DevAddrPrefixes: []types.DevAddrPrefix{
