@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"go.thethings.network/lorawan-stack/v3/pkg/license"
@@ -20,11 +21,11 @@ func checkLicense(ctx context.Context) error {
 		return err
 	}
 	if validUntil := l.GetValidUntil(); !validUntil.IsZero() && time.Until(validUntil) < l.GetWarnFor() {
-		expiresIn := time.Until(validUntil).Truncate(time.Second)
+		expiresIn := strconv.Itoa(int(time.Until(validUntil).Minutes()))
 		if l.Metering != nil {
-			warning.Add(ctx, fmt.Sprintf("failed to report to metering service, license expires in %s", expiresIn))
+			warning.Add(ctx, fmt.Sprintf("failed to report to metering service, license expires in %sm", expiresIn))
 		} else {
-			warning.Add(ctx, fmt.Sprintf("license expires in %s", expiresIn))
+			warning.Add(ctx, fmt.Sprintf("license expires in %sm", expiresIn))
 		}
 	}
 	return nil
