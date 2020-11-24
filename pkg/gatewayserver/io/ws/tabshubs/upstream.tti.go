@@ -510,10 +510,8 @@ func (f *tabsHubs) HandleUp(ctx context.Context, raw []byte, ids ttnpb.GatewayId
 			logger.WithError(err).Warn("Failed to handle tx ack message")
 			return nil, err
 		}
-		return nil, err
 	default:
 		logger.WithField("message_type", typ).Debug("Unknown message type")
-		break
 	}
 	return nil, nil
 }
