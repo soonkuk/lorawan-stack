@@ -18,8 +18,8 @@ For details about compatibility between different releases, see the **Commitment
 ### Removed
 
 ### Fixed
-- Uplink frame counter reset handling.
 
+- Uplink frame counter reset handling.
 - Uplink retransmission handling in Network Server.
 
 ### Security
