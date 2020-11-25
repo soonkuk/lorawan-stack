@@ -99,6 +99,7 @@ func TestGetRouterConfig(t *testing.T) {
 							{
 								Enable:    true,
 								Frequency: 922300000,
+								TxEnable:  true,
 							},
 							{
 								Enable:    false,
