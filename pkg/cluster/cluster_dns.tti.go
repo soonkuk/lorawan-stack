@@ -385,7 +385,16 @@ func (c *dnsCluster) GetPeer(ctx context.Context, role ttnpb.ClusterRole, ids tt
 		}
 		peerID, err := c.claimRegistry.GetPeerID(ctx, ids, candidateIDs...)
 		if err != nil {
-			logger.WithField("candidate_ids", candidateIDs).Debug("None of the peer candidates has claim on requested gateway")
+			logger := logger.WithField("candidate_ids", candidateIDs)
+			if gtwID, ok := ids.Identifiers().(*ttnpb.GatewayIdentifiers); ok {
+				if gtwID.EUI != nil {
+					logger = logger.WithField("gateway_eui", *gtwID.EUI)
+				}
+				if gtwID.GatewayID != "" {
+					logger = logger.WithField("gateway_uid", unique.ID(ctx, gtwID))
+				}
+			}
+			logger.WithError(err).Debug("None of the peer candidates has claim on requested gateway")
 			return nil, err
 		}
 		peer, ok := c.peers[peerID]

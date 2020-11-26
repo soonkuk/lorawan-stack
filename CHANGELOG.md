@@ -22,6 +22,7 @@ For details about compatibility between different releases, see the **Commitment
 - Uplink frame counter reset handling.
 - Uplink retransmission handling in Network Server.
 - DevAddr generation for NetID Type 3 and 4, according to errata.
+- Packet Broker downlink in multi-tenant clusters.
 
 ### Security
 
