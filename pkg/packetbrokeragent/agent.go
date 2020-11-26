@@ -34,6 +34,7 @@ import (
 	"go.thethings.network/lorawan-stack/v3/pkg/random"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcclient"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcmiddleware/hooks"
+	"go.thethings.network/lorawan-stack/v3/pkg/tenant"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 	"go.thethings.network/lorawan-stack/v3/pkg/types"
 	"go.thethings.network/lorawan-stack/v3/pkg/unique"
@@ -443,6 +444,24 @@ func (a *Agent) handleDownlinkMessage(ctx context.Context, down *packetbroker.Ro
 	ids, err := unique.ToGatewayID(uid)
 	if err != nil {
 		logger.WithField("gateway_uid", uid).WithError(err).Warn("Failed to get gateway identifier")
+		return err
+	}
+	msgTID, err := unique.ToTenantID(uid)
+	if err != nil {
+		logger.WithField("gateway_uid", uid).WithError(err).Warn("Failed to get tenant identifier")
+		return err
+	}
+	if pbTID := tenant.FromContext(ctx); pbTID.TenantID == cluster.PacketBrokerTenantID.TenantID {
+		// Packet Broker did not convey a Home Network Tenant ID.
+		// Use the tenant ID from the message which is based on the uplink token.
+		ctx = tenant.NewContext(ctx, msgTID)
+	} else if pbTID.TenantID != msgTID.TenantID {
+		// Packet Broker conveyed a different tenant ID than found in the uplink token.
+		// Reject the message as this is an error of the Home Network; bad config, stolen uplink token, etc.
+		logger.WithFields(log.Fields(
+			"forwarder_tenant_id", pbTID.TenantID,
+			"message_tenant_id", msgTID.TenantID,
+		)).Warn("Packet Broker Forwarder tenant ID does not match tenant ID from uplink token")
 		return err
 	}
 
