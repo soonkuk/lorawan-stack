@@ -97,6 +97,7 @@ func TestNewRPCServer(t *testing.T) {
 		a.So(mock.pushCtx.Value(&mockKey{}), should.Resemble, "foo")
 		a.So(grpc_ctxtags.Extract(mock.pushCtx).Values(), should.Resemble, map[string]interface{}{
 			"peer.address":                "pipe",
+			"grpc.context.tenant_id":      "foo-tenant",
 			"grpc.request.device_id":      "foo",
 			"grpc.request.application_id": "bar",
 		})
@@ -125,6 +126,7 @@ func TestNewRPCServer(t *testing.T) {
 		a.So(mock.subCtx.Value(&mockKey{}), should.Resemble, "foo")
 		a.So(grpc_ctxtags.Extract(mock.subCtx).Values(), should.Resemble, map[string]interface{}{
 			"peer.address":                "pipe",
+			"grpc.context.tenant_id":      "foo-tenant",
 			"grpc.request.application_id": "bar",
 		})
 		a.So(mock.subCtx.Value(&mockKey2{}), should.Resemble, "foo")
