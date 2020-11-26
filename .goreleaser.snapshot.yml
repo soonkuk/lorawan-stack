@@ -1,0 +1,57 @@
+project_name: lorawan-stack
+
+changelog:
+  skip: true
+
+release:
+  disable: true
+
+builds:
+  - id: stack
+    main: ./cmd/tti-lw-stack
+    binary: tti-lw-stack
+    flags:
+    - -tags=tti
+    ldflags:
+      - -s
+      - -w
+      - -X go.thethings.network/lorawan-stack/v3/pkg/version.BuildDate={{.Date}}
+      - -X go.thethings.network/lorawan-stack/v3/pkg/version.GitCommit={{.ShortCommit}}
+      - -X go.thethings.network/lorawan-stack/v3/pkg/version.TTN={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+  - id: cli
+    main: ./cmd/tti-lw-cli
+    binary: tti-lw-cli
+    flags:
+    - -tags=tti
+    ldflags:
+      - -s
+      - -w
+      - -X go.thethings.network/lorawan-stack/v3/pkg/version.BuildDate={{.Date}}
+      - -X go.thethings.network/lorawan-stack/v3/pkg/version.GitCommit={{.ShortCommit}}
+      - -X go.thethings.network/lorawan-stack/v3/pkg/version.TTN={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+dockers:
+  - goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+    binaries:
+      - tti-lw-cli
+      - tti-lw-stack
+    image_templates:
+      - 'lorawan-stack-dev:{{ .FullCommit }}'
+    skip_push: true
+    extra_files:
+      - public

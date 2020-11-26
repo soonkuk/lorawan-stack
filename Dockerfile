@@ -1,18 +1,24 @@
+FROM alpine AS builder
+
+COPY tti-lw-stack /bin/tti-lw-stack
+RUN chmod 755 /bin/tti-lw-stack
+
+COPY tti-lw-cli /bin/tti-lw-cli
+RUN chmod 755 /bin/tti-lw-cli
+
 FROM alpine:3.12
 
 RUN addgroup -g 886 thethings && adduser -u 886 -S -G thethings thethings
 
 RUN apk --update --no-cache add ca-certificates curl
 
-COPY tti-lw-stack /bin/tti-lw-stack
+COPY --from=builder /bin/tti-lw-stack /bin/tti-lw-stack
 RUN ln -s /bin/tti-lw-stack /bin/ttn-lw-stack
 RUN ln -s /bin/tti-lw-stack /bin/stack
-RUN chmod 755 /bin/tti-lw-stack
 
-COPY tti-lw-cli /bin/tti-lw-cli
+COPY --from=builder /bin/tti-lw-cli /bin/tti-lw-cli
 RUN ln -s /bin/tti-lw-cli /bin/ttn-lw-cli
 RUN ln -s /bin/tti-lw-cli /bin/cli
-RUN chmod 755 /bin/tti-lw-cli
 
 COPY public /srv/ttn-lorawan/public
 
