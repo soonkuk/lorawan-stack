@@ -74,17 +74,45 @@ func ComputeUsage(data *ttipb.MeteringData) (*string, *int64) {
 		return aws.String("1000devices"), aws.Int64(1)
 	case endDeviceCount <= 2000:
 		return aws.String("2000devices"), aws.Int64(1)
+	case endDeviceCount <= 3000:
+		return aws.String("3000devices"), aws.Int64(1)
 	case endDeviceCount <= 4000:
 		return aws.String("4000devices"), aws.Int64(1)
+	case endDeviceCount <= 5000:
+		return aws.String("5000devices"), aws.Int64(1)
 	case endDeviceCount <= 6500:
 		return aws.String("6500devices"), aws.Int64(1)
+	case endDeviceCount <= 8000:
+		return aws.String("8000devices"), aws.Int64(1)
 	case endDeviceCount <= 10000:
 		return aws.String("10000devices"), aws.Int64(1)
+	case endDeviceCount <= 12500:
+		return aws.String("12500devices"), aws.Int64(1)
 	case endDeviceCount <= 15000:
 		return aws.String("15000devices"), aws.Int64(1)
+	case endDeviceCount <= 17500:
+		return aws.String("17500devices"), aws.Int64(1)
 	case endDeviceCount <= 20000:
 		return aws.String("20000devices"), aws.Int64(1)
+	case endDeviceCount <= 25000:
+		return aws.String("25000devices"), aws.Int64(1)
+	case endDeviceCount <= 30000:
+		return aws.String("30000devices"), aws.Int64(1)
+	case endDeviceCount <= 35000:
+		return aws.String("35000devices"), aws.Int64(1)
+	case endDeviceCount <= 40000:
+		return aws.String("40000devices"), aws.Int64(1)
+	case endDeviceCount <= 50000:
+		return aws.String("50000devices"), aws.Int64(1)
+	case endDeviceCount <= 60000:
+		return aws.String("60000devices"), aws.Int64(1)
+	case endDeviceCount <= 72500:
+		return aws.String("72500devices"), aws.Int64(1)
+	case endDeviceCount <= 85000:
+		return aws.String("85000devices"), aws.Int64(1)
+	case endDeviceCount <= 100000:
+		return aws.String("100000devices"), aws.Int64(1)
 	default:
-		return aws.String("Up20000devices"), aws.Int64((endDeviceCount + 99) / 100)
+		return aws.String("Up100000devices"), aws.Int64((endDeviceCount + 9999) / 10000)
 	}
 }
