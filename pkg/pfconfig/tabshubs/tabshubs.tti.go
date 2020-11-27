@@ -156,6 +156,8 @@ func GetRouterConfig(bandID string, fp *frequencyplans.FrequencyPlan, dlTime tim
 	if err != nil {
 		return RouterConfig{}, err
 	}
+	sx1301Conf.Radios[0].TxEnable = true
+
 	conf.SX1301Config = append(conf.SX1301Config, *sx1301Conf)
 
 	// Add the MuxTime for RTT measurement.
