@@ -150,9 +150,8 @@ func New(ctx context.Context, opts ...Option) *Server {
 
 	streamInterceptors := []grpc.StreamServerInterceptor{
 		rpcfillcontext.StreamServerInterceptor(options.contextFillers...),
-		licensemiddleware.StreamServerInterceptor,
-		tenantmiddleware.StreamServerInterceptor(options.tenant),
 		grpc_ctxtags.StreamServerInterceptor(ctxtagsOpts...),
+		tenantmiddleware.StreamServerExtractor(options.tenant), // NOTE: This adds to tags injected by grpc_ctxtags.
 		rpcmiddleware.RequestIDStreamServerInterceptor(),
 		proxyHeaders.StreamServerInterceptor(),
 		grpc_opentracing.StreamServerInterceptor(),
@@ -163,15 +162,16 @@ func New(ctx context.Context, opts ...Option) *Server {
 		// NOTE: All middleware that works with lorawan-stack/pkg/errors errors must be placed below.
 		sentrymiddleware.StreamServerInterceptor(),
 		grpc_recovery.StreamServerInterceptor(recoveryOpts...),
+		licensemiddleware.StreamServerInterceptor,
+		tenantmiddleware.StreamServerFetchInterceptor(),
 		validator.StreamServerInterceptor(),
 		hooks.StreamServerInterceptor(),
 	}
 
 	unaryInterceptors := []grpc.UnaryServerInterceptor{
 		rpcfillcontext.UnaryServerInterceptor(options.contextFillers...),
-		licensemiddleware.UnaryServerInterceptor,
-		tenantmiddleware.UnaryServerInterceptor(options.tenant),
 		grpc_ctxtags.UnaryServerInterceptor(ctxtagsOpts...),
+		tenantmiddleware.UnaryServerExtractor(options.tenant), // NOTE: This adds to tags injected by grpc_ctxtags.
 		rpcmiddleware.RequestIDUnaryServerInterceptor(),
 		proxyHeaders.UnaryServerInterceptor(),
 		grpc_opentracing.UnaryServerInterceptor(),
@@ -182,6 +182,8 @@ func New(ctx context.Context, opts ...Option) *Server {
 		// NOTE: All middleware that works with lorawan-stack/pkg/errors errors must be placed below.
 		sentrymiddleware.UnaryServerInterceptor(),
 		grpc_recovery.UnaryServerInterceptor(recoveryOpts...),
+		licensemiddleware.UnaryServerInterceptor,
+		tenantmiddleware.UnaryServerFetchInterceptor(),
 		validator.UnaryServerInterceptor(),
 		hooks.UnaryServerInterceptor(),
 	}
