@@ -38,17 +38,19 @@
 .left
   border-normal('right')
   flex: 0 1 0
-  width: 12rem
   display: flex
   align-items: center
-  padding-right: $ls.l
   text-align: center
 
+  +media-query-min($bp.s)
+    width: 12rem
+    padding-right: $ls.l
+
   +media-query($bp.s)
+    border-normal('bottom')
     border-right: none
     padding-right: 0
     padding-bottom: $ls.s
-    border-normal('bottom')
 
   & > div > span
     one-liner()
