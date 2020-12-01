@@ -14,6 +14,7 @@
 
 import React, { useState, useCallback } from 'react'
 import classnames from 'classnames'
+import { useIntl } from 'react-intl'
 
 import hamburgerMenuNormal from '@assets/misc/hamburger-menu-normal.svg'
 import hamburgerMenuClose from '@assets/misc/hamburger-menu-close.svg'
@@ -26,11 +27,17 @@ import Input from '@ttn-lw/components/input'
 
 import Logo from '@ttn-lw/containers/logo'
 
+import { selectBrandingClusterID, selectBrandingText } from '@ttn-lw/lib/selectors/env'
 import PropTypes from '@ttn-lw/lib/prop-types'
+import sharedMessages from '@ttn-lw/lib/shared-messages'
 
 import style from './header.styl'
 
-const Header = function({
+const clusterId = selectBrandingClusterID()
+const brandingText = selectBrandingText()
+const hasBranding = Boolean(clusterId || brandingText)
+
+const Header = ({
   className,
   dropdownItems,
   navigationEntries,
@@ -41,7 +48,8 @@ const Header = function({
   onLogout,
   onSearchRequest,
   ...rest
-}) {
+}) => {
+  const { formatMessage } = useIntl()
   const isGuest = !Boolean(user)
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -55,9 +63,22 @@ const Header = function({
 
   const classNames = classnames(className, style.container, {
     [style.mobileMenuOpen]: mobileMenuOpen,
+    [style.hasBranding]: hasBranding,
   })
 
   const hamburgerGraphic = mobileMenuOpen ? hamburgerMenuClose : hamburgerMenuNormal
+
+  const branding = hasBranding && (
+    <div className={style.branding} title={formatMessage(sharedMessages.clusterInformation)}>
+      {Boolean(clusterId) && (
+        <>
+          <Icon className={style.brandingIcon} icon="cluster" nudgeUp />
+          <span className={style.brandingCluster}>{clusterId}</span>
+        </>
+      )}
+      <span className={style.brandingText}>{brandingText}</span>
+    </div>
+  )
 
   return (
     <header {...rest} className={classNames}>
@@ -69,6 +90,7 @@ const Header = function({
         {!isGuest && (
           <div className={style.right}>
             {searchable && <Input icon="search" onEnter={onSearchRequest} />}
+            {branding && <div className={style.brandingContainer}>{branding}</div>}
             <ProfileDropdown
               className={style.profileDropdown}
               userName={user.name || user.ids.user_id}
@@ -76,7 +98,7 @@ const Header = function({
             >
               {dropdownItems}
             </ProfileDropdown>
-            <button onClick={handleMobileMenuClick} className={style.mobileMenu}>
+            <button onClick={handleMobileMenuClick} className={style.mobileMenuButton}>
               <Icon className={style.preloadIcons} icon="." />
               <div className={style.hamburger}>
                 <img src={hamburgerGraphic} alt="Open Mobile Menu" />
@@ -86,7 +108,13 @@ const Header = function({
         )}
       </div>
       {mobileMenuOpen && (
-        <MobileMenu onItemsClick={handleMobileMenuItemsClick} onLogout={onLogout} user={user}>
+        <MobileMenu
+          className={style.mobileMenu}
+          onItemsClick={handleMobileMenuItemsClick}
+          onLogout={onLogout}
+          user={user}
+          branding={branding}
+        >
           {mobileDropdownItems}
         </MobileMenu>
       )}
@@ -122,7 +150,7 @@ Header.defaultProps = {
   dropdownItems: undefined,
   navigationEntries: undefined,
   onSearchRequest: () => null,
-  logo: <Logo href="/" />,
+  logo: <Logo />,
   searchable: false,
   user: undefined,
 }
