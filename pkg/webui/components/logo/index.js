@@ -21,34 +21,26 @@ import PropTypes from '@ttn-lw/lib/prop-types'
 
 import style from './logo.styl'
 
-const Logo = function({ className, logo, secondaryLogo, vertical, text, clusterTag }) {
+const Logo = ({ className, logo, brandLogo, vertical }) => {
   const classname = classnames(style.container, className, {
     [style.vertical]: vertical,
-    [style.customBranding]: Boolean(secondaryLogo),
+    [style.customBranding]: Boolean(brandLogo),
   })
-  const cappedText = text ? text.substr(0, 25) : undefined
-  const cappedClusterTag = clusterTag ? clusterTag.substr(0, 5) : undefined
 
   return (
     <div className={classname}>
+      {Boolean(brandLogo) && (
+        <div className={style.brandLogo}>
+          <Link to="/" id="brand-logo" className={style.brandLogoContainer}>
+            <img {...brandLogo} />
+          </Link>
+        </div>
+      )}
       <div className={style.logo}>
         <Link className={style.logoContainer} to="/">
           <img {...logo} />
         </Link>
       </div>
-      {Boolean(secondaryLogo) && (
-        <div className={style.secondaryLogo}>
-          <div className={style.secondaryLogoContainer}>
-            <img {...secondaryLogo} />
-          </div>
-          {text && (
-            <div className={style.text}>
-              {clusterTag && <span className={style.clusterTag}>{cappedClusterTag}</span>}
-              {cappedText}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }
@@ -59,19 +51,15 @@ const imgPropType = PropTypes.shape({
 })
 
 Logo.propTypes = {
+  brandLogo: imgPropType,
   className: PropTypes.string,
-  clusterTag: PropTypes.string,
   logo: imgPropType.isRequired,
-  secondaryLogo: imgPropType,
-  text: PropTypes.string,
   vertical: PropTypes.bool,
 }
 
 Logo.defaultProps = {
   className: undefined,
-  clusterTag: undefined,
-  secondaryLogo: undefined,
-  text: undefined,
+  brandLogo: undefined,
   vertical: false,
 }
 

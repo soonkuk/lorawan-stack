@@ -29,7 +29,7 @@ const logo = {
   alt: `${selectApplicationSiteName()} Logo`,
 }
 const hasCustomBranding = selectBrandingRootPath() !== selectAssetsRootPath()
-const secondaryLogo = hasCustomBranding
+const brandLogo = hasCustomBranding
   ? {
       src: `${selectBrandingRootPath()}/logo.svg`,
       alt: 'Logo',
@@ -39,7 +39,7 @@ const secondaryLogo = hasCustomBranding
 const Logo = props => (
   <LogoComponent
     logo={logo}
-    secondaryLogo={secondaryLogo}
+    brandLogo={brandLogo}
     {...props}
     text={selectBrandingText()}
     clusterTag={selectBrandingClusterID()}
