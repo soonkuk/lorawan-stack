@@ -54,6 +54,8 @@ jobs:
       - name: Initialize stack environment
         run: tools/bin/mage init
       - name: Run test preparations
+        env:
+          TTN_LW_LICENSE_KEY: ${{ secrets.TTN_LW_LICENSE_KEY }}
         run: tools/bin/mage dev:dbStop dev:dbErase dev:dbStart dev:initStack dev:sqlDump
       - name: Build frontend
         if: steps.public-cache.outputs.cache-hit != 'true'
