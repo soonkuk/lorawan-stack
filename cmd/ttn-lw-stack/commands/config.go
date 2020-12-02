@@ -78,11 +78,12 @@ var DefaultConfig = Config{
 	Console:     shared_console.DefaultConsoleConfig,
 	GCS:         shared_gatewayconfigurationserver.DefaultGatewayConfigurationServerConfig,
 	DTC:         shared_devicetemplateconverter.DefaultDeviceTemplateConverterConfig,
-	PBA:         shared_packetbrokeragent.DefaultPacketBrokerAgentConfig,
-	DCS:         shared_deviceclaimingserver.DefaultDeviceClaimingServerConfig,
-	CS:          shared_cryptoserver.DefaultCryptoServerConfig,
-	TBS:         shared_tenantbillingserver.DefaultTenantBillingServerConfig,
 	QRG:         shared_qrcodegenerator.DefaultQRCodeGeneratorConfig,
+	PBA:         shared_packetbrokeragent.DefaultPacketBrokerAgentConfig,
+
+	DCS: shared_deviceclaimingserver.DefaultDeviceClaimingServerConfig,
+	CS:  shared_cryptoserver.DefaultCryptoServerConfig,
+	TBS: shared_tenantbillingserver.DefaultTenantBillingServerConfig,
 }
 
 func init() {
