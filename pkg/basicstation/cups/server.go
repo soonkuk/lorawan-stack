@@ -44,10 +44,9 @@ type Server struct {
 	// clients from the appropriate cluster peer.
 	registry ttnpb.GatewayRegistryClient
 	access   ttnpb.GatewayAccessClient
+	auth     func(context.Context) grpc.CallOption
 
 	tenantRegistry ttipb.TenantRegistryClient
-
-	auth func(context.Context) grpc.CallOption
 
 	requireExplicitEnable bool
 	registerUnknown       bool
