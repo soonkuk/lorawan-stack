@@ -32,6 +32,7 @@ func (conf StackConfig) Apply(ctx context.Context) StackConfig {
 	deriv.JS = conf.JS.Apply(ctx)
 	deriv.EDTC = conf.EDTC.Apply(ctx)
 	deriv.QRG = conf.QRG.Apply(ctx)
+	deriv.GCS = conf.GCS.Apply(ctx)
 	return deriv
 }
 
