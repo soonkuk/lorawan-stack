@@ -40,7 +40,8 @@ type mockStoreContents struct {
 		token             *ttnpb.OAuthAccessToken
 		previousID        string
 		tokenID           string
-		providerIDs       []*ttipb.AuthenticationProviderIdentifiers
+
+		providerIDs []*ttipb.AuthenticationProviderIdentifiers
 	}
 	res struct {
 		session           *ttnpb.UserSession
@@ -49,22 +50,24 @@ type mockStoreContents struct {
 		authorization     *ttnpb.OAuthClientAuthorization
 		authorizationCode *ttnpb.OAuthAuthorizationCode
 		accessToken       *ttnpb.OAuthAccessToken
-		providers         []*ttipb.AuthenticationProvider
+
+		providers []*ttipb.AuthenticationProvider
 	}
 	err struct {
-		getUser                     error
-		createSession               error
-		getSession                  error
-		deleteSession               error
-		getClient                   error
-		getAuthorization            error
-		authorize                   error
-		createAuthorizationCode     error
-		getAuthorizationCode        error
-		deleteAuthorizationCode     error
-		createAccessToken           error
-		getAccessToken              error
-		deleteAccessToken           error
+		getUser                 error
+		createSession           error
+		getSession              error
+		deleteSession           error
+		getClient               error
+		getAuthorization        error
+		authorize               error
+		createAuthorizationCode error
+		getAuthorizationCode    error
+		deleteAuthorizationCode error
+		createAccessToken       error
+		getAccessToken          error
+		deleteAccessToken       error
+
 		findAuthenticationProviders error
 	}
 }
