@@ -43,7 +43,7 @@ var DefaultConsoleConfig = console.Config{
 			JSFiles:       []string{"console.js"},
 		},
 		FrontendConfig: console.FrontendConfig{
-			DocumentationBaseURL: "https://enterprise.thethingsstack.io",
+			DocumentationBaseURL: "https://thethingsstack.io",
 			StackConfig: console.StackConfig{
 				IS:   webui.APIConfig{Enabled: true, BaseURL: shared.DefaultPublicURL + "/api/v3"},
 				GS:   webui.APIConfig{Enabled: true, BaseURL: shared.DefaultPublicURL + "/api/v3"},

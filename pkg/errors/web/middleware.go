@@ -106,6 +106,7 @@ func ErrorMiddleware(extraRenderers map[string]ErrorRenderer) echo.MiddlewareFun
 				if tenantID := tenant.FromContext(c.Request().Context()); !tenantID.IsZero() {
 					errEvent.Tags["tenant-id"] = tenantID.TenantID
 				}
+				sentry.CaptureEvent(errEvent)
 			}
 			if c.Response().Committed {
 				return err
