@@ -510,6 +510,7 @@
   "lib.shared-messages.claimAuthCode": "Xxxxx xxxxxxxxxxxxxx xxxx",
   "lib.shared-messages.claiming": "Xxxxxxxx",
   "lib.shared-messages.clear": "Xxxxx",
+  "lib.shared-messages.clusterInformation": "Xxxxxxx xxxxxxxxxxx",
   "lib.shared-messages.collaborator": "Xxxxxxxxxxxx",
   "lib.shared-messages.collaboratorCounted": "{count, plural, =one {Xxxxxxxxxxxx} other {Xxxxxxxxxxxxx}}",
   "lib.shared-messages.collaboratorDeleteSuccess": "Xxxxxxxxxxxx xxxxxxx",

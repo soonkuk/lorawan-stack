@@ -16,12 +16,6 @@
   display: none
   flex-direction: column
   justify-content: space-between
-  +media-query($bp.m)
-    display: flex
-    height: 'calc(100vh - %s)' % $header-height
-  +media-query($bp.s)
-    height: 'calc(100vh - %s)' % $header-height-mobile
-    top: $header-height-mobile
 
 ul.mobile-dropdown
   border: none
@@ -51,3 +45,12 @@ ul.mobile-dropdown
   align-items: center
   b
     margin-left: $cs.xxs
+
+.branding-header
+  border-normal('top')
+  padding: $cs.s $cs.xs
+  display: flex
+  justify-content: flex-end
+
+  +media-query-min($bp.xxs)
+    display: none

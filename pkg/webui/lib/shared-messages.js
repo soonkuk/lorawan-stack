@@ -85,6 +85,7 @@ export default defineMessages({
   claimAuthCode: 'Claim authentication code',
   claiming: 'Claiming',
   clear: 'Clear',
+  clusterInformation: 'Cluster information',
   collaborator: 'Collaborator',
   collaboratorCounted: '{count, plural, one {Collaborator} other {Collaborators}}',
   collaboratorDeleteSuccess: 'Collaborator removed',

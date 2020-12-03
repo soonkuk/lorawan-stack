@@ -26,13 +26,13 @@ storiesOf('Logo', module)
   .add('With secondary Logo', () => (
     <Logo
       logo={{ src: TtsLogo, alt: 'Logo' }}
-      secondaryLogo={{ src: ExampleLogo, alt: 'Secondary Logo' }}
+      brandLogo={{ src: ExampleLogo, alt: 'Secondary Logo' }}
     />
   ))
   .add('With vertical secondary', () => (
     <Logo
       vertical
       logo={{ src: TtsLogo, alt: 'Logo' }}
-      secondaryLogo={{ src: ExampleLogo, alt: 'Secondary Logo' }}
+      brandLogo={{ src: ExampleLogo, alt: 'Secondary Logo' }}
     />
   ))

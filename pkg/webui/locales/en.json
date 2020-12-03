@@ -510,6 +510,7 @@
   "lib.shared-messages.claimAuthCode": "Claim authentication code",
   "lib.shared-messages.claiming": "Claiming",
   "lib.shared-messages.clear": "Clear",
+  "lib.shared-messages.clusterInformation": "Cluster information",
   "lib.shared-messages.collaborator": "Collaborator",
   "lib.shared-messages.collaboratorCounted": "{count, plural, one {Collaborator} other {Collaborators}}",
   "lib.shared-messages.collaboratorDeleteSuccess": "Collaborator removed",
