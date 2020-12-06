@@ -142,7 +142,7 @@ func (s *server) NewSubscription() *io.Subscription {
 				return
 			case up := <-sub.Up():
 				if err := s.handleUp(up.Context, up.ApplicationUp); err != nil {
-					log.FromContext(s.ctx).WithError(err).Warn("Failed to handle message")
+					log.FromContext(up.Context).WithError(err).Warn("Failed to handle message")
 				}
 			}
 		}
