@@ -140,29 +140,17 @@ var ListEndDeviceModelsRequestFieldPathsTopLevel = []string{
 }
 var ListEndDeviceBrandsResponseFieldPathsNested = []string{
 	"brands",
-	"count",
-	"offset",
-	"total",
 }
 
 var ListEndDeviceBrandsResponseFieldPathsTopLevel = []string{
 	"brands",
-	"count",
-	"offset",
-	"total",
 }
 var ListEndDeviceModelsResponseFieldPathsNested = []string{
-	"count",
 	"models",
-	"offset",
-	"total",
 }
 
 var ListEndDeviceModelsResponseFieldPathsTopLevel = []string{
-	"count",
 	"models",
-	"offset",
-	"total",
 }
 var MessagePayloadFormatterFieldPathsNested = []string{
 	"formatter",

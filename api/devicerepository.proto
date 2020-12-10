@@ -257,16 +257,10 @@ message ListEndDeviceModelsRequest {
 
 message ListEndDeviceBrandsResponse {
   repeated EndDeviceBrand brands = 1;
-  uint32 total = 2;
-  uint32 count = 3;
-  uint32 offset = 4;
 }
 
 message ListEndDeviceModelsResponse {
   repeated EndDeviceModel models = 1;
-  uint32 total = 2;
-  uint32 count = 3;
-  uint32 offset = 4;
 }
 
 message MessagePayloadFormatter {

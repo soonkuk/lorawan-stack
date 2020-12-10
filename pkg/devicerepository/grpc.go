@@ -16,10 +16,13 @@ package devicerepository
 
 import (
 	"context"
+	"strconv"
 
 	"go.thethings.network/lorawan-stack/v3/pkg/devicerepository/store"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 // withDefaultModelFields appends default ttnpb.EndDeviceModel fields.
@@ -47,11 +50,9 @@ func (dr *DeviceRepository) ListBrands(ctx context.Context, request *ttnpb.ListE
 	if err != nil {
 		return nil, err
 	}
+	grpc.SetHeader(ctx, metadata.Pairs("x-total-count", strconv.FormatUint(uint64(response.Total), 10)))
 	return &ttnpb.ListEndDeviceBrandsResponse{
 		Brands: response.Brands,
-		Count:  response.Count,
-		Offset: response.Offset,
-		Total:  response.Total,
 	}, nil
 }
 
@@ -91,11 +92,9 @@ func (dr *DeviceRepository) ListModels(ctx context.Context, request *ttnpb.ListE
 	if err != nil {
 		return nil, err
 	}
+	grpc.SetHeader(ctx, metadata.Pairs("x-total-count", strconv.FormatUint(uint64(response.Total), 10)))
 	return &ttnpb.ListEndDeviceModelsResponse{
 		Models: response.Models,
-		Count:  response.Count,
-		Offset: response.Offset,
-		Total:  response.Total,
 	}, nil
 }
 

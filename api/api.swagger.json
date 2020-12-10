@@ -12706,18 +12706,6 @@
           "items": {
             "$ref": "#/definitions/v3EndDeviceBrand"
           }
-        },
-        "total": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "count": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "offset": {
-          "type": "integer",
-          "format": "int64"
         }
       }
     },
@@ -12729,18 +12717,6 @@
           "items": {
             "$ref": "#/definitions/v3EndDeviceModel"
           }
-        },
-        "total": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "count": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "offset": {
-          "type": "integer",
-          "format": "int64"
         }
       }
     },

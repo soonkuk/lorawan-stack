@@ -7999,36 +7999,6 @@
               "fullType": "ttn.lorawan.v3.EndDeviceBrand",
               "ismap": false,
               "defaultValue": ""
-            },
-            {
-              "name": "total",
-              "description": "",
-              "label": "",
-              "type": "uint32",
-              "longType": "uint32",
-              "fullType": "uint32",
-              "ismap": false,
-              "defaultValue": ""
-            },
-            {
-              "name": "count",
-              "description": "",
-              "label": "",
-              "type": "uint32",
-              "longType": "uint32",
-              "fullType": "uint32",
-              "ismap": false,
-              "defaultValue": ""
-            },
-            {
-              "name": "offset",
-              "description": "",
-              "label": "",
-              "type": "uint32",
-              "longType": "uint32",
-              "fullType": "uint32",
-              "ismap": false,
-              "defaultValue": ""
             }
           ]
         },
@@ -8143,36 +8113,6 @@
               "type": "EndDeviceModel",
               "longType": "EndDeviceModel",
               "fullType": "ttn.lorawan.v3.EndDeviceModel",
-              "ismap": false,
-              "defaultValue": ""
-            },
-            {
-              "name": "total",
-              "description": "",
-              "label": "",
-              "type": "uint32",
-              "longType": "uint32",
-              "fullType": "uint32",
-              "ismap": false,
-              "defaultValue": ""
-            },
-            {
-              "name": "count",
-              "description": "",
-              "label": "",
-              "type": "uint32",
-              "longType": "uint32",
-              "fullType": "uint32",
-              "ismap": false,
-              "defaultValue": ""
-            },
-            {
-              "name": "offset",
-              "description": "",
-              "label": "",
-              "type": "uint32",
-              "longType": "uint32",
-              "fullType": "uint32",
               "ismap": false,
               "defaultValue": ""
             }

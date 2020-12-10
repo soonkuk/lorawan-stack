@@ -609,36 +609,6 @@ func (dst *ListEndDeviceBrandsResponse) SetFields(src *ListEndDeviceBrandsRespon
 			} else {
 				dst.Brands = nil
 			}
-		case "total":
-			if len(subs) > 0 {
-				return fmt.Errorf("'total' has no subfields, but %s were specified", subs)
-			}
-			if src != nil {
-				dst.Total = src.Total
-			} else {
-				var zero uint32
-				dst.Total = zero
-			}
-		case "count":
-			if len(subs) > 0 {
-				return fmt.Errorf("'count' has no subfields, but %s were specified", subs)
-			}
-			if src != nil {
-				dst.Count = src.Count
-			} else {
-				var zero uint32
-				dst.Count = zero
-			}
-		case "offset":
-			if len(subs) > 0 {
-				return fmt.Errorf("'offset' has no subfields, but %s were specified", subs)
-			}
-			if src != nil {
-				dst.Offset = src.Offset
-			} else {
-				var zero uint32
-				dst.Offset = zero
-			}
 
 		default:
 			return fmt.Errorf("invalid field: '%s'", name)
@@ -658,36 +628,6 @@ func (dst *ListEndDeviceModelsResponse) SetFields(src *ListEndDeviceModelsRespon
 				dst.Models = src.Models
 			} else {
 				dst.Models = nil
-			}
-		case "total":
-			if len(subs) > 0 {
-				return fmt.Errorf("'total' has no subfields, but %s were specified", subs)
-			}
-			if src != nil {
-				dst.Total = src.Total
-			} else {
-				var zero uint32
-				dst.Total = zero
-			}
-		case "count":
-			if len(subs) > 0 {
-				return fmt.Errorf("'count' has no subfields, but %s were specified", subs)
-			}
-			if src != nil {
-				dst.Count = src.Count
-			} else {
-				var zero uint32
-				dst.Count = zero
-			}
-		case "offset":
-			if len(subs) > 0 {
-				return fmt.Errorf("'offset' has no subfields, but %s were specified", subs)
-			}
-			if src != nil {
-				dst.Offset = src.Offset
-			} else {
-				var zero uint32
-				dst.Offset = zero
 			}
 
 		default:
