@@ -20,10 +20,8 @@ import (
 	"time"
 )
 
-const (
-	// defaultTimeout is the default timeout for the HTTP client.
-	defaultTimeout = 10 * time.Second
-)
+// defaultHTTPClientTimeout is the default timeout for the HTTP client.
+const defaultHTTPClientTimeout = 10 * time.Second
 
 // HTTPClient returns a new *http.Client with a default timeout and a configured transport.
 func (c *Component) HTTPClient(ctx context.Context) (*http.Client, error) {
@@ -32,7 +30,7 @@ func (c *Component) HTTPClient(ctx context.Context) (*http.Client, error) {
 		return nil, err
 	}
 	client := &http.Client{
-		Timeout:   defaultTimeout,
+		Timeout:   defaultHTTPClientTimeout,
 		Transport: transport,
 	}
 	return client, nil

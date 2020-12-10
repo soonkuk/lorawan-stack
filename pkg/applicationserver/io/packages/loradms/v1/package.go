@@ -34,9 +34,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-const (
-	packageName = "lora-cloud-device-management-v1"
-)
+const packageName = "lora-cloud-device-management-v1"
 
 // DeviceManagementPackage is the LoRa Cloud Device Management application package.
 type DeviceManagementPackage struct {
