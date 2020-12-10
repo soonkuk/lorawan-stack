@@ -172,7 +172,7 @@ var startCommand = &cobra.Command{
 
 		transport, err := c.HTTPTransport(ctx)
 		if err != nil {
-			logger.WithError(err).Error("Failed to setup HTTP transport")
+			return err
 		}
 		if cfg := config.ServiceBase.DeviceRepository; cfg.Transport == nil {
 			cfg.Transport = transport
