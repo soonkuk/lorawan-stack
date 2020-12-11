@@ -92,6 +92,21 @@ func (dr *DeviceRepository) ListModels(ctx context.Context, request *ttnpb.ListE
 	if err != nil {
 		return nil, err
 	}
+
+	if dr.config.PhotosBaseURL != "" {
+		format := func(brandID, path string) string {
+			return strings.TrimRight(dr.config.PhotosBaseURL, "/") + "/vendor/" + brandID + "/" + path
+		}
+		for _, model := range response.Models {
+			if photos := model.Photos; photos != nil {
+				photos.Main = format(model.BrandID, photos.Main)
+				for idx, photo := range photos.Other {
+					photos.Other[idx] = format(model.BrandID, photo)
+				}
+			}
+		}
+  }
+
 	grpc.SetHeader(ctx, metadata.Pairs("x-total-count", strconv.FormatUint(uint64(response.Total), 10)))
 	return &ttnpb.ListEndDeviceModelsResponse{
 		Models: response.Models,
