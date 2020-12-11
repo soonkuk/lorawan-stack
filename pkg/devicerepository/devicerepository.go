@@ -19,9 +19,12 @@ import (
 	"context"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"go.thethings.network/lorawan-stack/v3/pkg/cluster"
 	"go.thethings.network/lorawan-stack/v3/pkg/component"
 	"go.thethings.network/lorawan-stack/v3/pkg/devicerepository/store"
 	"go.thethings.network/lorawan-stack/v3/pkg/log"
+	"go.thethings.network/lorawan-stack/v3/pkg/rpcmiddleware/hooks"
+	"go.thethings.network/lorawan-stack/v3/pkg/rpcmiddleware/rpclog"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 	"google.golang.org/grpc"
 )
@@ -54,6 +57,9 @@ func New(c *component.Component, conf *Config) (*DeviceRepository, error) {
 	}
 
 	c.RegisterGRPC(dr)
+
+	hooks.RegisterUnaryHook("/ttn.lorawan.v3.DeviceRepository", rpclog.NamespaceHook, rpclog.UnaryNamespaceHook("devicerepository"))
+	hooks.RegisterUnaryHook("/ttn.lorawan.v3.DeviceRepository", cluster.HookName, c.ClusterAuthUnaryHook())
 	return dr, nil
 }
 
