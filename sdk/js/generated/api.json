@@ -7868,7 +7868,7 @@
           "fields": [
             {
               "name": "brand_id",
-              "description": "Query end devices from a specific brand",
+              "description": "Brand identifier, as defined in the Device Repository.",
               "label": "",
               "type": "string",
               "longType": "string",
@@ -7878,7 +7878,7 @@
             },
             {
               "name": "model_id",
-              "description": "Query end devices matching a specific model",
+              "description": "Model identifier, as defined in the Device Repository.",
               "label": "",
               "type": "string",
               "longType": "string",

@@ -226,9 +226,9 @@ message ListEndDeviceBrandsRequest {
 }
 
 message GetEndDeviceModelRequest {
-  // Query end devices from a specific brand
+  // Brand identifier, as defined in the Device Repository.
   string brand_id = 1 [(gogoproto.customname) = "BrandID"];
-  // Query end devices matching a specific model
+  // Model identifier, as defined in the Device Repository.
   string model_id = 2 [(gogoproto.customname) = "ModelID"];
 
   // Field mask paths.

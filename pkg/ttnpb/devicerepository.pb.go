@@ -1240,9 +1240,9 @@ func (m *ListEndDeviceBrandsRequest) GetFieldMask() types.FieldMask {
 }
 
 type GetEndDeviceModelRequest struct {
-	// Query end devices from a specific brand
+	// Brand identifier, as defined in the Device Repository.
 	BrandID string `protobuf:"bytes,1,opt,name=brand_id,json=brandId,proto3" json:"brand_id,omitempty"`
-	// Query end devices matching a specific model
+	// Model identifier, as defined in the Device Repository.
 	ModelID string `protobuf:"bytes,2,opt,name=model_id,json=modelId,proto3" json:"model_id,omitempty"`
 	// Field mask paths.
 	FieldMask            types.FieldMask `protobuf:"bytes,3,opt,name=field_mask,json=fieldMask,proto3" json:"field_mask"`
