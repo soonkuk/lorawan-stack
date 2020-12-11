@@ -22,6 +22,8 @@ import (
 
 // Config represents the DeviceRepository configuration.
 type Config struct {
+	Store store.Store `name:"-"`
+
 	Static    map[string][]byte `name:"-"`
 	Directory string            `name:"directory" description:"Retrieve devices from the filesystem"`
 	URL       string            `name:"url" description:"Retrieve devices from a web server"`
@@ -32,5 +34,8 @@ type Config struct {
 
 // NewStore creates a new Store for end devices.
 func (c Config) NewStore(ctx context.Context) (store.Store, error) {
+	if c.Store != nil {
+		return c.Store, nil
+	}
 	return &store.NoopStore{}, nil
 }

@@ -21,7 +21,7 @@ import (
 
 	"go.thethings.network/lorawan-stack/v3/pkg/component"
 	componenttest "go.thethings.network/lorawan-stack/v3/pkg/component/test"
-	. "go.thethings.network/lorawan-stack/v3/pkg/devicerepository"
+	"go.thethings.network/lorawan-stack/v3/pkg/devicerepository"
 	"go.thethings.network/lorawan-stack/v3/pkg/log"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/test"
@@ -43,7 +43,7 @@ func TestDeviceRepository(t *testing.T) {
 	conf := &component.Config{}
 	c := componenttest.NewComponent(t, conf)
 
-	test.Must(New(c, &Config{}))
+	test.Must(devicerepository.New(c, &devicerepository.Config{}))
 	componenttest.StartComponent(t, c)
 	defer c.Close()
 
