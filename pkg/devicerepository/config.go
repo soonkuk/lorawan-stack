@@ -27,6 +27,7 @@ type Config struct {
 	URL       string            `name:"url" description:"Retrieve devices from a web server"`
 
 	PhotosBaseURL string `name:"photos-base-url" description:"The base URL for photos assets"`
+	RequireAuth   bool   `name:"require-auth" description:"Require authentication for the device repository"`
 }
 
 // NewStore creates a new Store for end devices.

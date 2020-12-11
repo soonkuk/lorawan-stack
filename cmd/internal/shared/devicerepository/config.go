@@ -21,4 +21,7 @@ var DefaultDeviceRepositoryConfig = devicerepository.Config{
 	URL: "https://raw.githubusercontent.com/TheThingsNetwork/lorawan-devices/master",
 
 	PhotosBaseURL: "https://raw.githubusercontent.com/TheThingsNetwork/lorawan-devices/master",
+
+	// TODO: Enable by default
+	// RequireAuth: true,
 }

@@ -17,7 +17,9 @@ package devicerepository
 import (
 	"context"
 	"strconv"
+	"strings"
 
+	clusterauth "go.thethings.network/lorawan-stack/v3/pkg/auth/cluster"
 	"go.thethings.network/lorawan-stack/v3/pkg/devicerepository/store"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
@@ -37,6 +39,9 @@ func withDefaultBrandFields(paths []string) []string {
 
 // ListBrands implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) ListBrands(ctx context.Context, request *ttnpb.ListEndDeviceBrandsRequest) (*ttnpb.ListEndDeviceBrandsResponse, error) {
+	if dr.config.RequireAuth {
+		// TODO: require any application rights here.
+	}
 	if request.Limit == 0 {
 		request.Limit = 1000
 	}
@@ -62,6 +67,9 @@ var (
 
 // GetBrand implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetBrand(ctx context.Context, request *ttnpb.GetEndDeviceBrandRequest) (*ttnpb.EndDeviceBrand, error) {
+	if dr.config.RequireAuth {
+		// TODO: require any application rights here.
+	}
 	response, err := dr.store.GetBrands(store.GetBrandsRequest{
 		BrandID: request.BrandID,
 		Paths:   withDefaultBrandFields(request.FieldMask.Paths),
@@ -78,6 +86,9 @@ func (dr *DeviceRepository) GetBrand(ctx context.Context, request *ttnpb.GetEndD
 
 // ListModels implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) ListModels(ctx context.Context, request *ttnpb.ListEndDeviceModelsRequest) (*ttnpb.ListEndDeviceModelsResponse, error) {
+	if dr.config.RequireAuth {
+		// TODO: require any application rights here.
+	}
 	if request.Limit == 0 {
 		request.Limit = 1000
 	}
@@ -119,6 +130,9 @@ var (
 
 // GetModel implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetModel(ctx context.Context, request *ttnpb.GetEndDeviceModelRequest) (*ttnpb.EndDeviceModel, error) {
+	if dr.config.RequireAuth {
+		// TODO: require any application rights here.
+	}
 	response, err := dr.store.GetModels(store.GetModelsRequest{
 		BrandID: request.BrandID,
 		ModelID: request.ModelID,
@@ -136,11 +150,20 @@ func (dr *DeviceRepository) GetModel(ctx context.Context, request *ttnpb.GetEndD
 
 // GetTemplate implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetTemplate(ctx context.Context, ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.EndDeviceTemplate, error) {
+	if dr.config.RequireAuth {
+		// TODO: require any application rights here.
+	}
 	return dr.store.GetTemplate(ids)
 }
 
 // GetUplinkDecoder implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetUplinkDecoder(ctx context.Context, ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+	if dr.config.RequireAuth {
+		// TODO: require any application rights here.
+		if err := clusterauth.Authorized(ctx); err != nil {
+			return nil, err
+		}
+	}
 	s, err := dr.store.GetUplinkDecoder(ids)
 	if err != nil {
 		return nil, err
@@ -153,6 +176,12 @@ func (dr *DeviceRepository) GetUplinkDecoder(ctx context.Context, ids *ttnpb.End
 
 // GetDownlinkDecoder implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetDownlinkDecoder(ctx context.Context, ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+	if dr.config.RequireAuth {
+		// TODO: require any application rights here.
+		if err := clusterauth.Authorized(ctx); err != nil {
+			return nil, err
+		}
+	}
 	s, err := dr.store.GetDownlinkDecoder(ids)
 	if err != nil {
 		return nil, err
@@ -165,6 +194,12 @@ func (dr *DeviceRepository) GetDownlinkDecoder(ctx context.Context, ids *ttnpb.E
 
 // GetDownlinkEncoder implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetDownlinkEncoder(ctx context.Context, ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+	if dr.config.RequireAuth {
+		// TODO: require any application rights here.
+		if err := clusterauth.Authorized(ctx); err != nil {
+			return nil, err
+		}
+	}
 	s, err := dr.store.GetDownlinkEncoder(ids)
 	if err != nil {
 		return nil, err
