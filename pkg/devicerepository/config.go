@@ -28,7 +28,7 @@ type Config struct {
 	Directory string            `name:"directory" description:"Retrieve devices from the filesystem"`
 	URL       string            `name:"url" description:"Retrieve devices from a web server"`
 
-	PhotosBaseURL string `name:"photos-base-url" description:"The base URL for photos assets"`
+	AssetsBaseURL string `name:"assets-base-url" description:"The base URL for assets"`
 	RequireAuth   bool   `name:"require-auth" description:"Require authentication for the device repository"`
 }
 

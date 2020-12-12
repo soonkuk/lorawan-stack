@@ -37,6 +37,13 @@ func withDefaultBrandFields(paths []string) []string {
 	return ttnpb.AddFields(paths, "brand_id")
 }
 
+func (dr *DeviceRepository) assetURL(brandID, path string) string {
+	if path == "" || dr.config.AssetsBaseURL == "" {
+		return path
+	}
+	return strings.TrimRight(dr.config.AssetsBaseURL, "/") + "/vendor/" + brandID + "/" + path
+}
+
 // ListBrands implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) ListBrands(ctx context.Context, request *ttnpb.ListEndDeviceBrandsRequest) (*ttnpb.ListEndDeviceBrandsResponse, error) {
 	if dr.config.RequireAuth {
@@ -54,6 +61,9 @@ func (dr *DeviceRepository) ListBrands(ctx context.Context, request *ttnpb.ListE
 	})
 	if err != nil {
 		return nil, err
+	}
+	for _, brand := range response.Brands {
+		brand.Logo = dr.assetURL(brand.BrandID, brand.Logo)
 	}
 	grpc.SetHeader(ctx, metadata.Pairs("x-total-count", strconv.FormatUint(uint64(response.Total), 10)))
 	return &ttnpb.ListEndDeviceBrandsResponse{
@@ -81,7 +91,9 @@ func (dr *DeviceRepository) GetBrand(ctx context.Context, request *ttnpb.GetEndD
 	if len(response.Brands) == 0 {
 		return nil, errBrandNotFound.WithAttributes("brand_id", request.BrandID)
 	}
-	return response.Brands[0], nil
+	brand := response.Brands[0]
+	brand.Logo = dr.assetURL(brand.BrandID, brand.Logo)
+	return brand, nil
 }
 
 // ListModels implements the ttnpb.DeviceRepositoryServer interface.
@@ -104,19 +116,14 @@ func (dr *DeviceRepository) ListModels(ctx context.Context, request *ttnpb.ListE
 		return nil, err
 	}
 
-	if dr.config.PhotosBaseURL != "" {
-		format := func(brandID, path string) string {
-			return strings.TrimRight(dr.config.PhotosBaseURL, "/") + "/vendor/" + brandID + "/" + path
-		}
-		for _, model := range response.Models {
-			if photos := model.Photos; photos != nil {
-				photos.Main = format(model.BrandID, photos.Main)
-				for idx, photo := range photos.Other {
-					photos.Other[idx] = format(model.BrandID, photo)
-				}
+	for _, model := range response.Models {
+		if photos := model.Photos; photos != nil {
+			photos.Main = dr.assetURL(model.BrandID, photos.Main)
+			for idx, photo := range photos.Other {
+				photos.Other[idx] = dr.assetURL(model.BrandID, photo)
 			}
 		}
-  }
+	}
 
 	grpc.SetHeader(ctx, metadata.Pairs("x-total-count", strconv.FormatUint(uint64(response.Total), 10)))
 	return &ttnpb.ListEndDeviceModelsResponse{
@@ -145,7 +152,15 @@ func (dr *DeviceRepository) GetModel(ctx context.Context, request *ttnpb.GetEndD
 	if len(response.Models) == 0 {
 		return nil, errModelNotFound.WithAttributes("brand_id", request.BrandID, "model_id", request.ModelID)
 	}
-	return response.Models[0], nil
+	model := response.Models[0]
+	if photos := model.Photos; photos != nil {
+		photos.Main = dr.assetURL(model.BrandID, photos.Main)
+		for idx, photo := range photos.Other {
+			photos.Other[idx] = dr.assetURL(model.BrandID, photo)
+		}
+	}
+
+	return model, nil
 }
 
 // GetTemplate implements the ttnpb.DeviceRepositoryServer interface.

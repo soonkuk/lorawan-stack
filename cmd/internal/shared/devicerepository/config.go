@@ -20,7 +20,7 @@ import "go.thethings.network/lorawan-stack/v3/pkg/devicerepository"
 var DefaultDeviceRepositoryConfig = devicerepository.Config{
 	URL: "https://raw.githubusercontent.com/TheThingsNetwork/lorawan-devices/master",
 
-	PhotosBaseURL: "https://raw.githubusercontent.com/TheThingsNetwork/lorawan-devices/master",
+	AssetsBaseURL: "https://raw.githubusercontent.com/TheThingsNetwork/lorawan-devices/master",
 
 	// TODO: Enable by default
 	// RequireAuth: true,
