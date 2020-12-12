@@ -42,16 +42,16 @@ func (*NoopStore) GetTemplate(*ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.EndDev
 }
 
 // GetUplinkDecoder retrieves the codec for decoding uplink messages.
-func (*NoopStore) GetUplinkDecoder(*ttnpb.EndDeviceVersionIdentifiers) (string, error) {
-	return "", errNotFound.New()
+func (*NoopStore) GetUplinkDecoder(*ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+	return nil, errNotFound.New()
 }
 
 // GetDownlinkDecoder retrieves the codec for decoding downlink messages.
-func (*NoopStore) GetDownlinkDecoder(*ttnpb.EndDeviceVersionIdentifiers) (string, error) {
-	return "", errNotFound.New()
+func (*NoopStore) GetDownlinkDecoder(*ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+	return nil, errNotFound.New()
 }
 
 // GetDownlinkEncoder retrieves the codec for encoding downlink messages.
-func (*NoopStore) GetDownlinkEncoder(*ttnpb.EndDeviceVersionIdentifiers) (string, error) {
-	return "", errNotFound.New()
+func (*NoopStore) GetDownlinkEncoder(*ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+	return nil, errNotFound.New()
 }

@@ -396,6 +396,31 @@ func (dst *EndDeviceModel) SetFields(src *EndDeviceModel, paths ...string) error
 func (dst *GetEndDeviceBrandRequest) SetFields(src *GetEndDeviceBrandRequest, paths ...string) error {
 	for name, subs := range _processPaths(paths) {
 		switch name {
+		case "application_ids":
+			if len(subs) > 0 {
+				var newDst, newSrc *ApplicationIdentifiers
+				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
+					continue
+				}
+				if src != nil {
+					newSrc = src.ApplicationIDs
+				}
+				if dst.ApplicationIDs != nil {
+					newDst = dst.ApplicationIDs
+				} else {
+					newDst = &ApplicationIdentifiers{}
+					dst.ApplicationIDs = newDst
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.ApplicationIDs = src.ApplicationIDs
+				} else {
+					dst.ApplicationIDs = nil
+				}
+			}
 		case "brand_id":
 			if len(subs) > 0 {
 				return fmt.Errorf("'brand_id' has no subfields, but %s were specified", subs)
@@ -427,6 +452,31 @@ func (dst *GetEndDeviceBrandRequest) SetFields(src *GetEndDeviceBrandRequest, pa
 func (dst *ListEndDeviceBrandsRequest) SetFields(src *ListEndDeviceBrandsRequest, paths ...string) error {
 	for name, subs := range _processPaths(paths) {
 		switch name {
+		case "application_ids":
+			if len(subs) > 0 {
+				var newDst, newSrc *ApplicationIdentifiers
+				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
+					continue
+				}
+				if src != nil {
+					newSrc = src.ApplicationIDs
+				}
+				if dst.ApplicationIDs != nil {
+					newDst = dst.ApplicationIDs
+				} else {
+					newDst = &ApplicationIdentifiers{}
+					dst.ApplicationIDs = newDst
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.ApplicationIDs = src.ApplicationIDs
+				} else {
+					dst.ApplicationIDs = nil
+				}
+			}
 		case "limit":
 			if len(subs) > 0 {
 				return fmt.Errorf("'limit' has no subfields, but %s were specified", subs)
@@ -488,6 +538,31 @@ func (dst *ListEndDeviceBrandsRequest) SetFields(src *ListEndDeviceBrandsRequest
 func (dst *GetEndDeviceModelRequest) SetFields(src *GetEndDeviceModelRequest, paths ...string) error {
 	for name, subs := range _processPaths(paths) {
 		switch name {
+		case "application_ids":
+			if len(subs) > 0 {
+				var newDst, newSrc *ApplicationIdentifiers
+				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
+					continue
+				}
+				if src != nil {
+					newSrc = src.ApplicationIDs
+				}
+				if dst.ApplicationIDs != nil {
+					newDst = dst.ApplicationIDs
+				} else {
+					newDst = &ApplicationIdentifiers{}
+					dst.ApplicationIDs = newDst
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.ApplicationIDs = src.ApplicationIDs
+				} else {
+					dst.ApplicationIDs = nil
+				}
+			}
 		case "brand_id":
 			if len(subs) > 0 {
 				return fmt.Errorf("'brand_id' has no subfields, but %s were specified", subs)
@@ -529,6 +604,31 @@ func (dst *GetEndDeviceModelRequest) SetFields(src *GetEndDeviceModelRequest, pa
 func (dst *ListEndDeviceModelsRequest) SetFields(src *ListEndDeviceModelsRequest, paths ...string) error {
 	for name, subs := range _processPaths(paths) {
 		switch name {
+		case "application_ids":
+			if len(subs) > 0 {
+				var newDst, newSrc *ApplicationIdentifiers
+				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
+					continue
+				}
+				if src != nil {
+					newSrc = src.ApplicationIDs
+				}
+				if dst.ApplicationIDs != nil {
+					newDst = dst.ApplicationIDs
+				} else {
+					newDst = &ApplicationIdentifiers{}
+					dst.ApplicationIDs = newDst
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.ApplicationIDs = src.ApplicationIDs
+				} else {
+					dst.ApplicationIDs = nil
+				}
+			}
 		case "brand_id":
 			if len(subs) > 0 {
 				return fmt.Errorf("'brand_id' has no subfields, but %s were specified", subs)
@@ -588,6 +688,128 @@ func (dst *ListEndDeviceModelsRequest) SetFields(src *ListEndDeviceModelsRequest
 			} else {
 				var zero types.FieldMask
 				dst.FieldMask = zero
+			}
+
+		default:
+			return fmt.Errorf("invalid field: '%s'", name)
+		}
+	}
+	return nil
+}
+
+func (dst *GetTemplateRequest) SetFields(src *GetTemplateRequest, paths ...string) error {
+	for name, subs := range _processPaths(paths) {
+		switch name {
+		case "application_ids":
+			if len(subs) > 0 {
+				var newDst, newSrc *ApplicationIdentifiers
+				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
+					continue
+				}
+				if src != nil {
+					newSrc = src.ApplicationIDs
+				}
+				if dst.ApplicationIDs != nil {
+					newDst = dst.ApplicationIDs
+				} else {
+					newDst = &ApplicationIdentifiers{}
+					dst.ApplicationIDs = newDst
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.ApplicationIDs = src.ApplicationIDs
+				} else {
+					dst.ApplicationIDs = nil
+				}
+			}
+		case "version_ids":
+			if len(subs) > 0 {
+				var newDst, newSrc *EndDeviceVersionIdentifiers
+				if (src == nil || src.VersionIDs == nil) && dst.VersionIDs == nil {
+					continue
+				}
+				if src != nil {
+					newSrc = src.VersionIDs
+				}
+				if dst.VersionIDs != nil {
+					newDst = dst.VersionIDs
+				} else {
+					newDst = &EndDeviceVersionIdentifiers{}
+					dst.VersionIDs = newDst
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.VersionIDs = src.VersionIDs
+				} else {
+					dst.VersionIDs = nil
+				}
+			}
+
+		default:
+			return fmt.Errorf("invalid field: '%s'", name)
+		}
+	}
+	return nil
+}
+
+func (dst *GetPayloadFormatterRequest) SetFields(src *GetPayloadFormatterRequest, paths ...string) error {
+	for name, subs := range _processPaths(paths) {
+		switch name {
+		case "application_ids":
+			if len(subs) > 0 {
+				var newDst, newSrc *ApplicationIdentifiers
+				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
+					continue
+				}
+				if src != nil {
+					newSrc = src.ApplicationIDs
+				}
+				if dst.ApplicationIDs != nil {
+					newDst = dst.ApplicationIDs
+				} else {
+					newDst = &ApplicationIdentifiers{}
+					dst.ApplicationIDs = newDst
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.ApplicationIDs = src.ApplicationIDs
+				} else {
+					dst.ApplicationIDs = nil
+				}
+			}
+		case "version_ids":
+			if len(subs) > 0 {
+				var newDst, newSrc *EndDeviceVersionIdentifiers
+				if (src == nil || src.VersionIDs == nil) && dst.VersionIDs == nil {
+					continue
+				}
+				if src != nil {
+					newSrc = src.VersionIDs
+				}
+				if dst.VersionIDs != nil {
+					newDst = dst.VersionIDs
+				} else {
+					newDst = &EndDeviceVersionIdentifiers{}
+					dst.VersionIDs = newDst
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.VersionIDs = src.VersionIDs
+				} else {
+					dst.VersionIDs = nil
+				}
 			}
 
 		default:

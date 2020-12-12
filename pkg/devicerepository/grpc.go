@@ -164,63 +164,42 @@ func (dr *DeviceRepository) GetModel(ctx context.Context, request *ttnpb.GetEndD
 }
 
 // GetTemplate implements the ttnpb.DeviceRepositoryServer interface.
-func (dr *DeviceRepository) GetTemplate(ctx context.Context, ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.EndDeviceTemplate, error) {
+func (dr *DeviceRepository) GetTemplate(ctx context.Context, req *ttnpb.GetTemplateRequest) (*ttnpb.EndDeviceTemplate, error) {
 	if dr.config.RequireAuth {
 		// TODO: require any application rights here.
 	}
-	return dr.store.GetTemplate(ids)
+	return dr.store.GetTemplate(req.VersionIDs)
 }
 
 // GetUplinkDecoder implements the ttnpb.DeviceRepositoryServer interface.
-func (dr *DeviceRepository) GetUplinkDecoder(ctx context.Context, ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+func (dr *DeviceRepository) GetUplinkDecoder(ctx context.Context, req *ttnpb.GetPayloadFormatterRequest) (*ttnpb.MessagePayloadFormatter, error) {
 	if dr.config.RequireAuth {
 		// TODO: require any application rights here.
 		if err := clusterauth.Authorized(ctx); err != nil {
 			return nil, err
 		}
 	}
-	s, err := dr.store.GetUplinkDecoder(ids)
-	if err != nil {
-		return nil, err
-	}
-	return &ttnpb.MessagePayloadFormatter{
-		Formatter:          ttnpb.PayloadFormatter_FORMATTER_JAVASCRIPT,
-		FormatterParameter: s,
-	}, nil
+	return dr.store.GetUplinkDecoder(req.VersionIDs)
 }
 
 // GetDownlinkDecoder implements the ttnpb.DeviceRepositoryServer interface.
-func (dr *DeviceRepository) GetDownlinkDecoder(ctx context.Context, ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+func (dr *DeviceRepository) GetDownlinkDecoder(ctx context.Context, req *ttnpb.GetPayloadFormatterRequest) (*ttnpb.MessagePayloadFormatter, error) {
 	if dr.config.RequireAuth {
 		// TODO: require any application rights here.
 		if err := clusterauth.Authorized(ctx); err != nil {
 			return nil, err
 		}
 	}
-	s, err := dr.store.GetDownlinkDecoder(ids)
-	if err != nil {
-		return nil, err
-	}
-	return &ttnpb.MessagePayloadFormatter{
-		Formatter:          ttnpb.PayloadFormatter_FORMATTER_JAVASCRIPT,
-		FormatterParameter: s,
-	}, nil
+	return dr.store.GetDownlinkDecoder(req.VersionIDs)
 }
 
 // GetDownlinkEncoder implements the ttnpb.DeviceRepositoryServer interface.
-func (dr *DeviceRepository) GetDownlinkEncoder(ctx context.Context, ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+func (dr *DeviceRepository) GetDownlinkEncoder(ctx context.Context, req *ttnpb.GetPayloadFormatterRequest) (*ttnpb.MessagePayloadFormatter, error) {
 	if dr.config.RequireAuth {
 		// TODO: require any application rights here.
 		if err := clusterauth.Authorized(ctx); err != nil {
 			return nil, err
 		}
 	}
-	s, err := dr.store.GetDownlinkEncoder(ids)
-	if err != nil {
-		return nil, err
-	}
-	return &ttnpb.MessagePayloadFormatter{
-		Formatter:          ttnpb.PayloadFormatter_FORMATTER_JAVASCRIPT,
-		FormatterParameter: s,
-	}, nil
+	return dr.store.GetDownlinkEncoder(req.VersionIDs)
 }

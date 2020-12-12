@@ -87,15 +87,20 @@ var EndDeviceModelFieldPathsTopLevel = []string{
 	"weight",
 }
 var GetEndDeviceBrandRequestFieldPathsNested = []string{
+	"application_ids",
+	"application_ids.application_id",
 	"brand_id",
 	"field_mask",
 }
 
 var GetEndDeviceBrandRequestFieldPathsTopLevel = []string{
+	"application_ids",
 	"brand_id",
 	"field_mask",
 }
 var ListEndDeviceBrandsRequestFieldPathsNested = []string{
+	"application_ids",
+	"application_ids.application_id",
 	"field_mask",
 	"limit",
 	"order_by",
@@ -104,6 +109,7 @@ var ListEndDeviceBrandsRequestFieldPathsNested = []string{
 }
 
 var ListEndDeviceBrandsRequestFieldPathsTopLevel = []string{
+	"application_ids",
 	"field_mask",
 	"limit",
 	"order_by",
@@ -111,17 +117,22 @@ var ListEndDeviceBrandsRequestFieldPathsTopLevel = []string{
 	"search",
 }
 var GetEndDeviceModelRequestFieldPathsNested = []string{
+	"application_ids",
+	"application_ids.application_id",
 	"brand_id",
 	"field_mask",
 	"model_id",
 }
 
 var GetEndDeviceModelRequestFieldPathsTopLevel = []string{
+	"application_ids",
 	"brand_id",
 	"field_mask",
 	"model_id",
 }
 var ListEndDeviceModelsRequestFieldPathsNested = []string{
+	"application_ids",
+	"application_ids.application_id",
 	"brand_id",
 	"field_mask",
 	"limit",
@@ -131,12 +142,43 @@ var ListEndDeviceModelsRequestFieldPathsNested = []string{
 }
 
 var ListEndDeviceModelsRequestFieldPathsTopLevel = []string{
+	"application_ids",
 	"brand_id",
 	"field_mask",
 	"limit",
 	"order_by",
 	"page",
 	"search",
+}
+var GetTemplateRequestFieldPathsNested = []string{
+	"application_ids",
+	"application_ids.application_id",
+	"version_ids",
+	"version_ids.band_id",
+	"version_ids.brand_id",
+	"version_ids.firmware_version",
+	"version_ids.hardware_version",
+	"version_ids.model_id",
+}
+
+var GetTemplateRequestFieldPathsTopLevel = []string{
+	"application_ids",
+	"version_ids",
+}
+var GetPayloadFormatterRequestFieldPathsNested = []string{
+	"application_ids",
+	"application_ids.application_id",
+	"version_ids",
+	"version_ids.band_id",
+	"version_ids.brand_id",
+	"version_ids.firmware_version",
+	"version_ids.hardware_version",
+	"version_ids.model_id",
+}
+
+var GetPayloadFormatterRequestFieldPathsTopLevel = []string{
+	"application_ids",
+	"version_ids",
 }
 var ListEndDeviceBrandsResponseFieldPathsNested = []string{
 	"brands",

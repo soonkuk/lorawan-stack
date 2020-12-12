@@ -141,6 +141,8 @@
   - [Message `EndDeviceModel.Videos`](#ttn.lorawan.v3.EndDeviceModel.Videos)
   - [Message `GetEndDeviceBrandRequest`](#ttn.lorawan.v3.GetEndDeviceBrandRequest)
   - [Message `GetEndDeviceModelRequest`](#ttn.lorawan.v3.GetEndDeviceModelRequest)
+  - [Message `GetPayloadFormatterRequest`](#ttn.lorawan.v3.GetPayloadFormatterRequest)
+  - [Message `GetTemplateRequest`](#ttn.lorawan.v3.GetTemplateRequest)
   - [Message `ListEndDeviceBrandsRequest`](#ttn.lorawan.v3.ListEndDeviceBrandsRequest)
   - [Message `ListEndDeviceBrandsResponse`](#ttn.lorawan.v3.ListEndDeviceBrandsResponse)
   - [Message `ListEndDeviceModelsRequest`](#ttn.lorawan.v3.ListEndDeviceModelsRequest)
@@ -2197,6 +2199,7 @@ ApplicationRegistry, ClientRegistry, GatewayRegistry, OrganizationRegistry and U
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `application_ids` | [`ApplicationIdentifiers`](#ttn.lorawan.v3.ApplicationIdentifiers) |  | Application identifiers. |
 | `brand_id` | [`string`](#string) |  | Brand identifier, as defined in the Device Repository. |
 | `field_mask` | [`google.protobuf.FieldMask`](#google.protobuf.FieldMask) |  | Field mask paths. |
 
@@ -2204,14 +2207,30 @@ ApplicationRegistry, ClientRegistry, GatewayRegistry, OrganizationRegistry and U
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `application_ids` | [`ApplicationIdentifiers`](#ttn.lorawan.v3.ApplicationIdentifiers) |  | Application identifiers. |
 | `brand_id` | [`string`](#string) |  | Brand identifier, as defined in the Device Repository. |
 | `model_id` | [`string`](#string) |  | Model identifier, as defined in the Device Repository. |
 | `field_mask` | [`google.protobuf.FieldMask`](#google.protobuf.FieldMask) |  | Field mask paths. |
+
+### <a name="ttn.lorawan.v3.GetPayloadFormatterRequest">Message `GetPayloadFormatterRequest`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `application_ids` | [`ApplicationIdentifiers`](#ttn.lorawan.v3.ApplicationIdentifiers) |  | Application identifiers. |
+| `version_ids` | [`EndDeviceVersionIdentifiers`](#ttn.lorawan.v3.EndDeviceVersionIdentifiers) |  | End device version information. |
+
+### <a name="ttn.lorawan.v3.GetTemplateRequest">Message `GetTemplateRequest`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `application_ids` | [`ApplicationIdentifiers`](#ttn.lorawan.v3.ApplicationIdentifiers) |  | Application identifiers. |
+| `version_ids` | [`EndDeviceVersionIdentifiers`](#ttn.lorawan.v3.EndDeviceVersionIdentifiers) |  | End device version information. |
 
 ### <a name="ttn.lorawan.v3.ListEndDeviceBrandsRequest">Message `ListEndDeviceBrandsRequest`</a>
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `application_ids` | [`ApplicationIdentifiers`](#ttn.lorawan.v3.ApplicationIdentifiers) |  | Application identifiers. |
 | `limit` | [`uint32`](#uint32) |  | Limit the number of results per page. |
 | `page` | [`uint32`](#uint32) |  | Page number for pagination. 0 is interpreted as 1. |
 | `order_by` | [`string`](#string) |  | Order (for pagination) |
@@ -2235,6 +2254,7 @@ ApplicationRegistry, ClientRegistry, GatewayRegistry, OrganizationRegistry and U
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `application_ids` | [`ApplicationIdentifiers`](#ttn.lorawan.v3.ApplicationIdentifiers) |  | Application identifiers. |
 | `brand_id` | [`string`](#string) |  | List end devices from a specific brand. |
 | `limit` | [`uint32`](#uint32) |  | Limit the number of results per page. |
 | `page` | [`uint32`](#uint32) |  | Page number for pagination. 0 is interpreted as 1. |
@@ -2294,24 +2314,33 @@ ApplicationRegistry, ClientRegistry, GatewayRegistry, OrganizationRegistry and U
 | `GetBrand` | [`GetEndDeviceBrandRequest`](#ttn.lorawan.v3.GetEndDeviceBrandRequest) | [`EndDeviceBrand`](#ttn.lorawan.v3.EndDeviceBrand) |  |
 | `ListModels` | [`ListEndDeviceModelsRequest`](#ttn.lorawan.v3.ListEndDeviceModelsRequest) | [`ListEndDeviceModelsResponse`](#ttn.lorawan.v3.ListEndDeviceModelsResponse) |  |
 | `GetModel` | [`GetEndDeviceModelRequest`](#ttn.lorawan.v3.GetEndDeviceModelRequest) | [`EndDeviceModel`](#ttn.lorawan.v3.EndDeviceModel) |  |
-| `GetTemplate` | [`EndDeviceVersionIdentifiers`](#ttn.lorawan.v3.EndDeviceVersionIdentifiers) | [`EndDeviceTemplate`](#ttn.lorawan.v3.EndDeviceTemplate) |  |
-| `GetUplinkDecoder` | [`EndDeviceVersionIdentifiers`](#ttn.lorawan.v3.EndDeviceVersionIdentifiers) | [`MessagePayloadFormatter`](#ttn.lorawan.v3.MessagePayloadFormatter) |  |
-| `GetDownlinkDecoder` | [`EndDeviceVersionIdentifiers`](#ttn.lorawan.v3.EndDeviceVersionIdentifiers) | [`MessagePayloadFormatter`](#ttn.lorawan.v3.MessagePayloadFormatter) |  |
-| `GetDownlinkEncoder` | [`EndDeviceVersionIdentifiers`](#ttn.lorawan.v3.EndDeviceVersionIdentifiers) | [`MessagePayloadFormatter`](#ttn.lorawan.v3.MessagePayloadFormatter) |  |
+| `GetTemplate` | [`GetTemplateRequest`](#ttn.lorawan.v3.GetTemplateRequest) | [`EndDeviceTemplate`](#ttn.lorawan.v3.EndDeviceTemplate) |  |
+| `GetUplinkDecoder` | [`GetPayloadFormatterRequest`](#ttn.lorawan.v3.GetPayloadFormatterRequest) | [`MessagePayloadFormatter`](#ttn.lorawan.v3.MessagePayloadFormatter) |  |
+| `GetDownlinkDecoder` | [`GetPayloadFormatterRequest`](#ttn.lorawan.v3.GetPayloadFormatterRequest) | [`MessagePayloadFormatter`](#ttn.lorawan.v3.MessagePayloadFormatter) |  |
+| `GetDownlinkEncoder` | [`GetPayloadFormatterRequest`](#ttn.lorawan.v3.GetPayloadFormatterRequest) | [`MessagePayloadFormatter`](#ttn.lorawan.v3.MessagePayloadFormatter) |  |
 
 #### HTTP bindings
 
 | Method Name | Method | Pattern | Body |
 | ----------- | ------ | ------- | ---- |
 | `ListBrands` | `GET` | `/api/v3/dr/brands` |  |
+| `ListBrands` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands` |  |
 | `GetBrand` | `GET` | `/api/v3/dr/brands/{brand_id}` |  |
+| `GetBrand` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{brand_id}` |  |
 | `ListModels` | `GET` | `/api/v3/dr/brands/{brand_id}/models` |  |
 | `ListModels` | `GET` | `/api/v3/dr/models` |  |
+| `ListModels` | `GET` | `/api/v3/dr/appications/{application_ids.application_id}/brands/{brand_id}/models` |  |
+| `ListModels` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/models` |  |
 | `GetModel` | `GET` | `/api/v3/dr/brands/{brand_id}/models/{model_id}` |  |
-| `GetTemplate` | `GET` | `/api/v3/dr/brands/{brand_id}/models/{model_id}/{firmware_version}/{band_id}/template` |  |
-| `GetUplinkDecoder` | `GET` | `/api/v3/dr/brands/{brand_id}/models/{model_id}/{firmware_version}/{band_id}/formatters/uplink/decoder` |  |
-| `GetDownlinkDecoder` | `GET` | `/api/v3/dr/brands/{brand_id}/models/{model_id}/{firmware_version}/{band_id}/formatters/downlink/decoder` |  |
-| `GetDownlinkEncoder` | `GET` | `/api/v3/dr/brands/{brand_id}/models/{model_id}/{firmware_version}/{band_id}/formatters/downlink/encoder` |  |
+| `GetModel` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{brand_id}/models/{model_id}` |  |
+| `GetTemplate` | `GET` | `/api/v3/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template` |  |
+| `GetTemplate` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template` |  |
+| `GetUplinkDecoder` | `GET` | `/api/v3/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder` |  |
+| `GetUplinkDecoder` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder` |  |
+| `GetDownlinkDecoder` | `GET` | `/api/v3/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder` |  |
+| `GetDownlinkDecoder` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder` |  |
+| `GetDownlinkEncoder` | `GET` | `/api/v3/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder` |  |
+| `GetDownlinkEncoder` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder` |  |
 
 ## <a name="lorawan-stack/api/end_device.proto">File `lorawan-stack/api/end_device.proto`</a>
 

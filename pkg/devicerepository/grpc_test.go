@@ -45,7 +45,7 @@ type mockStore struct {
 	template *ttnpb.EndDeviceTemplate
 	uplinkDecoder,
 	downlinkDecoder,
-	downlinkEncoder string
+	downlinkEncoder *ttnpb.MessagePayloadFormatter
 
 	// mock errors
 	err error
@@ -92,19 +92,19 @@ func (s *mockStore) GetTemplate(ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.
 }
 
 // GetUplinkDecoder retrieves the codec for decoding uplink messages.
-func (s *mockStore) GetUplinkDecoder(ids *ttnpb.EndDeviceVersionIdentifiers) (string, error) {
+func (s *mockStore) GetUplinkDecoder(ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
 	s.lastVersionIDs = ids
 	return s.uplinkDecoder, s.err
 }
 
 // GetDownlinkDecoder retrieves the codec for decoding downlink messages.
-func (s *mockStore) GetDownlinkDecoder(ids *ttnpb.EndDeviceVersionIdentifiers) (string, error) {
+func (s *mockStore) GetDownlinkDecoder(ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
 	s.lastVersionIDs = ids
 	return s.downlinkDecoder, s.err
 }
 
 // GetDownlinkEncoder retrieves the codec for encoding downlink messages.
-func (s *mockStore) GetDownlinkEncoder(ids *ttnpb.EndDeviceVersionIdentifiers) (string, error) {
+func (s *mockStore) GetDownlinkEncoder(ids *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
 	s.lastVersionIDs = ids
 	return s.downlinkEncoder, s.err
 }
@@ -400,7 +400,9 @@ func TestGRPC(t *testing.T) {
 
 		t.Run("Request", func(t *testing.T) {
 			a := assertions.New(t)
-			_, err := cl.GetTemplate(test.Context(), ids)
+			_, err := cl.GetTemplate(test.Context(), &ttnpb.GetTemplateRequest{
+				VersionIDs: ids,
+			})
 			a.So(err, should.BeNil)
 			a.So(st.lastVersionIDs, should.Resemble, ids)
 		})
@@ -408,7 +410,9 @@ func TestGRPC(t *testing.T) {
 		t.Run("StoreError", func(t *testing.T) {
 			a := assertions.New(t)
 			st.err = fmt.Errorf("store error")
-			models, err := cl.GetTemplate(test.Context(), ids)
+			models, err := cl.GetTemplate(test.Context(), &ttnpb.GetTemplateRequest{
+				VersionIDs: ids,
+			})
 			a.So(models, should.BeNil)
 			a.So(err.Error(), should.ContainSubstring, st.err.Error())
 		})
@@ -417,7 +421,9 @@ func TestGRPC(t *testing.T) {
 			a := assertions.New(t)
 			st.err = nil
 
-			template, err := cl.GetTemplate(test.Context(), ids)
+			template, err := cl.GetTemplate(test.Context(), &ttnpb.GetTemplateRequest{
+				VersionIDs: ids,
+			})
 			a.So(err, should.BeNil)
 			a.So(template, should.Resemble, st.template)
 		})
@@ -431,7 +437,9 @@ func TestGRPC(t *testing.T) {
 		t.Run("StoreError", func(t *testing.T) {
 			a := assertions.New(t)
 			st.err = fmt.Errorf("store error")
-			models, err := cl.GetTemplate(test.Context(), ids)
+			models, err := cl.GetUplinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
+			})
 			a.So(models, should.BeNil)
 			a.So(err.Error(), should.ContainSubstring, st.err.Error())
 			a.So(st.lastVersionIDs, should.Resemble, ids)
@@ -439,25 +447,28 @@ func TestGRPC(t *testing.T) {
 
 		t.Run("Success", func(t *testing.T) {
 			a := assertions.New(t)
-			st.uplinkDecoder = "uplink decoder"
+			st.uplinkDecoder = ttnpb.NewPopulatedMessagePayloadFormatter(test.Randy, true)
 			st.err = nil
 
-			c, err := cl.GetUplinkDecoder(test.Context(), ids)
-			a.So(err, should.BeNil)
-			a.So(c, should.Resemble, &ttnpb.MessagePayloadFormatter{
-				Formatter:          ttnpb.PayloadFormatter_FORMATTER_JAVASCRIPT,
-				FormatterParameter: "uplink decoder",
+			c, err := cl.GetUplinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
 			})
+			a.So(err, should.BeNil)
+			a.So(c, should.Resemble, st.uplinkDecoder)
 		})
 
 		t.Run("ClusterAuth", func(t *testing.T) {
 			conf.RequireAuth = true
-			codec, err := cl.GetUplinkDecoder(test.Context(), ids)
+			codec, err := cl.GetUplinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
+			})
 			a := assertions.New(t)
 			a.So(errors.IsUnauthenticated(err), should.BeTrue)
 			a.So(codec, should.BeNil)
 
-			_, err = cl.GetUplinkDecoder(test.Context(), ids, c.WithClusterAuth())
+			_, err = cl.GetUplinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
+			}, c.WithClusterAuth())
 			a.So(err, should.BeNil)
 
 			conf.RequireAuth = false
@@ -468,7 +479,9 @@ func TestGRPC(t *testing.T) {
 		t.Run("StoreError", func(t *testing.T) {
 			a := assertions.New(t)
 			st.err = fmt.Errorf("store error")
-			models, err := cl.GetTemplate(test.Context(), ids)
+			models, err := cl.GetDownlinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
+			})
 			a.So(models, should.BeNil)
 			a.So(err.Error(), should.ContainSubstring, st.err.Error())
 			a.So(st.lastVersionIDs, should.Resemble, ids)
@@ -476,25 +489,28 @@ func TestGRPC(t *testing.T) {
 
 		t.Run("Success", func(t *testing.T) {
 			a := assertions.New(t)
-			st.downlinkDecoder = "downlink decoder"
+			st.downlinkDecoder = ttnpb.NewPopulatedMessagePayloadFormatter(test.Randy, true)
 			st.err = nil
 
-			c, err := cl.GetDownlinkDecoder(test.Context(), ids)
-			a.So(err, should.BeNil)
-			a.So(c, should.Resemble, &ttnpb.MessagePayloadFormatter{
-				Formatter:          ttnpb.PayloadFormatter_FORMATTER_JAVASCRIPT,
-				FormatterParameter: "downlink decoder",
+			c, err := cl.GetDownlinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
 			})
+			a.So(err, should.BeNil)
+			a.So(c, should.Resemble, st.downlinkDecoder)
 		})
 
 		t.Run("ClusterAuth", func(t *testing.T) {
 			conf.RequireAuth = true
-			codec, err := cl.GetDownlinkDecoder(test.Context(), ids)
+			codec, err := cl.GetDownlinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
+			})
 			a := assertions.New(t)
 			a.So(errors.IsUnauthenticated(err), should.BeTrue)
 			a.So(codec, should.BeNil)
 
-			_, err = cl.GetDownlinkDecoder(test.Context(), ids, c.WithClusterAuth())
+			_, err = cl.GetDownlinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
+			}, c.WithClusterAuth())
 			a.So(err, should.BeNil)
 			conf.RequireAuth = false
 		})
@@ -504,7 +520,9 @@ func TestGRPC(t *testing.T) {
 		t.Run("StoreError", func(t *testing.T) {
 			a := assertions.New(t)
 			st.err = fmt.Errorf("store error")
-			models, err := cl.GetTemplate(test.Context(), ids)
+			models, err := cl.GetDownlinkEncoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
+			})
 			a.So(models, should.BeNil)
 			a.So(err.Error(), should.ContainSubstring, st.err.Error())
 			a.So(st.lastVersionIDs, should.Resemble, ids)
@@ -512,25 +530,28 @@ func TestGRPC(t *testing.T) {
 
 		t.Run("Success", func(t *testing.T) {
 			a := assertions.New(t)
-			st.downlinkEncoder = "downlink encoder"
+			st.downlinkEncoder = ttnpb.NewPopulatedMessagePayloadFormatter(test.Randy, true)
 			st.err = nil
 
-			c, err := cl.GetDownlinkEncoder(test.Context(), ids)
-			a.So(err, should.BeNil)
-			a.So(c, should.Resemble, &ttnpb.MessagePayloadFormatter{
-				Formatter:          ttnpb.PayloadFormatter_FORMATTER_JAVASCRIPT,
-				FormatterParameter: "downlink encoder",
+			c, err := cl.GetDownlinkEncoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
 			})
+			a.So(err, should.BeNil)
+			a.So(c, should.Resemble, st.downlinkEncoder)
 		})
 
 		t.Run("ClusterAuth", func(t *testing.T) {
 			conf.RequireAuth = true
-			codec, err := cl.GetDownlinkEncoder(test.Context(), ids)
+			codec, err := cl.GetDownlinkEncoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
+			})
 			a := assertions.New(t)
 			a.So(errors.IsUnauthenticated(err), should.BeTrue)
 			a.So(codec, should.BeNil)
 
-			_, err = cl.GetDownlinkEncoder(test.Context(), ids, c.WithClusterAuth())
+			_, err = cl.GetDownlinkEncoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+				VersionIDs: ids,
+			}, c.WithClusterAuth())
 			a.So(err, should.BeNil)
 			conf.RequireAuth = false
 		})
