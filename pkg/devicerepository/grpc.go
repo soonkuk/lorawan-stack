@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	clusterauth "go.thethings.network/lorawan-stack/v3/pkg/auth/cluster"
+	"go.thethings.network/lorawan-stack/v3/pkg/auth/rights"
 	"go.thethings.network/lorawan-stack/v3/pkg/devicerepository/store"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
@@ -44,20 +45,29 @@ func (dr *DeviceRepository) assetURL(brandID, path string) string {
 	return strings.TrimRight(dr.config.AssetsBaseURL, "/") + "/vendor/" + brandID + "/" + path
 }
 
+var (
+	errNotAuthorized = errors.DefinePermissionDenied("not_authorized", "not authorized")
+)
+
 // ListBrands implements the ttnpb.DeviceRepositoryServer interface.
-func (dr *DeviceRepository) ListBrands(ctx context.Context, request *ttnpb.ListEndDeviceBrandsRequest) (*ttnpb.ListEndDeviceBrandsResponse, error) {
+func (dr *DeviceRepository) ListBrands(ctx context.Context, req *ttnpb.ListEndDeviceBrandsRequest) (*ttnpb.ListEndDeviceBrandsResponse, error) {
 	if dr.config.RequireAuth {
-		// TODO: require any application rights here.
+		if req.ApplicationIDs == nil {
+			return nil, errNotAuthorized.New()
+		}
+		if err := rights.RequireApplication(ctx, *req.ApplicationIDs, ttnpb.RIGHT_APPLICATION_DEVICES_READ); err != nil {
+			return nil, err
+		}
 	}
-	if request.Limit == 0 {
-		request.Limit = 1000
+	if req.Limit == 0 {
+		req.Limit = 1000
 	}
 	response, err := dr.store.GetBrands(store.GetBrandsRequest{
-		Limit:   request.Limit,
-		Page:    request.Page,
-		OrderBy: request.OrderBy,
-		Paths:   withDefaultBrandFields(request.FieldMask.Paths),
-		Search:  request.Search,
+		Limit:   req.Limit,
+		Page:    req.Page,
+		OrderBy: req.OrderBy,
+		Paths:   withDefaultBrandFields(req.FieldMask.Paths),
+		Search:  req.Search,
 	})
 	if err != nil {
 		return nil, err
@@ -76,20 +86,25 @@ var (
 )
 
 // GetBrand implements the ttnpb.DeviceRepositoryServer interface.
-func (dr *DeviceRepository) GetBrand(ctx context.Context, request *ttnpb.GetEndDeviceBrandRequest) (*ttnpb.EndDeviceBrand, error) {
+func (dr *DeviceRepository) GetBrand(ctx context.Context, req *ttnpb.GetEndDeviceBrandRequest) (*ttnpb.EndDeviceBrand, error) {
 	if dr.config.RequireAuth {
-		// TODO: require any application rights here.
+		if req.ApplicationIDs == nil {
+			return nil, errNotAuthorized.New()
+		}
+		if err := rights.RequireApplication(ctx, *req.ApplicationIDs, ttnpb.RIGHT_APPLICATION_DEVICES_READ); err != nil {
+			return nil, err
+		}
 	}
 	response, err := dr.store.GetBrands(store.GetBrandsRequest{
-		BrandID: request.BrandID,
-		Paths:   withDefaultBrandFields(request.FieldMask.Paths),
+		BrandID: req.BrandID,
+		Paths:   withDefaultBrandFields(req.FieldMask.Paths),
 		Limit:   1,
 	})
 	if err != nil {
 		return nil, err
 	}
 	if len(response.Brands) == 0 {
-		return nil, errBrandNotFound.WithAttributes("brand_id", request.BrandID)
+		return nil, errBrandNotFound.WithAttributes("brand_id", req.BrandID)
 	}
 	brand := response.Brands[0]
 	brand.Logo = dr.assetURL(brand.BrandID, brand.Logo)
@@ -97,20 +112,25 @@ func (dr *DeviceRepository) GetBrand(ctx context.Context, request *ttnpb.GetEndD
 }
 
 // ListModels implements the ttnpb.DeviceRepositoryServer interface.
-func (dr *DeviceRepository) ListModels(ctx context.Context, request *ttnpb.ListEndDeviceModelsRequest) (*ttnpb.ListEndDeviceModelsResponse, error) {
+func (dr *DeviceRepository) ListModels(ctx context.Context, req *ttnpb.ListEndDeviceModelsRequest) (*ttnpb.ListEndDeviceModelsResponse, error) {
 	if dr.config.RequireAuth {
-		// TODO: require any application rights here.
+		if req.ApplicationIDs == nil {
+			return nil, errNotAuthorized.New()
+		}
+		if err := rights.RequireApplication(ctx, *req.ApplicationIDs, ttnpb.RIGHT_APPLICATION_DEVICES_READ); err != nil {
+			return nil, err
+		}
 	}
-	if request.Limit == 0 {
-		request.Limit = 1000
+	if req.Limit == 0 {
+		req.Limit = 1000
 	}
 	response, err := dr.store.GetModels(store.GetModelsRequest{
-		BrandID: request.BrandID,
-		Limit:   request.Limit,
-		Page:    request.Page,
-		Paths:   withDefaultModelFields(request.FieldMask.Paths),
-		Search:  request.Search,
-		OrderBy: request.OrderBy,
+		BrandID: req.BrandID,
+		Limit:   req.Limit,
+		Page:    req.Page,
+		Paths:   withDefaultModelFields(req.FieldMask.Paths),
+		Search:  req.Search,
+		OrderBy: req.OrderBy,
 	})
 	if err != nil {
 		return nil, err
@@ -136,21 +156,26 @@ var (
 )
 
 // GetModel implements the ttnpb.DeviceRepositoryServer interface.
-func (dr *DeviceRepository) GetModel(ctx context.Context, request *ttnpb.GetEndDeviceModelRequest) (*ttnpb.EndDeviceModel, error) {
+func (dr *DeviceRepository) GetModel(ctx context.Context, req *ttnpb.GetEndDeviceModelRequest) (*ttnpb.EndDeviceModel, error) {
 	if dr.config.RequireAuth {
-		// TODO: require any application rights here.
+		if req.ApplicationIDs == nil {
+			return nil, errNotAuthorized.New()
+		}
+		if err := rights.RequireApplication(ctx, *req.ApplicationIDs, ttnpb.RIGHT_APPLICATION_DEVICES_READ); err != nil {
+			return nil, err
+		}
 	}
 	response, err := dr.store.GetModels(store.GetModelsRequest{
-		BrandID: request.BrandID,
-		ModelID: request.ModelID,
+		BrandID: req.BrandID,
+		ModelID: req.ModelID,
 		Limit:   1,
-		Paths:   withDefaultModelFields(request.FieldMask.Paths),
+		Paths:   withDefaultModelFields(req.FieldMask.Paths),
 	})
 	if err != nil {
 		return nil, err
 	}
 	if len(response.Models) == 0 {
-		return nil, errModelNotFound.WithAttributes("brand_id", request.BrandID, "model_id", request.ModelID)
+		return nil, errModelNotFound.WithAttributes("brand_id", req.BrandID, "model_id", req.ModelID)
 	}
 	model := response.Models[0]
 	if photos := model.Photos; photos != nil {
@@ -166,7 +191,12 @@ func (dr *DeviceRepository) GetModel(ctx context.Context, request *ttnpb.GetEndD
 // GetTemplate implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetTemplate(ctx context.Context, req *ttnpb.GetTemplateRequest) (*ttnpb.EndDeviceTemplate, error) {
 	if dr.config.RequireAuth {
-		// TODO: require any application rights here.
+		if req.ApplicationIDs == nil {
+			return nil, errNotAuthorized.New()
+		}
+		if err := rights.RequireApplication(ctx, *req.ApplicationIDs, ttnpb.RIGHT_APPLICATION_DEVICES_READ); err != nil {
+			return nil, err
+		}
 	}
 	return dr.store.GetTemplate(req.VersionIDs)
 }
@@ -174,9 +204,13 @@ func (dr *DeviceRepository) GetTemplate(ctx context.Context, req *ttnpb.GetTempl
 // GetUplinkDecoder implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetUplinkDecoder(ctx context.Context, req *ttnpb.GetPayloadFormatterRequest) (*ttnpb.MessagePayloadFormatter, error) {
 	if dr.config.RequireAuth {
-		// TODO: require any application rights here.
 		if err := clusterauth.Authorized(ctx); err != nil {
-			return nil, err
+			if req.ApplicationIDs == nil {
+				return nil, errNotAuthorized.New()
+			}
+			if err := rights.RequireApplication(ctx, *req.ApplicationIDs, ttnpb.RIGHT_APPLICATION_DEVICES_READ); err != nil {
+				return nil, err
+			}
 		}
 	}
 	return dr.store.GetUplinkDecoder(req.VersionIDs)
@@ -185,9 +219,13 @@ func (dr *DeviceRepository) GetUplinkDecoder(ctx context.Context, req *ttnpb.Get
 // GetDownlinkDecoder implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetDownlinkDecoder(ctx context.Context, req *ttnpb.GetPayloadFormatterRequest) (*ttnpb.MessagePayloadFormatter, error) {
 	if dr.config.RequireAuth {
-		// TODO: require any application rights here.
 		if err := clusterauth.Authorized(ctx); err != nil {
-			return nil, err
+			if req.ApplicationIDs == nil {
+				return nil, errNotAuthorized.New()
+			}
+			if err := rights.RequireApplication(ctx, *req.ApplicationIDs, ttnpb.RIGHT_APPLICATION_DEVICES_READ); err != nil {
+				return nil, err
+			}
 		}
 	}
 	return dr.store.GetDownlinkDecoder(req.VersionIDs)
@@ -196,9 +234,13 @@ func (dr *DeviceRepository) GetDownlinkDecoder(ctx context.Context, req *ttnpb.G
 // GetDownlinkEncoder implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) GetDownlinkEncoder(ctx context.Context, req *ttnpb.GetPayloadFormatterRequest) (*ttnpb.MessagePayloadFormatter, error) {
 	if dr.config.RequireAuth {
-		// TODO: require any application rights here.
 		if err := clusterauth.Authorized(ctx); err != nil {
-			return nil, err
+			if req.ApplicationIDs == nil {
+				return nil, errNotAuthorized.New()
+			}
+			if err := rights.RequireApplication(ctx, *req.ApplicationIDs, ttnpb.RIGHT_APPLICATION_DEVICES_READ); err != nil {
+				return nil, err
+			}
 		}
 	}
 	return dr.store.GetDownlinkEncoder(req.VersionIDs)
