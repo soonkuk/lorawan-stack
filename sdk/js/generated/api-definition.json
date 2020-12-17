@@ -1531,6 +1531,13 @@
           "method": "get",
           "pattern": "/dr/brands",
           "parameters": []
+        },
+        {
+          "method": "get",
+          "pattern": "/dr/applications/{application_ids.application_id}/brands",
+          "parameters": [
+            "application_ids.application_id"
+          ]
         }
       ],
       "allowedFieldMaskPaths": [
@@ -1551,6 +1558,14 @@
           "method": "get",
           "pattern": "/dr/brands/{brand_id}",
           "parameters": [
+            "brand_id"
+          ]
+        },
+        {
+          "method": "get",
+          "pattern": "/dr/applications/{application_ids.application_id}/brands/{brand_id}",
+          "parameters": [
+            "application_ids.application_id",
             "brand_id"
           ]
         }
@@ -1580,6 +1595,21 @@
           "method": "get",
           "pattern": "/dr/models",
           "parameters": []
+        },
+        {
+          "method": "get",
+          "pattern": "/dr/appications/{application_ids.application_id}/brands/{brand_id}/models",
+          "parameters": [
+            "application_ids.application_id",
+            "brand_id"
+          ]
+        },
+        {
+          "method": "get",
+          "pattern": "/dr/applications/{application_ids.application_id}/models",
+          "parameters": [
+            "application_ids.application_id"
+          ]
         }
       ],
       "allowedFieldMaskPaths": [
@@ -1633,6 +1663,15 @@
             "brand_id",
             "model_id"
           ]
+        },
+        {
+          "method": "get",
+          "pattern": "/dr/applications/{application_ids.application_id}/brands/{brand_id}/models/{model_id}",
+          "parameters": [
+            "application_ids.application_id",
+            "brand_id",
+            "model_id"
+          ]
         }
       ],
       "allowedFieldMaskPaths": [
@@ -1681,12 +1720,23 @@
       "http": [
         {
           "method": "get",
-          "pattern": "/dr/brands/{brand_id}/models/{model_id}/{firmware_version}/{band_id}/template",
+          "pattern": "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template",
           "parameters": [
-            "brand_id",
-            "model_id",
-            "firmware_version",
-            "band_id"
+            "version_ids.brand_id",
+            "version_ids.model_id",
+            "version_ids.firmware_version",
+            "version_ids.band_id"
+          ]
+        },
+        {
+          "method": "get",
+          "pattern": "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template",
+          "parameters": [
+            "application_ids.application_id",
+            "version_ids.brand_id",
+            "version_ids.model_id",
+            "version_ids.firmware_version",
+            "version_ids.band_id"
           ]
         }
       ]
@@ -1696,12 +1746,23 @@
       "http": [
         {
           "method": "get",
-          "pattern": "/dr/brands/{brand_id}/models/{model_id}/{firmware_version}/{band_id}/formatters/uplink/decoder",
+          "pattern": "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder",
           "parameters": [
-            "brand_id",
-            "model_id",
-            "firmware_version",
-            "band_id"
+            "version_ids.brand_id",
+            "version_ids.model_id",
+            "version_ids.firmware_version",
+            "version_ids.band_id"
+          ]
+        },
+        {
+          "method": "get",
+          "pattern": "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder",
+          "parameters": [
+            "application_ids.application_id",
+            "version_ids.brand_id",
+            "version_ids.model_id",
+            "version_ids.firmware_version",
+            "version_ids.band_id"
           ]
         }
       ]
@@ -1711,12 +1772,23 @@
       "http": [
         {
           "method": "get",
-          "pattern": "/dr/brands/{brand_id}/models/{model_id}/{firmware_version}/{band_id}/formatters/downlink/decoder",
+          "pattern": "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder",
           "parameters": [
-            "brand_id",
-            "model_id",
-            "firmware_version",
-            "band_id"
+            "version_ids.brand_id",
+            "version_ids.model_id",
+            "version_ids.firmware_version",
+            "version_ids.band_id"
+          ]
+        },
+        {
+          "method": "get",
+          "pattern": "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder",
+          "parameters": [
+            "application_ids.application_id",
+            "version_ids.brand_id",
+            "version_ids.model_id",
+            "version_ids.firmware_version",
+            "version_ids.band_id"
           ]
         }
       ]
@@ -1726,12 +1798,23 @@
       "http": [
         {
           "method": "get",
-          "pattern": "/dr/brands/{brand_id}/models/{model_id}/{firmware_version}/{band_id}/formatters/downlink/encoder",
+          "pattern": "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder",
           "parameters": [
-            "brand_id",
-            "model_id",
-            "firmware_version",
-            "band_id"
+            "version_ids.brand_id",
+            "version_ids.model_id",
+            "version_ids.firmware_version",
+            "version_ids.band_id"
+          ]
+        },
+        {
+          "method": "get",
+          "pattern": "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder",
+          "parameters": [
+            "application_ids.application_id",
+            "version_ids.brand_id",
+            "version_ids.model_id",
+            "version_ids.firmware_version",
+            "version_ids.band_id"
           ]
         }
       ]
