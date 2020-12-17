@@ -248,7 +248,7 @@ func (c *cluster) Join() (err error) {
 			peer.connErr = errPeerEmptyTarget
 			continue
 		}
-		options := rpcclient.DefaultDialOptions(c.ctx)
+		options := rpcclient.DefaultDialOptions(c.ctx, true)
 		if c.tls {
 			tlsConfig := &tls.Config{}
 			if c.tlsConfig != nil {

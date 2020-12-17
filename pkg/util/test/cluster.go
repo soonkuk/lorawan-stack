@@ -85,7 +85,7 @@ func NewGRPCServerPeer(ctx context.Context, srv interface{}, registrators ...int
 			reflect.ValueOf(srv),
 		})
 	}
-	conn, err := rpcserver.StartLoopback(ctx, grpcSrv, rpcclient.DefaultDialOptions(ctx)...)
+	conn, err := rpcserver.StartLoopback(ctx, grpcSrv, rpcclient.DefaultDialOptions(ctx, true)...)
 	if err != nil {
 		return nil, err
 	}

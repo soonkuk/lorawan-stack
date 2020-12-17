@@ -23,6 +23,7 @@ import (
 
 	"github.com/smartystreets/assertions"
 	. "go.thethings.network/lorawan-stack/v3/pkg/cluster"
+	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
 	"go.thethings.network/lorawan-stack/v3/pkg/log"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcmiddleware/rpclog"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
@@ -52,7 +53,7 @@ func TestCluster(t *testing.T) {
 	}
 	defer lis.Close()
 
-	go grpc.NewServer().Serve(lis)
+	go grpc.NewServer(grpc.CustomCodec(gogoproto.Codec{})).Serve(lis)
 
 	config := Config{
 		Address:           lis.Addr().String(),
@@ -71,7 +72,7 @@ func TestCluster(t *testing.T) {
 
 	a.So(c.Join(), should.BeNil)
 
-	grpc.Dial(lis.Addr().String(), grpc.WithInsecure(), grpc.WithBlock())
+	grpc.Dial(lis.Addr().String(), grpc.WithCodec(gogoproto.Codec{}), grpc.WithInsecure(), grpc.WithBlock())
 
 	// The Identity Server playing the ACCESS role should be there within reasonable time.
 	var ac Peer

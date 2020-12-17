@@ -23,6 +23,7 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/smartystreets/assertions"
 	"go.thethings.network/lorawan-stack/v3/pkg/errorcontext"
+	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/rpctest"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/test"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/test/assertions/should"
@@ -37,12 +38,12 @@ func TestFooBarExampleServer(t *testing.T) {
 		panic(err)
 	}
 
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.CustomCodec(gogoproto.Codec{}))
 	rpctest.RegisterFooBarServer(server, &rpctest.FooBarExampleServer{})
 
 	go server.Serve(lis)
 
-	cc, err := grpc.Dial(lis.Addr().String(), grpc.WithInsecure())
+	cc, err := grpc.Dial(lis.Addr().String(), grpc.WithCodec(gogoproto.Codec{}), grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}

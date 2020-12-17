@@ -45,7 +45,7 @@ func (c *Component) setupGRPC() (err error) {
 	}
 	metrics.InitializeServerMetrics(c.grpc.Server)
 	c.logger.Debug("Starting loopback connection")
-	c.loopback, err = rpcserver.StartLoopback(c.ctx, c.grpc.Server, rpcclient.DefaultDialOptions(c.ctx)...)
+	c.loopback, err = rpcserver.StartLoopback(c.ctx, c.grpc.Server, rpcclient.DefaultDialOptions(c.ctx, true)...)
 	if err != nil {
 		return errors.New("could not start loopback connection").WithCause(err)
 	}

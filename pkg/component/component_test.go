@@ -28,6 +28,7 @@ import (
 	"github.com/smartystreets/assertions"
 	"go.thethings.network/lorawan-stack/v3/pkg/component"
 	"go.thethings.network/lorawan-stack/v3/pkg/config"
+	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
 	"go.thethings.network/lorawan-stack/v3/pkg/log"
 	"go.thethings.network/lorawan-stack/v3/pkg/log/handler/memory"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/test"
@@ -201,6 +202,7 @@ func TestGRPC(t *testing.T) {
 		a.So(err, should.BeNil)
 
 		client, err := grpc.Dial(fmt.Sprintf("localhost:%d", grpcPort),
+			grpc.WithCodec(gogoproto.Codec{}),
 			grpc.WithInsecure(),
 			grpc.WithTimeout(time.Second*3),
 			grpc.WithBlock())
@@ -229,6 +231,7 @@ func TestGRPC(t *testing.T) {
 		a.So(err, should.BeNil)
 
 		client, err := grpc.Dial(fmt.Sprintf("localhost:%d", grpcPort),
+			grpc.WithCodec(gogoproto.Codec{}),
 			grpc.WithTimeout(time.Second*3),
 			grpc.WithTransportCredentials(tlsCredentials))
 		a.So(err, should.BeNil)

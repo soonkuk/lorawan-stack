@@ -28,6 +28,7 @@ import (
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
+	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
 	"go.thethings.network/lorawan-stack/v3/pkg/metrics"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcmiddleware"
 	_ "go.thethings.network/lorawan-stack/v3/pkg/rpcmiddleware/discover" // Register service discovery resolvers
@@ -39,7 +40,7 @@ import (
 )
 
 // DefaultDialOptions for gRPC clients
-func DefaultDialOptions(ctx context.Context) []grpc.DialOption {
+func DefaultDialOptions(ctx context.Context, gogoCodec bool) []grpc.DialOption {
 	streamInterceptors := []grpc.StreamClientInterceptor{
 		errors.StreamClientInterceptor(),
 		metrics.StreamClientInterceptor,
@@ -56,7 +57,11 @@ func DefaultDialOptions(ctx context.Context) []grpc.DialOption {
 		warning.UnaryClientInterceptor,
 	}
 
-	return []grpc.DialOption{
+	opts := make([]grpc.DialOption, 0, 6)
+	if gogoCodec {
+		opts = append(opts, grpc.WithCodec(gogoproto.Codec{}))
+	}
+	opts = append(opts,
 		grpc.WithStatsHandler(rpcmiddleware.StatsHandlers{new(ocgrpc.ClientHandler), metrics.StatsHandler}),
 		grpc.WithUserAgent(fmt.Sprintf(
 			"%s go/%s ttn/%s",
@@ -71,5 +76,6 @@ func DefaultDialOptions(ctx context.Context) []grpc.DialOption {
 			Timeout:             20 * time.Second,
 			PermitWithoutStream: false,
 		}),
-	}
+	)
+	return opts
 }

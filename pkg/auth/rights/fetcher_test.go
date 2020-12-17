@@ -23,6 +23,7 @@ import (
 	"github.com/smartystreets/assertions"
 	"github.com/smartystreets/assertions/should"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
+	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/test"
 	"google.golang.org/grpc"
@@ -97,7 +98,7 @@ type mockAccessServer struct {
 }
 
 func (as *mockAccessServer) Server() *grpc.Server {
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.CustomCodec(gogoproto.Codec{}))
 	ttnpb.RegisterApplicationAccessServer(srv, mockApplicationAccessServer{mockFetcher: &as.mockFetcher})
 	ttnpb.RegisterClientAccessServer(srv, mockClientAccessServer{mockFetcher: &as.mockFetcher})
 	ttnpb.RegisterGatewayAccessServer(srv, mockGatewayAccessServer{mockFetcher: &as.mockFetcher})
@@ -200,7 +201,7 @@ func TestAccessFetcher(t *testing.T) {
 	}
 	go srv.Serve(lis)
 
-	cc, err := grpc.Dial(lis.Addr().String(), grpc.WithInsecure(), grpc.WithBlock())
+	cc, err := grpc.Dial(lis.Addr().String(), grpc.WithCodec(gogoproto.Codec{}), grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		panic(err)
 	}

@@ -27,6 +27,7 @@ import (
 	"go.thethings.network/lorawan-stack/v3/pkg/component"
 	"go.thethings.network/lorawan-stack/v3/pkg/config"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
+	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcmiddleware/hooks"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/test"
@@ -98,6 +99,7 @@ func TestHooks(t *testing.T) {
 		t.FailNow()
 	}
 	s := grpc.NewServer(
+		grpc.CustomCodec(gogoproto.Codec{}),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(errors.UnaryServerInterceptor(), hooks.UnaryServerInterceptor())),
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(errors.StreamServerInterceptor(), hooks.StreamServerInterceptor())),
 	)
@@ -116,6 +118,7 @@ func TestHooks(t *testing.T) {
 	defer s.Stop()
 
 	grpcClient, err := grpc.Dial(lis.Addr().String(),
+		grpc.WithCodec(gogoproto.Codec{}),
 		grpc.WithInsecure(),
 		grpc.WithUnaryInterceptor(errors.UnaryClientInterceptor()),
 		grpc.WithStreamInterceptor(errors.StreamClientInterceptor()),

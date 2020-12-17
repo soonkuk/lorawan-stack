@@ -78,7 +78,7 @@ func TestNewRPCServer(t *testing.T) {
 	mock := &mockServer{}
 	ttnpb.RegisterAppAsServer(server.Server, mock)
 
-	loopbackConn, err := rpcserver.StartLoopback(ctx, server.Server, rpcclient.DefaultDialOptions(ctx)...)
+	loopbackConn, err := rpcserver.StartLoopback(ctx, server.Server, rpcclient.DefaultDialOptions(ctx, true)...)
 	a.So(loopbackConn, should.NotBeNil)
 	a.So(err, should.BeNil)
 

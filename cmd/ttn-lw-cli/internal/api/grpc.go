@@ -134,7 +134,7 @@ func Dial(ctx context.Context, target string) (*grpc.ClientConn, error) {
 }
 
 func dialContext(ctx context.Context, target string, opts ...grpc.DialOption) (*grpc.ClientConn, error) {
-	opts = append(append(rpcclient.DefaultDialOptions(ctx), GetDialOptions()...), opts...)
+	opts = append(append(rpcclient.DefaultDialOptions(ctx, true), GetDialOptions()...), opts...)
 	return grpc.DialContext(ctx, target, opts...)
 }
 

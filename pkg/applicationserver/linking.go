@@ -124,7 +124,7 @@ func (as *ApplicationServer) connectLink(ctx context.Context, link *link) error 
 		if targetErr != nil {
 			return targetErr
 		}
-		conn, err := grpc.DialContext(ctx, target, append(rpcclient.DefaultDialOptions(ctx), dialOpt)...)
+		conn, err := grpc.DialContext(ctx, target, append(rpcclient.DefaultDialOptions(ctx, true), dialOpt)...)
 		if err != nil {
 			return err
 		}

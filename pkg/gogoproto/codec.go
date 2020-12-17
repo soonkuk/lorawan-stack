@@ -12,16 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package rpcclient_test
+package gogoproto
 
-import (
-	"testing"
+import "github.com/gogo/protobuf/proto"
 
-	"go.thethings.network/lorawan-stack/v3/pkg/rpcclient"
-	"go.thethings.network/lorawan-stack/v3/pkg/util/test"
-)
+// Codec is a protobuf marshaler that uses gogoproto.
+type Codec struct{}
 
-func TestOptions(t *testing.T) {
-	rpcclient.DefaultDialOptions(test.Context(), true)
-	// not really anything to test here
+// Marshal implements proto.Marshaler.
+func (Codec) Marshal(v interface{}) ([]byte, error) {
+	return proto.Marshal(v.(proto.Message))
 }
+
+// Unmarshal implements proto.Unmarshaler.
+func (Codec) Unmarshal(data []byte, v interface{}) error {
+	return proto.Unmarshal(data, v.(proto.Message))
+}
+
+func (Codec) String() string { return "proto" }

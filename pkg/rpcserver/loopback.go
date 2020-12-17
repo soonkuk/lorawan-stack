@@ -19,6 +19,7 @@ import (
 	"net"
 	"time"
 
+	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
 	"go.thethings.network/lorawan-stack/v3/pkg/version"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -113,6 +114,7 @@ func StartLoopback(ctx context.Context, s *grpc.Server, opts ...grpc.DialOption)
 	return grpc.Dial(
 		lis.Addr().String(),
 		append([]grpc.DialOption{
+			grpc.WithCodec(gogoproto.Codec{}),
 			grpc.WithDialer(inProcessDialer(lis)),
 			grpc.WithTransportCredentials(&inProcessCredentials{}),
 		}, opts...)...)

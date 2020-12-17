@@ -25,6 +25,7 @@ import (
 
 	"github.com/smartystreets/assertions"
 	"github.com/smartystreets/assertions/should"
+	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
 	"go.thethings.network/lorawan-stack/v3/pkg/log"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcmiddleware/discover"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/test"
@@ -54,7 +55,7 @@ func TestDialContext(t *testing.T) {
 
 	listen := func(addr string) (port int, address string, lis net.Listener) {
 		lis = test.Must(tls.Listen("tcp", addr, serverTLSConfig)).(net.Listener)
-		go grpc.NewServer().Serve(lis)
+		go grpc.NewServer(grpc.CustomCodec(gogoproto.Codec{})).Serve(lis)
 		port = lis.Addr().(*net.TCPAddr).Port
 		address = fmt.Sprintf("localhost:%d", port)
 		return
@@ -193,6 +194,7 @@ func TestDialContext(t *testing.T) {
 			conn, err := grpc.DialContext(
 				ctx,
 				"ttn-v3-gs:///localhost",
+				grpc.WithCodec(gogoproto.Codec{}),
 				grpc.WithTransportCredentials(credentials.NewTLS(clientTLSConfig)),
 				grpc.WithBlock(),
 				grpc.FailOnNonTempDialError(true),

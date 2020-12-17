@@ -19,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/smartystreets/assertions"
+	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
 	"go.thethings.network/lorawan-stack/v3/pkg/rpcserver"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/rpctest"
 	"go.thethings.network/lorawan-stack/v3/pkg/util/test"
@@ -32,7 +33,7 @@ func TestLoopbackConn(t *testing.T) {
 	ctx, cancel := context.WithCancel(test.Context())
 	defer cancel()
 
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.CustomCodec(gogoproto.Codec{}))
 	a.So(server, should.NotBeNil)
 	rpctest.RegisterFooBarServer(server, &rpctest.FooBarExampleServer{})
 
