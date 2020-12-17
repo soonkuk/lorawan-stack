@@ -2978,6 +2978,15 @@
       "file": "grpc.go"
     }
   },
+  "error:pkg/devicerepository:no_authentication": {
+    "translations": {
+      "en": "no authentication"
+    },
+    "description": {
+      "package": "pkg/devicerepository",
+      "file": "grpc.go"
+    }
+  },
   "error:pkg/devicetemplateconverter:converter": {
     "translations": {
       "en": "converter `{id}` not found"
