@@ -458,6 +458,8 @@
   - [Service `EntityRegistrySearch`](#ttn.lorawan.v3.EntityRegistrySearch)
 - [File `lorawan-stack/api/secrets.proto`](#lorawan-stack/api/secrets.proto)
   - [Message `Secret`](#ttn.lorawan.v3.Secret)
+- [File `lorawan-stack/api/status.proto`](#lorawan-stack/api/status.proto)
+  - [Message `Status`](#ttn.lorawan.v3.Status)
 - [File `lorawan-stack/api/user.proto`](#lorawan-stack/api/user.proto)
   - [Message `CreateTemporaryPasswordRequest`](#ttn.lorawan.v3.CreateTemporaryPasswordRequest)
   - [Message `CreateUserAPIKeyRequest`](#ttn.lorawan.v3.CreateUserAPIKeyRequest)
@@ -6417,6 +6419,24 @@ Secret contains a secret value. It also contains the ID of the Encryption key us
 | Field | Validations |
 | ----- | ----------- |
 | `value` | <p>`bytes.max_len`: `2048`</p> |
+
+## <a name="lorawan-stack/api/status.proto">File `lorawan-stack/api/status.proto`</a>
+
+### <a name="ttn.lorawan.v3.Status">Message `Status`</a>
+
+The `Status` type defines a logical error model that is suitable for
+different programming environments, including REST APIs and RPC APIs. It is
+used by [gRPC](https://github.com/grpc). Each `Status` message contains
+three pieces of data: error code, error message, and error details.
+
+You can find out more about this error model and how to work with it in the
+[API Design Guide](https://cloud.google.com/apis/design/errors).
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code` | [`int32`](#int32) |  | The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]. |
+| `message` | [`string`](#string) |  | A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client. |
+| `details` | [`google.protobuf.Any`](#google.protobuf.Any) | repeated | A list of messages that carry the error details. There is a common set of message types for APIs to use. |
 
 ## <a name="lorawan-stack/api/user.proto">File `lorawan-stack/api/user.proto`</a>
 

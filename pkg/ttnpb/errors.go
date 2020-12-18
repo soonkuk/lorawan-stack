@@ -21,6 +21,7 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 	"go.thethings.network/lorawan-stack/v3/pkg/gogoproto"
+	status "google.golang.org/grpc/status"
 )
 
 const valueKey = "value"
@@ -126,6 +127,24 @@ func init() {
 			return ErrorDetailsFromProto(detailsMsg), rest
 		}
 		return nil, rest
+	}
+	errors.GRPCStatusToProto = func(s *status.Status) proto.Message {
+		pb := s.Proto()
+		var details []*types.Any
+		if len(pb.Details) > 0 {
+			details = make([]*types.Any, len(pb.Details))
+			for i, d := range pb.Details {
+				details[i] = &types.Any{
+					TypeUrl: d.TypeUrl,
+					Value:   d.Value,
+				}
+			}
+		}
+		return &Status{
+			Code:    pb.Code,
+			Message: pb.Message,
+			Details: details,
+		}
 	}
 }
 

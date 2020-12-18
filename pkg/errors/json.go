@@ -15,10 +15,13 @@
 package errors
 
 import (
+	"github.com/golang/protobuf/proto"
 	"go.thethings.network/lorawan-stack/v3/pkg/jsonpb"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/status"
 )
+
+var GRPCStatusToProto func(*status.Status) proto.Message
 
 // JSONCodec can be used to override the default gogoproto/jsonpb.
 var JSONCodec interface {
@@ -28,12 +31,12 @@ var JSONCodec interface {
 
 // MarshalJSON implements json.Marshaler.
 func (d Definition) MarshalJSON() ([]byte, error) {
-	return JSONCodec.Marshal(d.GRPCStatus().Proto())
+	return JSONCodec.Marshal(GRPCStatusToProto(d.GRPCStatus()))
 }
 
 // MarshalJSON implements json.Marshaler.
 func (e Error) MarshalJSON() ([]byte, error) {
-	return JSONCodec.Marshal(e.GRPCStatus().Proto())
+	return JSONCodec.Marshal(GRPCStatusToProto(e.GRPCStatus()))
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
