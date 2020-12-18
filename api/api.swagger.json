@@ -9427,11 +9427,11 @@
       "properties": {
         "temperature": {
           "$ref": "#/definitions/OperatingConditionsLimits",
-          "description": "Temperature operating conditions."
+          "description": "Temperature operating conditions (Celsius)."
         },
         "relative_humidity": {
           "$ref": "#/definitions/OperatingConditionsLimits",
-          "description": "Relative humidity operating conditions."
+          "description": "Relative humidity operating conditions (Fraction, in range [0, 1])."
         }
       }
     },

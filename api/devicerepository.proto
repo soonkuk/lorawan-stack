@@ -145,9 +145,9 @@ message EndDeviceModel {
       // Max value of operating conditions range.
       google.protobuf.FloatValue max = 2;
     }
-    // Temperature operating conditions.
+    // Temperature operating conditions (Celsius).
     Limits temperature = 1;
-    // Relative humidity operating conditions.
+    // Relative humidity operating conditions (Fraction, in range [0, 1]).
     Limits relative_humidity = 2;
   }
   // Device operating conditions.
@@ -205,7 +205,7 @@ message GetEndDeviceBrandRequest {
   ApplicationIdentifiers application_ids = 1 [(gogoproto.customname) = "ApplicationIDs"];
 
   // Brand identifier, as defined in the Device Repository.
-  string brand_id = 21 [(gogoproto.customname) = "BrandID"];
+  string brand_id = 2 [(gogoproto.customname) = "BrandID"];
 
   // Field mask paths.
   google.protobuf.FieldMask field_mask = 3 [(gogoproto.nullable) = false];

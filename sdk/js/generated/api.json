@@ -7713,7 +7713,7 @@
           "fields": [
             {
               "name": "temperature",
-              "description": "Temperature operating conditions.",
+              "description": "Temperature operating conditions (Celsius).",
               "label": "",
               "type": "Limits",
               "longType": "EndDeviceModel.OperatingConditions.Limits",
@@ -7723,7 +7723,7 @@
             },
             {
               "name": "relative_humidity",
-              "description": "Relative humidity operating conditions.",
+              "description": "Relative humidity operating conditions (Fraction, in range [0, 1]).",
               "label": "",
               "type": "Limits",
               "longType": "EndDeviceModel.OperatingConditions.Limits",

@@ -2171,8 +2171,8 @@ ApplicationRegistry, ClientRegistry, GatewayRegistry, OrganizationRegistry and U
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `temperature` | [`EndDeviceModel.OperatingConditions.Limits`](#ttn.lorawan.v3.EndDeviceModel.OperatingConditions.Limits) |  | Temperature operating conditions. |
-| `relative_humidity` | [`EndDeviceModel.OperatingConditions.Limits`](#ttn.lorawan.v3.EndDeviceModel.OperatingConditions.Limits) |  | Relative humidity operating conditions. |
+| `temperature` | [`EndDeviceModel.OperatingConditions.Limits`](#ttn.lorawan.v3.EndDeviceModel.OperatingConditions.Limits) |  | Temperature operating conditions (Celsius). |
+| `relative_humidity` | [`EndDeviceModel.OperatingConditions.Limits`](#ttn.lorawan.v3.EndDeviceModel.OperatingConditions.Limits) |  | Relative humidity operating conditions (Fraction, in range [0, 1]). |
 
 ### <a name="ttn.lorawan.v3.EndDeviceModel.OperatingConditions.Limits">Message `EndDeviceModel.OperatingConditions.Limits`</a>
 
