@@ -13,19 +13,18 @@ replace github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.1.2
 // See https://github.com/heptiolabs/healthcheck/issues/23.
 replace gopkg.in/DATA-DOG/go-sqlmock.v1 => gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0
 
-// Versions higher trigger google/protobuf update past v1.3.5.
-replace gocloud.dev => gocloud.dev v0.19.0
-
 // Use the latest master in order to avoid accidental downgrades to v1.2.0.
 replace github.com/eclipse/paho.mqtt.golang => github.com/eclipse/paho.mqtt.golang v1.2.1-0.20200918111050-ba85050a1f23
 
 require (
 	contrib.go.opencensus.io/exporter/prometheus v0.1.0
+	contrib.go.opencensus.io/resource v0.1.1 // indirect
+	github.com/Azure/azure-amqp-common-go/v2 v2.1.0 // indirect
 	github.com/PuerkitoBio/purell v1.1.1
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/TheThingsIndustries/mystique v0.0.0-20200127144137-4aa959111fe7
 	github.com/TheThingsNetwork/go-cayenne-lib v1.0.0
-	github.com/aws/aws-sdk-go v1.31.1
+	github.com/aws/aws-sdk-go v1.36.1
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/bluele/gcache v0.0.0-20190518031135-bc40bd653833
 	github.com/chrj/smtpd v0.1.2
@@ -69,14 +68,14 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/labstack/echo/v4 v4.1.16
 	github.com/labstack/gommon v0.3.0
-	github.com/lib/pq v1.5.2
+	github.com/lib/pq v1.9.0
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/mattn/go-isatty v0.0.12
 	github.com/mattn/go-runewidth v0.0.9 // indirect
-	github.com/mitchellh/mapstructure v1.3.0
+	github.com/mitchellh/mapstructure v1.4.0
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826
-	github.com/nats-io/nats-server/v2 v2.1.4
-	github.com/nats-io/nats.go v1.9.2
+	github.com/nats-io/nats-server/v2 v2.1.9
+	github.com/nats-io/nats.go v1.10.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/oklog/ulid/v2 v2.0.2
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
@@ -103,20 +102,19 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.1
-	go.opencensus.io v0.22.3
+	go.opencensus.io v0.22.5
 	go.packetbroker.org/api/v3 v3.0.0
 	go.thethings.network/lorawan-stack-legacy/v2 v2.0.2
-	gocloud.dev v0.20.0
-	gocloud.dev/pubsub/natspubsub v0.19.0
-	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	gocloud.dev v0.21.0
+	gocloud.dev/pubsub/natspubsub v0.21.0
+	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620
 	golang.org/x/image v0.0.0-20200430140353-33d19683fad8 // indirect
-	golang.org/x/mod v0.3.0 // indirect
 	golang.org/x/net v0.0.0-20201216054612-986b41b23924
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
+	golang.org/x/oauth2 v0.0.0-20201203001011-0b49973bad19
+	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/sys v0.0.0-20201218084310-7d0127a74742 // indirect
 	golang.org/x/text v0.3.4 // indirect
-	google.golang.org/api v0.24.0
+	google.golang.org/api v0.36.0
 	google.golang.org/genproto v0.0.0-20201214200347-8c77b98c765d
 	google.golang.org/grpc v1.34.0
 	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.0.0-00010101000000-000000000000 // indirect
