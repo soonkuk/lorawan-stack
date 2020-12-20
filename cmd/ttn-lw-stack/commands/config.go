@@ -55,7 +55,7 @@ type Config struct {
 	DTC              devicetemplateconverter.Config    `name:"dtc"`
 	QRG              qrcodegenerator.Config            `name:"qrg"`
 	PBA              packetbrokeragent.Config          `name:"pba"`
-	DR               devicerepository.Config           `name:"dr"`
+	DeviceRepository devicerepository.Config           `name:"device-repository"`
 }
 
 // DefaultConfig contains the default config for the ttn-lw-stack binary.

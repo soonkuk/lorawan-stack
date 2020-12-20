@@ -18,7 +18,8 @@ import "go.thethings.network/lorawan-stack/v3/pkg/devicerepository"
 
 // DefaultDeviceRepositoryConfig is the default configuration for the Device Repository.
 var DefaultDeviceRepositoryConfig = devicerepository.Config{
-	URL: "https://raw.githubusercontent.com/TheThingsNetwork/lorawan-devices/master",
+	ConfigSource: "url",
+	URL:          "https://raw.githubusercontent.com/TheThingsNetwork/lorawan-devices/master",
 
 	AssetsBaseURL: "https://raw.githubusercontent.com/TheThingsNetwork/lorawan-devices/master",
 
