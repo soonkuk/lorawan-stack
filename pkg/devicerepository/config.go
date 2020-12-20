@@ -17,6 +17,7 @@ package devicerepository
 import (
 	"context"
 
+	"go.thethings.network/lorawan-stack/v3/pkg/config"
 	"go.thethings.network/lorawan-stack/v3/pkg/devicerepository/store"
 )
 
@@ -24,16 +25,18 @@ import (
 type Config struct {
 	Store store.Store `name:"-"`
 
-	Static    map[string][]byte `name:"-"`
-	Directory string            `name:"directory" description:"Retrieve devices from the filesystem"`
-	URL       string            `name:"url" description:"Retrieve devices from a web server"`
+	ConfigSource string                `name:"config-source" description:"Source for device repository (static, directory, url, blob)"`
+	Static       map[string][]byte     `name:"-"`
+	Directory    string                `name:"directory" description:"Retrieve devices from the filesystem"`
+	URL          string                `name:"url" description:"Retrieve devices from a web server"`
+	Blob         config.BlobPathConfig `name:"blob"`
 
 	AssetsBaseURL string `name:"assets-base-url" description:"The base URL for assets"`
 	RequireAuth   bool   `name:"require-auth" description:"Require authentication for the device repository"`
 }
 
 // NewStore creates a new Store for end devices.
-func (c Config) NewStore(ctx context.Context) (store.Store, error) {
+func (c Config) NewStore(ctx context.Context, blobConf config.BlobConfig) (store.Store, error) {
 	if c.Store != nil {
 		return c.Store, nil
 	}

@@ -43,7 +43,7 @@ type DeviceRepository struct {
 
 // New returns a new *DeviceRepository.
 func New(c *component.Component, conf *Config) (*DeviceRepository, error) {
-	store, err := conf.NewStore(c.Context())
+	store, err := conf.NewStore(c.Context(), c.GetBaseConfig(c.Context()).Blob)
 	if err != nil {
 		return nil, err
 	}
