@@ -377,7 +377,7 @@ var startCommand = &cobra.Command{
 			if err != nil {
 				return shared.ErrInitializeDeviceRepository.WithCause(err)
 			}
-			config.DeviceRepository.Store = store
+			config.DeviceRepository.Source.Store = store
 			dr, err := devicerepository.New(c, &config.DeviceRepository)
 			if err != nil {
 				return shared.ErrInitializeDeviceRepository.WithCause(err)
