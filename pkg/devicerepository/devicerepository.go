@@ -48,7 +48,7 @@ func New(c *component.Component, conf *Config) (*DeviceRepository, error) {
 		ctx:       log.NewContextWithField(c.Context(), "namespace", "devicerepository"),
 		config:    conf,
 
-		store: conf.Source.Store,
+		store: conf.Store.Store,
 	}
 
 	c.RegisterGRPC(dr)

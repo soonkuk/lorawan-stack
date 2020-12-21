@@ -23,7 +23,7 @@ import (
 
 // Config represents the DeviceRepository configuration.
 type Config struct {
-	Source store.Config `name:"source"`
+	Store StoreConfig `name:"store"`
 
 	ConfigSource string                `name:"config-source" description:"Source of the device repository (static, directory, url, blob)"`
 	Static       map[string][]byte     `name:"-"`
@@ -35,10 +35,15 @@ type Config struct {
 	RequireAuth   bool   `name:"require-auth" description:"Require authentication for the HTTP and gRPC endpoints"`
 }
 
+// StoreConfig represents configuration for the Device Repository store.
+type StoreConfig struct {
+	Store store.Store `name:"-"`
+}
+
 // NewStore creates a new Store for end devices.
 func (c Config) NewStore(ctx context.Context, blobConf config.BlobConfig) (store.Store, error) {
-	if c.Source.Store != nil {
-		return c.Source.Store, nil
+	if c.Store.Store != nil {
+		return c.Store.Store, nil
 	}
 	return &store.NoopStore{}, nil
 }
