@@ -371,7 +371,7 @@ var startCommand = &cobra.Command{
 			_ = pba
 		}
 
-		if start.DeviceRepository || startDefault {
+		if start.DeviceRepository {
 			logger.Info("Setting up Device Repository")
 			store, err := config.DeviceRepository.NewStore(ctx, config.Blob)
 			if err != nil {
