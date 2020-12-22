@@ -13486,11 +13486,8 @@
     "v3TxAcknowledgment": {
       "type": "object",
       "properties": {
-        "correlation_ids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "downlink_message": {
+          "$ref": "#/definitions/v3DownlinkMessage"
         },
         "result": {
           "$ref": "#/definitions/TxAcknowledgmentResult"

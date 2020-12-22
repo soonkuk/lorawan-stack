@@ -145,7 +145,7 @@ message DownlinkMessage {
 }
 
 message TxAcknowledgment {
-  repeated string correlation_ids = 1 [(gogoproto.customname) = "CorrelationIDs", (validate.rules).repeated.items.string.max_len = 100];
+  DownlinkMessage downlink_message = 1;
 
   enum Result {
     SUCCESS = 0;
@@ -159,6 +159,11 @@ message TxAcknowledgment {
     GPS_UNLOCKED = 8;
   }
   Result result = 2 [(validate.rules).enum.defined_only = true];
+}
+
+message GatewayTxAcknowledgment {
+  TxAcknowledgment tx_ack = 1;
+  GatewayIdentifiers gateway_ids = 2 [(gogoproto.customname) = "GatewayIDs"];
 }
 
 message GatewayUplinkMessage {

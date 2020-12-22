@@ -21734,6 +21734,37 @@
           ]
         },
         {
+          "name": "GatewayTxAcknowledgment",
+          "longName": "GatewayTxAcknowledgment",
+          "fullName": "ttn.lorawan.v3.GatewayTxAcknowledgment",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "tx_ack",
+              "description": "",
+              "label": "",
+              "type": "TxAcknowledgment",
+              "longType": "TxAcknowledgment",
+              "fullType": "ttn.lorawan.v3.TxAcknowledgment",
+              "ismap": false,
+              "defaultValue": ""
+            },
+            {
+              "name": "gateway_ids",
+              "description": "",
+              "label": "",
+              "type": "GatewayIdentifiers",
+              "longType": "GatewayIdentifiers",
+              "fullType": "ttn.lorawan.v3.GatewayIdentifiers",
+              "ismap": false,
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
           "name": "GatewayUplinkMessage",
           "longName": "GatewayUplinkMessage",
           "fullName": "ttn.lorawan.v3.GatewayUplinkMessage",
@@ -21849,22 +21880,14 @@
           "extensions": [],
           "fields": [
             {
-              "name": "correlation_ids",
+              "name": "downlink_message",
               "description": "",
-              "label": "repeated",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
+              "label": "",
+              "type": "DownlinkMessage",
+              "longType": "DownlinkMessage",
+              "fullType": "ttn.lorawan.v3.DownlinkMessage",
               "ismap": false,
-              "defaultValue": "",
-              "options": {
-                "validate.rules": [
-                  {
-                    "name": "repeated.items.string.max_len",
-                    "value": 100
-                  }
-                ]
-              }
+              "defaultValue": ""
             },
             {
               "name": "result",
@@ -22693,6 +22716,18 @@
               "requestType": "UplinkMessage",
               "requestLongType": "UplinkMessage",
               "requestFullType": "ttn.lorawan.v3.UplinkMessage",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false
+            },
+            {
+              "name": "ReportTxAcknowledgment",
+              "description": "",
+              "requestType": "GatewayTxAcknowledgment",
+              "requestLongType": "GatewayTxAcknowledgment",
+              "requestFullType": "ttn.lorawan.v3.GatewayTxAcknowledgment",
               "requestStreaming": false,
               "responseType": "Empty",
               "responseLongType": ".google.protobuf.Empty",

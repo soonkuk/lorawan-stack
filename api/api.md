@@ -373,6 +373,7 @@
   - [Message `ApplicationUplink.LocationsEntry`](#ttn.lorawan.v3.ApplicationUplink.LocationsEntry)
   - [Message `DownlinkMessage`](#ttn.lorawan.v3.DownlinkMessage)
   - [Message `DownlinkQueueRequest`](#ttn.lorawan.v3.DownlinkQueueRequest)
+  - [Message `GatewayTxAcknowledgment`](#ttn.lorawan.v3.GatewayTxAcknowledgment)
   - [Message `GatewayUplinkMessage`](#ttn.lorawan.v3.GatewayUplinkMessage)
   - [Message `MessagePayloadFormatters`](#ttn.lorawan.v3.MessagePayloadFormatters)
   - [Message `TxAcknowledgment`](#ttn.lorawan.v3.TxAcknowledgment)
@@ -5330,6 +5331,13 @@ Downlink message from the network to the end device
 | ----- | ----------- |
 | `downlinks` | <p>`repeated.max_items`: `100000`</p> |
 
+### <a name="ttn.lorawan.v3.GatewayTxAcknowledgment">Message `GatewayTxAcknowledgment`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tx_ack` | [`TxAcknowledgment`](#ttn.lorawan.v3.TxAcknowledgment) |  |  |
+| `gateway_ids` | [`GatewayIdentifiers`](#ttn.lorawan.v3.GatewayIdentifiers) |  |  |
+
 ### <a name="ttn.lorawan.v3.GatewayUplinkMessage">Message `GatewayUplinkMessage`</a>
 
 | Field | Type | Label | Description |
@@ -5363,14 +5371,13 @@ Downlink message from the network to the end device
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `correlation_ids` | [`string`](#string) | repeated |  |
+| `downlink_message` | [`DownlinkMessage`](#ttn.lorawan.v3.DownlinkMessage) |  |  |
 | `result` | [`TxAcknowledgment.Result`](#ttn.lorawan.v3.TxAcknowledgment.Result) |  |  |
 
 #### Field Rules
 
 | Field | Validations |
 | ----- | ----------- |
-| `correlation_ids` | <p>`repeated.items.string.max_len`: `100`</p> |
 | `result` | <p>`enum.defined_only`: `true`</p> |
 
 ### <a name="ttn.lorawan.v3.UplinkMessage">Message `UplinkMessage`</a>
@@ -5559,6 +5566,7 @@ The GsNs service connects a Gateway Server to a Network Server.
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | `HandleUplink` | [`UplinkMessage`](#ttn.lorawan.v3.UplinkMessage) | [`.google.protobuf.Empty`](#google.protobuf.Empty) |  |
+| `ReportTxAcknowledgment` | [`GatewayTxAcknowledgment`](#ttn.lorawan.v3.GatewayTxAcknowledgment) | [`.google.protobuf.Empty`](#google.protobuf.Empty) |  |
 
 ### <a name="ttn.lorawan.v3.Ns">Service `Ns`</a>
 
