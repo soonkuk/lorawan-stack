@@ -58,6 +58,7 @@ const m = defineMessages({
   createGateway: 'Register a gateway',
   gotoApplications: 'Go to applications',
   gotoGateways: 'Go to gateways',
+  needHelp: 'Need help? Have a look at our {documentationLink} or {supportLink}',
   welcome: 'Welcome to the Console!',
   welcomeBack: 'Welcome back, {userName}! 👋',
   getStarted: 'Get started right away by creating an application or registering a gateway',
@@ -77,7 +78,7 @@ const componentMap = {
 const overviewFetchingSelector = createFetchingSelector([GET_APPS_LIST_BASE, GET_GTWS_LIST_BASE])
 
 @connect(
-  function(state) {
+  state => {
     const rights = selectUserRights(state)
 
     return {
@@ -92,13 +93,13 @@ const overviewFetchingSelector = createFetchingSelector([GET_APPS_LIST_BASE, GET
     }
   },
   dispatch => ({
-    loadData() {
+    loadData: () => {
       dispatch(getApplicationsList())
       dispatch(getGatewaysList())
     },
   }),
 )
-@withBreadcrumb('overview', function(props) {
+@withBreadcrumb('overview', props => {
   return <Breadcrumb path="/" content={sharedMessages.overview} />
 })
 @withEnv
@@ -247,6 +248,23 @@ export default class Overview extends React.Component {
                   component="h2"
                 />
               )}
+              <Message
+                className={style.getStarted}
+                content={m.needHelp}
+                values={{
+                  documentationLink: (
+                    <Link.Anchor secondary href="https://www.thethingsindustries.com/docs">
+                      <Message content={sharedMessages.documentation} />
+                    </Link.Anchor>
+                  ),
+                  supportLink: (
+                    <Link.Anchor secondary href="https://www.thethingsindustries.com/support">
+                      <Message content={sharedMessages.getSupport} />
+                    </Link.Anchor>
+                  ),
+                }}
+                component="h2"
+              />
             </Col>
           </Row>
           {this.chooser}
@@ -260,7 +278,7 @@ export default class Overview extends React.Component {
           <Col sm={8}>
             <Message className={style.componentStatus} content={m.componentStatus} component="h3" />
             <div className={style.componentCards}>
-              {Object.keys(stackConfig).map(function(componentKey) {
+              {Object.keys(stackConfig).map(componentKey => {
                 if (componentKey === 'language') {
                   return null
                 }
@@ -284,7 +302,7 @@ export default class Overview extends React.Component {
   }
 }
 
-const ComponentCard = function({ name, enabled, host }) {
+const ComponentCard = ({ name, enabled, host }) => {
   return (
     <div className={style.componentCard}>
       <img src={ServerIcon} className={style.componentCardIcon} />
