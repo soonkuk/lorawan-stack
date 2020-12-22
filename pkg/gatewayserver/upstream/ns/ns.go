@@ -102,13 +102,17 @@ func (h *Handler) HandleStatus(context.Context, ttnpb.GatewayIdentifiers, *ttnpb
 
 // HandleTxAck implements upstream.Handler.
 func (h *Handler) HandleTxAck(ctx context.Context, ids ttnpb.GatewayIdentifiers, msg *ttnpb.TxAcknowledgment) error {
-	nsConn, err := h.cluster.GetPeerConn(ctx, ttnpb.ClusterRole_NETWORK_SERVER, ids)
-	if err != nil {
-		return errNetworkServerNotFound.WithCause(err)
+	// TODO: Forward TxAcknowledgment once Network Server is implemented (https://github.com/TheThingsNetwork/lorawan-stack/issues/76)
+	if false {
+		nsConn, err := h.cluster.GetPeerConn(ctx, ttnpb.ClusterRole_NETWORK_SERVER, ids)
+		if err != nil {
+			return errNetworkServerNotFound.WithCause(err)
+		}
+		_, err = ttnpb.NewGsNsClient(nsConn).ReportTxAcknowledgment(ctx, &ttnpb.GatewayTxAcknowledgment{
+			TxAck:      msg,
+			GatewayIDs: &ids,
+		}, h.cluster.WithClusterAuth())
+		return err
 	}
-	_, err = ttnpb.NewGsNsClient(nsConn).ReportTxAcknowledgment(ctx, &ttnpb.GatewayTxAcknowledgment{
-		TxAck:      msg,
-		GatewayIDs: &ids,
-	}, h.cluster.WithClusterAuth())
-	return err
+	return nil
 }
