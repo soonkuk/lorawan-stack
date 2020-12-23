@@ -725,10 +725,4 @@ func TestGRPC(t *testing.T) {
 			a.So(err, should.BeNil)
 		})
 	})
-
-	// conf is device repository config
-	// st is device repository store
-	// cl is device repository client
-
-	// TODO: tests
 }
