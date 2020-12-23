@@ -167,6 +167,7 @@ func TestGRPC(t *testing.T) {
 	componenttest.StartComponent(t, c)
 	defer c.Close()
 
+	mustHavePeer(test.Context(), c, ttnpb.ClusterRole_ENTITY_REGISTRY)
 	cc := dr.LoopbackConn()
 	cl := ttnpb.NewDeviceRepositoryClient(cc)
 
