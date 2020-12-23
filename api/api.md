@@ -2323,23 +2323,14 @@ ApplicationRegistry, ClientRegistry, GatewayRegistry, OrganizationRegistry and U
 
 | Method Name | Method | Pattern | Body |
 | ----------- | ------ | ------- | ---- |
-| `ListBrands` | `GET` | `/api/v3/dr/brands` |  |
 | `ListBrands` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands` |  |
-| `GetBrand` | `GET` | `/api/v3/dr/brands/{brand_id}` |  |
 | `GetBrand` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{brand_id}` |  |
-| `ListModels` | `GET` | `/api/v3/dr/brands/{brand_id}/models` |  |
-| `ListModels` | `GET` | `/api/v3/dr/models` |  |
 | `ListModels` | `GET` | `/api/v3/dr/appications/{application_ids.application_id}/brands/{brand_id}/models` |  |
 | `ListModels` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/models` |  |
-| `GetModel` | `GET` | `/api/v3/dr/brands/{brand_id}/models/{model_id}` |  |
 | `GetModel` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{brand_id}/models/{model_id}` |  |
-| `GetTemplate` | `GET` | `/api/v3/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template` |  |
 | `GetTemplate` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template` |  |
-| `GetUplinkDecoder` | `GET` | `/api/v3/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder` |  |
 | `GetUplinkDecoder` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder` |  |
-| `GetDownlinkDecoder` | `GET` | `/api/v3/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder` |  |
 | `GetDownlinkDecoder` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder` |  |
-| `GetDownlinkEncoder` | `GET` | `/api/v3/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder` |  |
 | `GetDownlinkEncoder` | `GET` | `/api/v3/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder` |  |
 
 ## <a name="lorawan-stack/api/end_device.proto">File `lorawan-stack/api/end_device.proto`</a>

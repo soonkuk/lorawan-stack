@@ -8283,10 +8283,6 @@
                   "rules": [
                     {
                       "method": "GET",
-                      "pattern": "/dr/brands"
-                    },
-                    {
-                      "method": "GET",
                       "pattern": "/dr/applications/{application_ids.application_id}/brands"
                     }
                   ]
@@ -8309,10 +8305,6 @@
                   "rules": [
                     {
                       "method": "GET",
-                      "pattern": "/dr/brands/{brand_id}"
-                    },
-                    {
-                      "method": "GET",
                       "pattern": "/dr/applications/{application_ids.application_id}/brands/{brand_id}"
                     }
                   ]
@@ -8333,14 +8325,6 @@
               "options": {
                 "google.api.http": {
                   "rules": [
-                    {
-                      "method": "GET",
-                      "pattern": "/dr/brands/{brand_id}/models"
-                    },
-                    {
-                      "method": "GET",
-                      "pattern": "/dr/models"
-                    },
                     {
                       "method": "GET",
                       "pattern": "/dr/appications/{application_ids.application_id}/brands/{brand_id}/models"
@@ -8369,10 +8353,6 @@
                   "rules": [
                     {
                       "method": "GET",
-                      "pattern": "/dr/brands/{brand_id}/models/{model_id}"
-                    },
-                    {
-                      "method": "GET",
                       "pattern": "/dr/applications/{application_ids.application_id}/brands/{brand_id}/models/{model_id}"
                     }
                   ]
@@ -8393,10 +8373,6 @@
               "options": {
                 "google.api.http": {
                   "rules": [
-                    {
-                      "method": "GET",
-                      "pattern": "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template"
-                    },
                     {
                       "method": "GET",
                       "pattern": "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template"
@@ -8421,10 +8397,6 @@
                   "rules": [
                     {
                       "method": "GET",
-                      "pattern": "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder"
-                    },
-                    {
-                      "method": "GET",
                       "pattern": "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder"
                     }
                   ]
@@ -8447,10 +8419,6 @@
                   "rules": [
                     {
                       "method": "GET",
-                      "pattern": "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder"
-                    },
-                    {
-                      "method": "GET",
                       "pattern": "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder"
                     }
                   ]
@@ -8471,10 +8439,6 @@
               "options": {
                 "google.api.http": {
                   "rules": [
-                    {
-                      "method": "GET",
-                      "pattern": "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder"
-                    },
                     {
                       "method": "GET",
                       "pattern": "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder"

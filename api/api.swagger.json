@@ -3305,7 +3305,7 @@
     },
     "/dr/appications/{application_ids.application_id}/brands/{brand_id}/models": {
       "get": {
-        "operationId": "DeviceRepository_ListModels3",
+        "operationId": "DeviceRepository_ListModels",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -3383,7 +3383,7 @@
     },
     "/dr/applications/{application_ids.application_id}/brands": {
       "get": {
-        "operationId": "DeviceRepository_ListBrands2",
+        "operationId": "DeviceRepository_ListBrands",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -3454,7 +3454,7 @@
     },
     "/dr/applications/{application_ids.application_id}/brands/{brand_id}": {
       "get": {
-        "operationId": "DeviceRepository_GetBrand2",
+        "operationId": "DeviceRepository_GetBrand",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -3502,7 +3502,7 @@
     },
     "/dr/applications/{application_ids.application_id}/brands/{brand_id}/models/{model_id}": {
       "get": {
-        "operationId": "DeviceRepository_GetModel2",
+        "operationId": "DeviceRepository_GetModel",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -3557,7 +3557,7 @@
     },
     "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder": {
       "get": {
-        "operationId": "DeviceRepository_GetDownlinkDecoder2",
+        "operationId": "DeviceRepository_GetDownlinkDecoder",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -3617,7 +3617,7 @@
     },
     "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder": {
       "get": {
-        "operationId": "DeviceRepository_GetDownlinkEncoder2",
+        "operationId": "DeviceRepository_GetDownlinkEncoder",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -3677,7 +3677,7 @@
     },
     "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder": {
       "get": {
-        "operationId": "DeviceRepository_GetUplinkDecoder2",
+        "operationId": "DeviceRepository_GetUplinkDecoder",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -3737,7 +3737,7 @@
     },
     "/dr/applications/{application_ids.application_id}/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template": {
       "get": {
-        "operationId": "DeviceRepository_GetTemplate2",
+        "operationId": "DeviceRepository_GetTemplate",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -3797,576 +3797,6 @@
     },
     "/dr/applications/{application_ids.application_id}/models": {
       "get": {
-        "operationId": "DeviceRepository_ListModels4",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v3ListEndDeviceModelsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "application_ids.application_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "brand_id",
-            "description": "List end devices from a specific brand.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "description": "Limit the number of results per page.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "page",
-            "description": "Page number for pagination. 0 is interpreted as 1.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "order_by",
-            "description": "Order end devices.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "search",
-            "description": "List end devices matching a query string.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "field_mask.paths",
-            "description": "The set of field mask paths.",
-            "in": "query",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
-          }
-        ],
-        "tags": [
-          "DeviceRepository"
-        ]
-      }
-    },
-    "/dr/brands": {
-      "get": {
-        "operationId": "DeviceRepository_ListBrands",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v3ListEndDeviceBrandsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "application_ids.application_id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "description": "Limit the number of results per page.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "page",
-            "description": "Page number for pagination. 0 is interpreted as 1.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "order_by",
-            "description": "Order (for pagination).",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "search",
-            "description": "Search for brands matching a query string.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "field_mask.paths",
-            "description": "The set of field mask paths.",
-            "in": "query",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
-          }
-        ],
-        "tags": [
-          "DeviceRepository"
-        ]
-      }
-    },
-    "/dr/brands/{brand_id}": {
-      "get": {
-        "operationId": "DeviceRepository_GetBrand",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v3EndDeviceBrand"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "brand_id",
-            "description": "Brand identifier, as defined in the Device Repository.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "application_ids.application_id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "field_mask.paths",
-            "description": "The set of field mask paths.",
-            "in": "query",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
-          }
-        ],
-        "tags": [
-          "DeviceRepository"
-        ]
-      }
-    },
-    "/dr/brands/{brand_id}/models": {
-      "get": {
-        "operationId": "DeviceRepository_ListModels",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v3ListEndDeviceModelsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "brand_id",
-            "description": "List end devices from a specific brand.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "application_ids.application_id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "description": "Limit the number of results per page.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "page",
-            "description": "Page number for pagination. 0 is interpreted as 1.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "order_by",
-            "description": "Order end devices.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "search",
-            "description": "List end devices matching a query string.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "field_mask.paths",
-            "description": "The set of field mask paths.",
-            "in": "query",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
-          }
-        ],
-        "tags": [
-          "DeviceRepository"
-        ]
-      }
-    },
-    "/dr/brands/{brand_id}/models/{model_id}": {
-      "get": {
-        "operationId": "DeviceRepository_GetModel",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v3EndDeviceModel"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "brand_id",
-            "description": "Brand identifier, as defined in the Device Repository.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "model_id",
-            "description": "Model identifier, as defined in the Device Repository.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "application_ids.application_id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "field_mask.paths",
-            "description": "The set of field mask paths.",
-            "in": "query",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
-          }
-        ],
-        "tags": [
-          "DeviceRepository"
-        ]
-      }
-    },
-    "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/decoder": {
-      "get": {
-        "operationId": "DeviceRepository_GetDownlinkDecoder",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v3MessagePayloadFormatter"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "version_ids.brand_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.model_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.firmware_version",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.band_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "application_ids.application_id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.hardware_version",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "DeviceRepository"
-        ]
-      }
-    },
-    "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/downlink/encoder": {
-      "get": {
-        "operationId": "DeviceRepository_GetDownlinkEncoder",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v3MessagePayloadFormatter"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "version_ids.brand_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.model_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.firmware_version",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.band_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "application_ids.application_id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.hardware_version",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "DeviceRepository"
-        ]
-      }
-    },
-    "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/formatters/uplink/decoder": {
-      "get": {
-        "operationId": "DeviceRepository_GetUplinkDecoder",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v3MessagePayloadFormatter"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "version_ids.brand_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.model_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.firmware_version",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.band_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "application_ids.application_id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.hardware_version",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "DeviceRepository"
-        ]
-      }
-    },
-    "/dr/brands/{version_ids.brand_id}/models/{version_ids.model_id}/{version_ids.firmware_version}/{version_ids.band_id}/template": {
-      "get": {
-        "operationId": "DeviceRepository_GetTemplate",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v3EndDeviceTemplate"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "version_ids.brand_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.model_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.firmware_version",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.band_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "application_ids.application_id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "version_ids.hardware_version",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "DeviceRepository"
-        ]
-      }
-    },
-    "/dr/models": {
-      "get": {
         "operationId": "DeviceRepository_ListModels2",
         "responses": {
           "200": {
@@ -4385,8 +3815,8 @@
         "parameters": [
           {
             "name": "application_ids.application_id",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string"
           },
           {
