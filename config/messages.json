@@ -2978,9 +2978,9 @@
       "file": "grpc.go"
     }
   },
-  "error:pkg/devicerepository:no_authentication": {
+  "error:pkg/devicerepository:unauthenticated": {
     "translations": {
-      "en": "no authentication"
+      "en": "unauthenticated"
     },
     "description": {
       "package": "pkg/devicerepository",

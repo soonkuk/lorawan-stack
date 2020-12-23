@@ -32,7 +32,6 @@ type Config struct {
 	Blob         config.BlobPathConfig `name:"blob"`
 
 	AssetsBaseURL string `name:"assets-base-url" description:"The base URL for assets"`
-	RequireAuth   bool   `name:"require-auth" description:"Require authentication for the HTTP and gRPC endpoints"`
 }
 
 // StoreConfig represents configuration for the Device Repository store.
