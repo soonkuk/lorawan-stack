@@ -4861,7 +4861,7 @@
   },
   "error:pkg/identityserver:user_single_entity_owner": {
     "translations": {
-      "en": "user is the single owner for {count} entities"
+      "en": "deleting user will make the entities orphans: {list}"
     },
     "description": {
       "package": "pkg/identityserver",
