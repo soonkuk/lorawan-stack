@@ -618,7 +618,7 @@ func (is *IdentityServer) createTemporaryPassword(ctx context.Context, req *ttnp
 	return ttnpb.Empty, nil
 }
 
-var errEntitiesOrphaned = errors.DefineFailedPrecondition("user_single_entity_owner", "user is the single owner for {count} entities")
+var errEntitiesOrphaned = errors.DefineFailedPrecondition("user_single_entity_owner", "deleting user will make the entities orphans: {list}")
 
 func (is *IdentityServer) deleteUser(ctx context.Context, ids *ttnpb.UserIdentifiers) (*types.Empty, error) {
 	if err := rights.RequireUser(ctx, *ids, ttnpb.RIGHT_USER_DELETE); err != nil {
@@ -630,7 +630,11 @@ func (is *IdentityServer) deleteUser(ctx context.Context, ids *ttnpb.UserIdentif
 			return err
 		}
 		if len(orphanedEntities) > 0 {
-			return errEntitiesOrphaned.WithAttributes("count", len(orphanedEntities))
+			ids := make([]string, len(orphanedEntities))
+			for i, entity := range orphanedEntities {
+				ids[i] = entity.IDString()
+			}
+			return errEntitiesOrphaned.WithAttributes("list", ids)
 		}
 		return store.GetUserStore(db).DeleteUser(ctx, ids)
 	})
