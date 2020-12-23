@@ -27236,6 +27236,53 @@
           ]
         },
         {
+          "name": "TransferEntityRightsRequest",
+          "longName": "TransferEntityRightsRequest",
+          "fullName": "ttn.lorawan.v3.TransferEntityRightsRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "user_ids",
+              "description": "",
+              "label": "",
+              "type": "UserIdentifiers",
+              "longType": "UserIdentifiers",
+              "fullType": "ttn.lorawan.v3.UserIdentifiers",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "message.required",
+                    "value": true
+                  }
+                ]
+              }
+            },
+            {
+              "name": "receiver_ids",
+              "description": "",
+              "label": "",
+              "type": "UserIdentifiers",
+              "longType": "UserIdentifiers",
+              "fullType": "ttn.lorawan.v3.UserIdentifiers",
+              "ismap": false,
+              "defaultValue": "",
+              "options": {
+                "validate.rules": [
+                  {
+                    "name": "message.required",
+                    "value": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "UpdateUserAPIKeyRequest",
           "longName": "UpdateUserAPIKeyRequest",
           "fullName": "ttn.lorawan.v3.UpdateUserAPIKeyRequest",
@@ -28220,6 +28267,28 @@
                     {
                       "method": "DELETE",
                       "pattern": "/users/{user_id}/purge"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "TransferOwnedEntityRights",
+              "description": "Transfers solely owned entity rights to another user",
+              "requestType": "TransferEntityRightsRequest",
+              "requestLongType": "TransferEntityRightsRequest",
+              "requestFullType": "ttn.lorawan.v3.TransferEntityRightsRequest",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/users/{user_ids.user_id}/transfer/{receiver_ids.user_id}"
                     }
                   ]
                 }

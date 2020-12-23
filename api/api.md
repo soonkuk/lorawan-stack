@@ -476,6 +476,7 @@
   - [Message `ListUserSessionsRequest`](#ttn.lorawan.v3.ListUserSessionsRequest)
   - [Message `ListUsersRequest`](#ttn.lorawan.v3.ListUsersRequest)
   - [Message `SendInvitationRequest`](#ttn.lorawan.v3.SendInvitationRequest)
+  - [Message `TransferEntityRightsRequest`](#ttn.lorawan.v3.TransferEntityRightsRequest)
   - [Message `UpdateUserAPIKeyRequest`](#ttn.lorawan.v3.UpdateUserAPIKeyRequest)
   - [Message `UpdateUserPasswordRequest`](#ttn.lorawan.v3.UpdateUserPasswordRequest)
   - [Message `UpdateUserRequest`](#ttn.lorawan.v3.UpdateUserRequest)
@@ -6626,6 +6627,20 @@ Secret contains a secret value. It also contains the ID of the Encryption key us
 | ----- | ----------- |
 | `email` | <p>`string.email`: `true`</p> |
 
+### <a name="ttn.lorawan.v3.TransferEntityRightsRequest">Message `TransferEntityRightsRequest`</a>
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `user_ids` | [`UserIdentifiers`](#ttn.lorawan.v3.UserIdentifiers) |  |  |
+| `receiver_ids` | [`UserIdentifiers`](#ttn.lorawan.v3.UserIdentifiers) |  |  |
+
+#### Field Rules
+
+| Field | Validations |
+| ----- | ----------- |
+| `user_ids` | <p>`message.required`: `true`</p> |
+| `receiver_ids` | <p>`message.required`: `true`</p> |
+
 ### <a name="ttn.lorawan.v3.UpdateUserAPIKeyRequest">Message `UpdateUserAPIKeyRequest`</a>
 
 | Field | Type | Label | Description |
@@ -6811,6 +6826,7 @@ user registrations.
 | `UpdatePassword` | [`UpdateUserPasswordRequest`](#ttn.lorawan.v3.UpdateUserPasswordRequest) | [`.google.protobuf.Empty`](#google.protobuf.Empty) | Update the password of the user. |
 | `Delete` | [`UserIdentifiers`](#ttn.lorawan.v3.UserIdentifiers) | [`.google.protobuf.Empty`](#google.protobuf.Empty) | Delete the user. This may not release the user ID for reuse. |
 | `Purge` | [`UserIdentifiers`](#ttn.lorawan.v3.UserIdentifiers) | [`.google.protobuf.Empty`](#google.protobuf.Empty) | Purge the user. This will release the user ID for reuse. The user is responsible for clearing data from any (external) integrations that may store and expose data by user or organization ID. |
+| `TransferOwnedEntityRights` | [`TransferEntityRightsRequest`](#ttn.lorawan.v3.TransferEntityRightsRequest) | [`.google.protobuf.Empty`](#google.protobuf.Empty) | Transfers solely owned entity rights to another user |
 
 #### HTTP bindings
 
@@ -6824,6 +6840,7 @@ user registrations.
 | `UpdatePassword` | `PUT` | `/api/v3/users/{user_ids.user_id}/password` | `*` |
 | `Delete` | `DELETE` | `/api/v3/users/{user_id}` |  |
 | `Purge` | `DELETE` | `/api/v3/users/{user_id}/purge` |  |
+| `TransferOwnedEntityRights` | `POST` | `/api/v3/users/{user_ids.user_id}/transfer/{receiver_ids.user_id}` |  |
 
 ### <a name="ttn.lorawan.v3.UserSessionRegistry">Service `UserSessionRegistry`</a>
 
