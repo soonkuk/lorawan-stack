@@ -135,6 +135,10 @@ type MembershipStore interface {
 	DeleteEntityMembers(ctx context.Context, entityID ttnpb.Identifiers) error
 	// Delete all user rights for an entity.
 	DeleteAccountMembers(ctx context.Context, id *ttnpb.OrganizationOrUserIdentifiers) error
+	// Find all memberships where only the specified user has full rights.
+	FindSingleOwnerMemberships(ctx context.Context, id *ttnpb.OrganizationOrUserIdentifiers) ([]ttnpb.Identifiers, error)
+	// Transfer entity rights from one user or organization to another.
+	TransferEntityRights(ctx context.Context, id *ttnpb.OrganizationOrUserIdentifiers, receiverIDs *ttnpb.OrganizationOrUserIdentifiers, entityList []ttnpb.Identifiers) error
 }
 
 // APIKeyStore interface for storing API keys for entities (applications,

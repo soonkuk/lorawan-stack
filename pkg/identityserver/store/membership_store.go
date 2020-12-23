@@ -20,6 +20,7 @@ import (
 	"runtime/trace"
 
 	"github.com/jinzhu/gorm"
+	"github.com/lib/pq"
 	"go.thethings.network/lorawan-stack/v3/pkg/errors"
 	"go.thethings.network/lorawan-stack/v3/pkg/ttnpb"
 )
@@ -293,4 +294,76 @@ func (s *membershipStore) DeleteAccountMembers(ctx context.Context, id *ttnpb.Or
 	return s.query(ctx, Membership{}).Where(&Membership{
 		AccountID: account.PrimaryKey(),
 	}).Delete(&Membership{}).Error
+}
+
+func (s *membershipStore) FindSingleOwnerMemberships(ctx context.Context, id *ttnpb.OrganizationOrUserIdentifiers) ([]ttnpb.Identifiers, error) {
+	defer trace.StartRegion(ctx, "find single full rights memberships ").End()
+	accountQuery := s.query(ctx, Account{}).
+		Select(`"accounts"."id"`).
+		Where(fmt.Sprintf(`"accounts"."account_type" = '%s' AND "accounts"."uid" = ?`, id.EntityType()), id.IDString()).
+		QueryExpr()
+	userMembershipQuery := s.query(ctx, &Membership{}).
+		Select(`"memberships"."entity_id","memberships"."entity_type"`).
+		Where(`"memberships"."account_id" = (?)`, accountQuery).
+		Where(`"memberships"."rights" = (?) OR "memberships"."rights" = (?) OR "memberships"."rights" = (?) OR "memberships"."rights" = (?)`,
+			pq.Array([]ttnpb.Right{ttnpb.RIGHT_ALL}),
+			pq.Array([]ttnpb.Right{ttnpb.RIGHT_GATEWAY_ALL}),
+			pq.Array([]ttnpb.Right{ttnpb.RIGHT_APPLICATION_ALL}),
+			pq.Array([]ttnpb.Right{ttnpb.RIGHT_ORGANIZATION_ALL})).
+		QueryExpr()
+	query := s.query(ctx, &Membership{}).
+		Select(`"memberships"."entity_id", "memberships"."entity_type"`).
+		Where(`("memberships"."entity_id","memberships"."entity_type") IN (?)`, userMembershipQuery).
+		Where(`"memberships"."rights" = (?) OR "memberships"."rights" = (?) OR "memberships"."rights" = (?) OR "memberships"."rights" = (?)`,
+			pq.Array([]ttnpb.Right{ttnpb.RIGHT_ALL}),
+			pq.Array([]ttnpb.Right{ttnpb.RIGHT_GATEWAY_ALL}),
+			pq.Array([]ttnpb.Right{ttnpb.RIGHT_APPLICATION_ALL}),
+			pq.Array([]ttnpb.Right{ttnpb.RIGHT_ORGANIZATION_ALL})).
+		Group(`"memberships"."entity_id","memberships"."entity_type"`).Having(`count(id) = ?`, 1)
+	var res []struct {
+		EntityID   string
+		EntityType string
+	}
+	if err := query.Scan(&res).Error; err != nil {
+		return nil, err
+	}
+	entityIdentifiers := make([]ttnpb.Identifiers, len(res))
+	for i, identifiers := range res {
+		query := s.query(ctx, modelForEntityType(identifiers.EntityType))
+		switch identifiers.EntityType {
+		case "organization":
+			query = query.
+				Joins(`JOIN "accounts" ON "accounts"."account_type" = 'organization' AND "accounts"."account_id" = "organizations"."id"`).
+				Where(`"accounts"."account_type" = ? AND "accounts"."account_id" = ?`, identifiers.EntityType, identifiers.EntityID).
+				Select(`"accounts"."uid" AS "friendly_id"`)
+		default:
+			query = query.
+				Where(fmt.Sprintf(`"%[1]ss"."id" = ?`, identifiers.EntityType), identifiers.EntityID).
+				Select(fmt.Sprintf(`"%[1]ss"."%[1]s_id" AS "friendly_id"`, identifiers.EntityType))
+		}
+		var res struct {
+			FriendlyID string
+		}
+		if err := query.Scan(&res).Error; err != nil {
+			return nil, err
+		}
+		entityIdentifiers[i] = buildIdentifiers(identifiers.EntityType, res.FriendlyID)
+	}
+
+	return entityIdentifiers, nil
+}
+
+func (s *membershipStore) TransferEntityRights(ctx context.Context, id *ttnpb.OrganizationOrUserIdentifiers, receiverID *ttnpb.OrganizationOrUserIdentifiers, entityList []ttnpb.Identifiers) error {
+	defer trace.StartRegion(ctx, "transfer entity rights").End()
+	for _, entityID := range entityList {
+		userRights, err := s.GetMember(ctx, id, entityID)
+		if err != nil {
+			return err
+		}
+		err = s.SetMember(ctx, receiverID, entityID, userRights)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -69,6 +69,12 @@ var (
 		events.WithAuthFromContext(),
 		events.WithClientInfoFromContext(),
 	)
+	evtUserOwnedEntitiesRightsTransfer = events.Define(
+		"user.transfer.single_owned_entities", "transfer user single owned entities",
+		events.WithVisibility(ttnpb.RIGHT_USER_INFO),
+		events.WithAuthFromContext(),
+		events.WithClientInfoFromContext(),
+	)
 )
 
 var (
@@ -612,11 +618,20 @@ func (is *IdentityServer) createTemporaryPassword(ctx context.Context, req *ttnp
 	return ttnpb.Empty, nil
 }
 
+var errEntitiesOrphaned = errors.DefineFailedPrecondition("user_single_entity_owner", "user is the single owner for {count} entities")
+
 func (is *IdentityServer) deleteUser(ctx context.Context, ids *ttnpb.UserIdentifiers) (*types.Empty, error) {
 	if err := rights.RequireUser(ctx, *ids, ttnpb.RIGHT_USER_DELETE); err != nil {
 		return nil, err
 	}
 	err := is.withDatabase(ctx, func(db *gorm.DB) error {
+		orphanedEntities, err := store.GetMembershipStore(db).FindSingleOwnerMemberships(ctx, ids.GetOrganizationOrUserIdentifiers())
+		if err != nil {
+			return err
+		}
+		if len(orphanedEntities) > 0 {
+			return errEntitiesOrphaned.WithAttributes("count", len(orphanedEntities))
+		}
 		return store.GetUserStore(db).DeleteUser(ctx, ids)
 	})
 	if err != nil {
@@ -661,6 +676,28 @@ func (is *IdentityServer) purgeUser(ctx context.Context, ids *ttnpb.UserIdentifi
 	return ttnpb.Empty, nil
 }
 
+func (is *IdentityServer) transferOwnedEntityRights(ctx context.Context, req *ttnpb.TransferEntityRightsRequest) (*types.Empty, error) {
+	if err := rights.RequireUser(ctx, req.UserIdentifiers, ttnpb.RIGHT_USER_ALL); err != nil {
+		return nil, err
+	}
+	err := is.withDatabase(ctx, func(db *gorm.DB) error {
+		entityList, err := store.GetMembershipStore(db).FindSingleOwnerMemberships(ctx, req.UserIdentifiers.GetOrganizationOrUserIdentifiers())
+		if err != nil {
+			return err
+		}
+		if len(entityList) > 0 {
+			return store.GetMembershipStore(db).TransferEntityRights(ctx, req.UserIdentifiers.GetOrganizationOrUserIdentifiers(), req.ReceiverIds.GetOrganizationOrUserIdentifiers(), entityList)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	events.Publish(evtUserOwnedEntitiesRightsTransfer.NewWithIdentifiersAndData(ctx, req.UserIdentifiers, nil))
+
+	return ttnpb.Empty, nil
+}
+
 type userRegistry struct {
 	*IdentityServer
 }
@@ -695,4 +732,8 @@ func (ur *userRegistry) Delete(ctx context.Context, req *ttnpb.UserIdentifiers) 
 
 func (ur *userRegistry) Purge(ctx context.Context, req *ttnpb.UserIdentifiers) (*types.Empty, error) {
 	return ur.purgeUser(ctx, req)
+}
+
+func (ur *userRegistry) TransferOwnedEntityRights(ctx context.Context, req *ttnpb.TransferEntityRightsRequest) (*types.Empty, error) {
+	return ur.transferOwnedEntityRights(ctx, req)
 }
