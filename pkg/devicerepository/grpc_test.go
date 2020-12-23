@@ -124,12 +124,18 @@ func TestGRPC(t *testing.T) {
 		ApplicationID: "app1",
 	}
 	registeredApplicationKey := "key"
-	// unregisteredApplicationID := ttnpb.ApplicationIdentifiers{
-	// 	ApplicationID: "app2",
-	// }
+	unregisteredApplicationKey := "unregisteredKey"
+	unregisteredApplicationID := ttnpb.ApplicationIdentifiers{
+		ApplicationID: "app2",
+	}
 	creds := grpc.PerRPCCredentials(rpcmetadata.MD{
 		AuthType:      "Bearer",
 		AuthValue:     registeredApplicationKey,
+		AllowInsecure: true,
+	})
+	unregisteredCreds := grpc.PerRPCCredentials(rpcmetadata.MD{
+		AuthType:      "Bearer",
+		AuthValue:     unregisteredApplicationKey,
 		AllowInsecure: true,
 	})
 	mockIS, mockISAddr := startMockIS(test.Context())
@@ -164,9 +170,130 @@ func TestGRPC(t *testing.T) {
 	cc := dr.LoopbackConn()
 	cl := ttnpb.NewDeviceRepositoryClient(cc)
 
+	t.Run("Auth", func(t *testing.T) {
+		for _, atc := range []struct {
+			name    string
+			execute func(ids *ttnpb.ApplicationIdentifiers, opts ...grpc.CallOption) (interface{}, error)
+		}{
+			{
+				name: "ListBrands",
+				execute: func(ids *ttnpb.ApplicationIdentifiers, opts ...grpc.CallOption) (interface{}, error) {
+					response, err := cl.ListBrands(test.Context(), &ttnpb.ListEndDeviceBrandsRequest{
+						ApplicationIDs: ids,
+					}, opts...)
+					return response, err
+				},
+			},
+			{
+				name: "GetBrand",
+				execute: func(ids *ttnpb.ApplicationIdentifiers, opts ...grpc.CallOption) (interface{}, error) {
+					response, err := cl.GetBrand(test.Context(), &ttnpb.GetEndDeviceBrandRequest{
+						ApplicationIDs: ids,
+					}, opts...)
+					return response, err
+				},
+			},
+			{
+				name: "ListModels",
+				execute: func(ids *ttnpb.ApplicationIdentifiers, opts ...grpc.CallOption) (interface{}, error) {
+					response, err := cl.ListModels(test.Context(), &ttnpb.ListEndDeviceModelsRequest{
+						ApplicationIDs: ids,
+					}, opts...)
+					return response, err
+				},
+			},
+			{
+				name: "GetModel",
+				execute: func(ids *ttnpb.ApplicationIdentifiers, opts ...grpc.CallOption) (interface{}, error) {
+					response, err := cl.GetModel(test.Context(), &ttnpb.GetEndDeviceModelRequest{
+						ApplicationIDs: ids,
+					}, opts...)
+					return response, err
+				},
+			},
+			{
+				name: "GetTemplate",
+				execute: func(ids *ttnpb.ApplicationIdentifiers, opts ...grpc.CallOption) (interface{}, error) {
+					response, err := cl.GetTemplate(test.Context(), &ttnpb.GetTemplateRequest{
+						ApplicationIDs: ids,
+					}, opts...)
+					return response, err
+				},
+			},
+			{
+				name: "GetUplinkDecoder",
+				execute: func(ids *ttnpb.ApplicationIdentifiers, opts ...grpc.CallOption) (interface{}, error) {
+					response, err := cl.GetUplinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+						ApplicationIDs: ids,
+					}, opts...)
+					return response, err
+				},
+			},
+			{
+				name: "GetDownlinkDecoder",
+				execute: func(ids *ttnpb.ApplicationIdentifiers, opts ...grpc.CallOption) (interface{}, error) {
+					response, err := cl.GetDownlinkDecoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+						ApplicationIDs: ids,
+					}, opts...)
+					return response, err
+				},
+			},
+			{
+				name: "GetDownlinkEncoder",
+				execute: func(ids *ttnpb.ApplicationIdentifiers, opts ...grpc.CallOption) (interface{}, error) {
+					response, err := cl.GetDownlinkEncoder(test.Context(), &ttnpb.GetPayloadFormatterRequest{
+						ApplicationIDs: ids,
+					}, opts...)
+					return response, err
+				},
+			},
+		} {
+			t.Run(atc.name, func(t *testing.T) {
+				for _, tc := range []struct {
+					name      string
+					ids       *ttnpb.ApplicationIdentifiers
+					opts      []grpc.CallOption
+					assertion func(err error) bool
+				}{
+					{
+						name:      "NoApplication",
+						assertion: errors.IsUnauthenticated,
+					},
+					{
+						name:      "NoKey",
+						ids:       &registeredApplicationID,
+						assertion: errors.IsUnauthenticated,
+					},
+					{
+						name:      "UnregisteredKey",
+						ids:       &registeredApplicationID,
+						opts:      []grpc.CallOption{unregisteredCreds},
+						assertion: errors.IsPermissionDenied,
+					},
+					{
+						name:      "UnregisteredApplication",
+						ids:       &unregisteredApplicationID,
+						assertion: errors.IsUnauthenticated,
+					},
+					{
+						name:      "UnregisteredApplicationWithKey",
+						ids:       &unregisteredApplicationID,
+						opts:      []grpc.CallOption{creds},
+						assertion: errors.IsPermissionDenied,
+					},
+				} {
+					t.Run(tc.name, func(t *testing.T) {
+						a := assertions.New(t)
+						response, err := atc.execute(tc.ids, tc.opts...)
+						a.So(response, should.BeNil)
+						a.So(tc.assertion(err), should.BeTrue)
+					})
+				}
+			})
+		}
+	})
+
 	t.Run("ListBrands", func(t *testing.T) {
-		t.Run("NoAuth", func(t *testing.T) {
-		})
 		t.Run("Request", func(t *testing.T) {
 			a := assertions.New(t)
 
