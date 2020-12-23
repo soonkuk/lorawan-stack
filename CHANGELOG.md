@@ -15,6 +15,7 @@ For details about compatibility between different releases, see the **Commitment
 - Store and retrieve Gateway Claim Authentication Code from database.
   - This requires a database schema migration (`ttn-lw-stack is-db migrate`) because of the added column.
   - This uses the same encryption key set using the `is.gateways.encryption-key-id` configuration option.
+- Add `TransferOwnedEntityRights` RPC for transfering rights for entities for which user is the only collaborator with full rights
 
 ### Changed
 
