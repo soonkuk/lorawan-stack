@@ -36,6 +36,13 @@ var (
 	selectAllUserFlags = util.SelectAllFlagSet("user")
 )
 
+func rightsTransferFlags() *pflag.FlagSet {
+	flagSet := &pflag.FlagSet{}
+	flagSet.String("user-id", "", "")
+	flagSet.String("receiver-id", "", "")
+	return flagSet
+}
+
 func userIDFlags() *pflag.FlagSet {
 	flagSet := &pflag.FlagSet{}
 	flagSet.String("user-id", "", "")
@@ -43,6 +50,7 @@ func userIDFlags() *pflag.FlagSet {
 }
 
 var errNoUserID = errors.DefineInvalidArgument("no_user_id", "no user ID set")
+var errNoReceiverID = errors.DefineInvalidArgument("no_receiver_id", "no receiver ID set")
 
 func getUserID(flagSet *pflag.FlagSet, args []string) *ttnpb.UserIdentifiers {
 	var userID string
@@ -53,6 +61,19 @@ func getUserID(flagSet *pflag.FlagSet, args []string) *ttnpb.UserIdentifiers {
 		userID = args[0]
 	} else {
 		userID, _ = flagSet.GetString("user-id")
+	}
+	if userID == "" {
+		return nil
+	}
+	return &ttnpb.UserIdentifiers{UserID: userID}
+}
+
+func getReceiverID(flagSet *pflag.FlagSet, args []string) *ttnpb.UserIdentifiers {
+	var userID string
+	if len(args) > 0 {
+		userID = args[1]
+	} else {
+		userID, _ = flagSet.GetString("receiver-id")
 	}
 	if userID == "" {
 		return nil
@@ -415,6 +436,35 @@ var (
 			return nil
 		},
 	}
+	usersTransferRightsCommand = &cobra.Command{
+		Use:     "transfer-owner-rights [user-id]",
+		Aliases: []string{"tran", "move", "rights-move"},
+		Short:   "Transfer rights",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			usrID := getUserID(cmd.Flags(), args)
+			if usrID == nil {
+				return errNoUserID
+			}
+			receiverID := getReceiverID(cmd.Flags(), args)
+			if receiverID == nil {
+				return errNoUserID
+			}
+
+			is, err := api.Dial(ctx, config.IdentityServerGRPCAddress)
+			if err != nil {
+				return err
+			}
+			_, err = ttnpb.NewUserRegistryClient(is).TransferOwnedEntityRights(ctx, &ttnpb.TransferEntityRightsRequest{
+				UserIdentifiers: *usrID,
+				ReceiverIds:     *receiverID,
+			})
+			if err != nil {
+				return err
+			}
+
+			return nil
+		},
+	}
 	usersContactInfoCommand = contactInfoCommands("user", func(cmd *cobra.Command, args []string) (*ttnpb.EntityIdentifiers, error) {
 		usrID := getUserID(cmd.Flags(), args)
 		if usrID == nil {
@@ -491,6 +541,8 @@ func init() {
 	usersCommand.AddCommand(usersUpdatePasswordCommand)
 	usersDeleteCommand.Flags().AddFlagSet(userIDFlags())
 	usersCommand.AddCommand(usersDeleteCommand)
+	usersTransferRightsCommand.Flags().AddFlagSet(rightsTransferFlags())
+	usersCommand.AddCommand(usersTransferRightsCommand)
 	usersContactInfoCommand.PersistentFlags().AddFlagSet(userIDFlags())
 	usersCommand.AddCommand(usersContactInfoCommand)
 	usersPurgeCommand.Flags().AddFlagSet(userIDFlags())
