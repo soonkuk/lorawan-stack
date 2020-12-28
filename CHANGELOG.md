@@ -10,6 +10,7 @@ For details about compatibility between different releases, see the **Commitment
 ## [Unreleased]
 
 ### Added
+- `ttn-lw-stack` CLI command for creating an API Key with full rights on a user.
 
 ### Changed
 
