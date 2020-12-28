@@ -29,7 +29,7 @@ var apiKeyHashSettings auth.HashValidator = pbkdf2.PBKDF2{
 	SaltLength: 16,
 }
 
-func generateAPIKey(ctx context.Context, name string, rights ...ttnpb.Right) (key *ttnpb.APIKey, token string, err error) {
+func GenerateAPIKey(ctx context.Context, name string, rights ...ttnpb.Right) (key *ttnpb.APIKey, token string, err error) {
 	token, err = auth.APIKey.Generate(ctx, "")
 	if err != nil {
 		return nil, "", err
