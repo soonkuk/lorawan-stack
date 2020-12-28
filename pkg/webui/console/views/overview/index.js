@@ -205,7 +205,7 @@ export default class Overview extends React.Component {
 
   render() {
     const {
-      config: { stack: stackConfig },
+      config: { stack: stackConfig, supportLink, documentationBaseUrl },
     } = this.props.env
     const {
       fetching,
@@ -253,12 +253,12 @@ export default class Overview extends React.Component {
                 content={m.needHelp}
                 values={{
                   documentationLink: (
-                    <Link.Anchor secondary href="https://www.thethingsindustries.com/docs">
+                    <Link.Anchor secondary href={documentationBaseUrl}>
                       <Message content={sharedMessages.documentation} />
                     </Link.Anchor>
                   ),
                   supportLink: (
-                    <Link.Anchor secondary href="https://www.thethingsindustries.com/support">
+                    <Link.Anchor secondary href={supportLink}>
                       <Message content={sharedMessages.getSupport} />
                     </Link.Anchor>
                   ),
