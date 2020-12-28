@@ -94,7 +94,7 @@ func cacheKey(codec codecType, version *ttnpb.EndDeviceVersionIdentifiers) strin
 	return fmt.Sprintf("%s:%s:%s:%s:%v", version.BrandID, version.ModelID, version.FirmwareVersion, version.BandID, codec)
 }
 
-func (h *host) retrieve(ctx context.Context, codec codecType, version *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
+func (h *host) retrieve(ctx context.Context, codec codecType, ids ttnpb.ApplicationIdentifiers, version *ttnpb.EndDeviceVersionIdentifiers) (*ttnpb.MessagePayloadFormatter, error) {
 	key := cacheKey(codec, version)
 	if cachedInterface, err := h.cache.Get(key); err == nil {
 		cached := cachedInterface.(cacheItem)
@@ -107,7 +107,8 @@ func (h *host) retrieve(ctx context.Context, codec codecType, version *ttnpb.End
 	result, err, _ := h.singleflight.Do(key, func() (interface{}, error) {
 		f := codec.codecFunc(ttnpb.NewDeviceRepositoryClient(cc))
 		formatter, err := f(ctx, &ttnpb.GetPayloadFormatterRequest{
-			VersionIDs: version,
+			ApplicationIDs: ids,
+			VersionIDs:     version,
 		}, h.cluster.WithClusterAuth())
 
 		expire := cacheTTL
@@ -127,7 +128,7 @@ func (h *host) retrieve(ctx context.Context, codec codecType, version *ttnpb.End
 
 // EncodeDownlink encodes a downlink message.
 func (h *host) EncodeDownlink(ctx context.Context, ids ttnpb.EndDeviceIdentifiers, version *ttnpb.EndDeviceVersionIdentifiers, message *ttnpb.ApplicationDownlink, parameter string) error {
-	res, err := h.retrieve(ctx, downlinkEncoder, version)
+	res, err := h.retrieve(ctx, downlinkEncoder, ids.ApplicationIdentifiers, version)
 	if err != nil {
 		return err
 	}
@@ -136,7 +137,7 @@ func (h *host) EncodeDownlink(ctx context.Context, ids ttnpb.EndDeviceIdentifier
 
 // DecodeUplink decodes an uplink message.
 func (h *host) DecodeUplink(ctx context.Context, ids ttnpb.EndDeviceIdentifiers, version *ttnpb.EndDeviceVersionIdentifiers, message *ttnpb.ApplicationUplink, parameter string) error {
-	res, err := h.retrieve(ctx, uplinkDecoder, version)
+	res, err := h.retrieve(ctx, uplinkDecoder, ids.ApplicationIdentifiers, version)
 	if err != nil {
 		return err
 	}
@@ -148,7 +149,7 @@ func (h *host) DecodeUplink(ctx context.Context, ids ttnpb.EndDeviceIdentifiers,
 
 // DecodeDownlink decodes a downlink message.
 func (h *host) DecodeDownlink(ctx context.Context, ids ttnpb.EndDeviceIdentifiers, version *ttnpb.EndDeviceVersionIdentifiers, message *ttnpb.ApplicationDownlink, parameter string) error {
-	res, err := h.retrieve(ctx, downlinkDecoder, version)
+	res, err := h.retrieve(ctx, downlinkDecoder, ids.ApplicationIdentifiers, version)
 	if err != nil {
 		return err
 	}

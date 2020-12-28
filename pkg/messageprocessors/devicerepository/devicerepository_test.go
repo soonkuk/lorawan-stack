@@ -156,6 +156,12 @@ func TestDeviceRepository(t *testing.T) {
 		HardwareVersion: "1.1",
 		BandID:          "band",
 	}
+	devID := ttnpb.EndDeviceIdentifiers{
+		DeviceID: "dev1",
+		ApplicationIdentifiers: ttnpb.ApplicationIdentifiers{
+			ApplicationID: "app1",
+		},
+	}
 
 	dr := &mockDR{
 		uplinkDecoders:   make(map[string]*ttnpb.MessagePayloadFormatter),
@@ -202,7 +208,7 @@ func TestDeviceRepository(t *testing.T) {
 	p := dr_processor.New(mockProcessor, c)
 
 	t.Run("DeviceNotFound", func(t *testing.T) {
-		err := p.DecodeDownlink(test.Context(), ttnpb.EndDeviceIdentifiers{}, idsNotFound, nil, "")
+		err := p.DecodeDownlink(test.Context(), devID, idsNotFound, nil, "")
 		a := assertions.New(t)
 		a.So(err.Error(), should.ContainSubstring, mockError.Error())
 
@@ -215,7 +221,7 @@ func TestDeviceRepository(t *testing.T) {
 	})
 
 	t.Run("UplinkDecoder", func(t *testing.T) {
-		err := p.DecodeUplink(test.Context(), ttnpb.EndDeviceIdentifiers{}, ids, nil, "")
+		err := p.DecodeUplink(test.Context(), devID, ids, nil, "")
 		a := assertions.New(t)
 		a.So(err, should.BeNil)
 
@@ -232,7 +238,7 @@ func TestDeviceRepository(t *testing.T) {
 	})
 
 	t.Run("DownlinkDecoder", func(t *testing.T) {
-		err := p.DecodeDownlink(test.Context(), ttnpb.EndDeviceIdentifiers{}, ids, nil, "")
+		err := p.DecodeDownlink(test.Context(), devID, ids, nil, "")
 		a := assertions.New(t)
 		a.So(err, should.BeNil)
 
@@ -248,7 +254,7 @@ func TestDeviceRepository(t *testing.T) {
 		}
 	})
 	t.Run("DownlinkEncoder", func(t *testing.T) {
-		err := p.EncodeDownlink(test.Context(), ttnpb.EndDeviceIdentifiers{}, ids, nil, "")
+		err := p.EncodeDownlink(test.Context(), devID, ids, nil, "")
 		a := assertions.New(t)
 		a.So(err, should.BeNil)
 
@@ -268,11 +274,11 @@ func TestDeviceRepository(t *testing.T) {
 		mockProcessor.err = mockError
 		a := assertions.New(t)
 
-		err := p.DecodeDownlink(test.Context(), ttnpb.EndDeviceIdentifiers{}, ids, nil, "")
+		err := p.DecodeDownlink(test.Context(), devID, ids, nil, "")
 		a.So(err.Error(), should.ContainSubstring, mockError.Error())
-		err = p.DecodeUplink(test.Context(), ttnpb.EndDeviceIdentifiers{}, ids, nil, "")
+		err = p.DecodeUplink(test.Context(), devID, ids, nil, "")
 		a.So(err.Error(), should.ContainSubstring, mockError.Error())
-		err = p.EncodeDownlink(test.Context(), ttnpb.EndDeviceIdentifiers{}, ids, nil, "")
+		err = p.EncodeDownlink(test.Context(), devID, ids, nil, "")
 		a.So(err.Error(), should.ContainSubstring, mockError.Error())
 
 		mockProcessor.err = nil
