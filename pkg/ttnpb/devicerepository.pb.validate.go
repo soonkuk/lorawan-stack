@@ -366,7 +366,7 @@ func (m *GetEndDeviceBrandRequest) ValidateFields(paths ...string) error {
 		switch name {
 		case "application_ids":
 
-			if v, ok := interface{}(m.GetApplicationIDs()).(interface{ ValidateFields(...string) error }); ok {
+			if v, ok := interface{}(&m.ApplicationIDs).(interface{ ValidateFields(...string) error }); ok {
 				if err := v.ValidateFields(subs...); err != nil {
 					return GetEndDeviceBrandRequestValidationError{
 						field:  "application_ids",
@@ -474,7 +474,7 @@ func (m *ListEndDeviceBrandsRequest) ValidateFields(paths ...string) error {
 		switch name {
 		case "application_ids":
 
-			if v, ok := interface{}(m.GetApplicationIDs()).(interface{ ValidateFields(...string) error }); ok {
+			if v, ok := interface{}(&m.ApplicationIDs).(interface{ ValidateFields(...string) error }); ok {
 				if err := v.ValidateFields(subs...); err != nil {
 					return ListEndDeviceBrandsRequestValidationError{
 						field:  "application_ids",
@@ -610,7 +610,7 @@ func (m *GetEndDeviceModelRequest) ValidateFields(paths ...string) error {
 		switch name {
 		case "application_ids":
 
-			if v, ok := interface{}(m.GetApplicationIDs()).(interface{ ValidateFields(...string) error }); ok {
+			if v, ok := interface{}(&m.ApplicationIDs).(interface{ ValidateFields(...string) error }); ok {
 				if err := v.ValidateFields(subs...); err != nil {
 					return GetEndDeviceModelRequestValidationError{
 						field:  "application_ids",
@@ -720,7 +720,7 @@ func (m *ListEndDeviceModelsRequest) ValidateFields(paths ...string) error {
 		switch name {
 		case "application_ids":
 
-			if v, ok := interface{}(m.GetApplicationIDs()).(interface{ ValidateFields(...string) error }); ok {
+			if v, ok := interface{}(&m.ApplicationIDs).(interface{ ValidateFields(...string) error }); ok {
 				if err := v.ValidateFields(subs...); err != nil {
 					return ListEndDeviceModelsRequestValidationError{
 						field:  "application_ids",
@@ -860,7 +860,7 @@ func (m *GetTemplateRequest) ValidateFields(paths ...string) error {
 		switch name {
 		case "application_ids":
 
-			if v, ok := interface{}(m.GetApplicationIDs()).(interface{ ValidateFields(...string) error }); ok {
+			if v, ok := interface{}(&m.ApplicationIDs).(interface{ ValidateFields(...string) error }); ok {
 				if err := v.ValidateFields(subs...); err != nil {
 					return GetTemplateRequestValidationError{
 						field:  "application_ids",
@@ -965,7 +965,7 @@ func (m *GetPayloadFormatterRequest) ValidateFields(paths ...string) error {
 		switch name {
 		case "application_ids":
 
-			if v, ok := interface{}(m.GetApplicationIDs()).(interface{ ValidateFields(...string) error }); ok {
+			if v, ok := interface{}(&m.ApplicationIDs).(interface{ ValidateFields(...string) error }); ok {
 				if err := v.ValidateFields(subs...); err != nil {
 					return GetPayloadFormatterRequestValidationError{
 						field:  "application_ids",

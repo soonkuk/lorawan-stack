@@ -399,18 +399,10 @@ func (dst *GetEndDeviceBrandRequest) SetFields(src *GetEndDeviceBrandRequest, pa
 		case "application_ids":
 			if len(subs) > 0 {
 				var newDst, newSrc *ApplicationIdentifiers
-				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
-					continue
-				}
 				if src != nil {
-					newSrc = src.ApplicationIDs
+					newSrc = &src.ApplicationIDs
 				}
-				if dst.ApplicationIDs != nil {
-					newDst = dst.ApplicationIDs
-				} else {
-					newDst = &ApplicationIdentifiers{}
-					dst.ApplicationIDs = newDst
-				}
+				newDst = &dst.ApplicationIDs
 				if err := newDst.SetFields(newSrc, subs...); err != nil {
 					return err
 				}
@@ -418,7 +410,8 @@ func (dst *GetEndDeviceBrandRequest) SetFields(src *GetEndDeviceBrandRequest, pa
 				if src != nil {
 					dst.ApplicationIDs = src.ApplicationIDs
 				} else {
-					dst.ApplicationIDs = nil
+					var zero ApplicationIdentifiers
+					dst.ApplicationIDs = zero
 				}
 			}
 		case "brand_id":
@@ -455,18 +448,10 @@ func (dst *ListEndDeviceBrandsRequest) SetFields(src *ListEndDeviceBrandsRequest
 		case "application_ids":
 			if len(subs) > 0 {
 				var newDst, newSrc *ApplicationIdentifiers
-				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
-					continue
-				}
 				if src != nil {
-					newSrc = src.ApplicationIDs
+					newSrc = &src.ApplicationIDs
 				}
-				if dst.ApplicationIDs != nil {
-					newDst = dst.ApplicationIDs
-				} else {
-					newDst = &ApplicationIdentifiers{}
-					dst.ApplicationIDs = newDst
-				}
+				newDst = &dst.ApplicationIDs
 				if err := newDst.SetFields(newSrc, subs...); err != nil {
 					return err
 				}
@@ -474,7 +459,8 @@ func (dst *ListEndDeviceBrandsRequest) SetFields(src *ListEndDeviceBrandsRequest
 				if src != nil {
 					dst.ApplicationIDs = src.ApplicationIDs
 				} else {
-					dst.ApplicationIDs = nil
+					var zero ApplicationIdentifiers
+					dst.ApplicationIDs = zero
 				}
 			}
 		case "limit":
@@ -541,18 +527,10 @@ func (dst *GetEndDeviceModelRequest) SetFields(src *GetEndDeviceModelRequest, pa
 		case "application_ids":
 			if len(subs) > 0 {
 				var newDst, newSrc *ApplicationIdentifiers
-				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
-					continue
-				}
 				if src != nil {
-					newSrc = src.ApplicationIDs
+					newSrc = &src.ApplicationIDs
 				}
-				if dst.ApplicationIDs != nil {
-					newDst = dst.ApplicationIDs
-				} else {
-					newDst = &ApplicationIdentifiers{}
-					dst.ApplicationIDs = newDst
-				}
+				newDst = &dst.ApplicationIDs
 				if err := newDst.SetFields(newSrc, subs...); err != nil {
 					return err
 				}
@@ -560,7 +538,8 @@ func (dst *GetEndDeviceModelRequest) SetFields(src *GetEndDeviceModelRequest, pa
 				if src != nil {
 					dst.ApplicationIDs = src.ApplicationIDs
 				} else {
-					dst.ApplicationIDs = nil
+					var zero ApplicationIdentifiers
+					dst.ApplicationIDs = zero
 				}
 			}
 		case "brand_id":
@@ -607,18 +586,10 @@ func (dst *ListEndDeviceModelsRequest) SetFields(src *ListEndDeviceModelsRequest
 		case "application_ids":
 			if len(subs) > 0 {
 				var newDst, newSrc *ApplicationIdentifiers
-				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
-					continue
-				}
 				if src != nil {
-					newSrc = src.ApplicationIDs
+					newSrc = &src.ApplicationIDs
 				}
-				if dst.ApplicationIDs != nil {
-					newDst = dst.ApplicationIDs
-				} else {
-					newDst = &ApplicationIdentifiers{}
-					dst.ApplicationIDs = newDst
-				}
+				newDst = &dst.ApplicationIDs
 				if err := newDst.SetFields(newSrc, subs...); err != nil {
 					return err
 				}
@@ -626,7 +597,8 @@ func (dst *ListEndDeviceModelsRequest) SetFields(src *ListEndDeviceModelsRequest
 				if src != nil {
 					dst.ApplicationIDs = src.ApplicationIDs
 				} else {
-					dst.ApplicationIDs = nil
+					var zero ApplicationIdentifiers
+					dst.ApplicationIDs = zero
 				}
 			}
 		case "brand_id":
@@ -703,18 +675,10 @@ func (dst *GetTemplateRequest) SetFields(src *GetTemplateRequest, paths ...strin
 		case "application_ids":
 			if len(subs) > 0 {
 				var newDst, newSrc *ApplicationIdentifiers
-				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
-					continue
-				}
 				if src != nil {
-					newSrc = src.ApplicationIDs
+					newSrc = &src.ApplicationIDs
 				}
-				if dst.ApplicationIDs != nil {
-					newDst = dst.ApplicationIDs
-				} else {
-					newDst = &ApplicationIdentifiers{}
-					dst.ApplicationIDs = newDst
-				}
+				newDst = &dst.ApplicationIDs
 				if err := newDst.SetFields(newSrc, subs...); err != nil {
 					return err
 				}
@@ -722,7 +686,8 @@ func (dst *GetTemplateRequest) SetFields(src *GetTemplateRequest, paths ...strin
 				if src != nil {
 					dst.ApplicationIDs = src.ApplicationIDs
 				} else {
-					dst.ApplicationIDs = nil
+					var zero ApplicationIdentifiers
+					dst.ApplicationIDs = zero
 				}
 			}
 		case "version_ids":
@@ -764,18 +729,10 @@ func (dst *GetPayloadFormatterRequest) SetFields(src *GetPayloadFormatterRequest
 		case "application_ids":
 			if len(subs) > 0 {
 				var newDst, newSrc *ApplicationIdentifiers
-				if (src == nil || src.ApplicationIDs == nil) && dst.ApplicationIDs == nil {
-					continue
-				}
 				if src != nil {
-					newSrc = src.ApplicationIDs
+					newSrc = &src.ApplicationIDs
 				}
-				if dst.ApplicationIDs != nil {
-					newDst = dst.ApplicationIDs
-				} else {
-					newDst = &ApplicationIdentifiers{}
-					dst.ApplicationIDs = newDst
-				}
+				newDst = &dst.ApplicationIDs
 				if err := newDst.SetFields(newSrc, subs...); err != nil {
 					return err
 				}
@@ -783,7 +740,8 @@ func (dst *GetPayloadFormatterRequest) SetFields(src *GetPayloadFormatterRequest
 				if src != nil {
 					dst.ApplicationIDs = src.ApplicationIDs
 				} else {
-					dst.ApplicationIDs = nil
+					var zero ApplicationIdentifiers
+					dst.ApplicationIDs = zero
 				}
 			}
 		case "version_ids":
