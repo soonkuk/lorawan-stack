@@ -45,10 +45,6 @@ func (dr *DeviceRepository) assetURL(brandID, path string) string {
 	return strings.TrimRight(dr.config.AssetsBaseURL, "/") + "/vendor/" + brandID + "/" + path
 }
 
-var (
-	errUnauthenticated = errors.DefineUnauthenticated("unauthenticated", "unauthenticated")
-)
-
 // ListBrands implements the ttnpb.DeviceRepositoryServer interface.
 func (dr *DeviceRepository) ListBrands(ctx context.Context, req *ttnpb.ListEndDeviceBrandsRequest) (*ttnpb.ListEndDeviceBrandsResponse, error) {
 	if err := rights.RequireApplication(ctx, req.ApplicationIDs, ttnpb.RIGHT_APPLICATION_DEVICES_READ); err != nil {
